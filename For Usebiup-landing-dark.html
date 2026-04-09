@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIUP — Nigeria's Premier Tyre Distributor (Dark)</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── COLOUR PALETTE: Dark Mode — Green #b8ca96 + Blue #4a7fa5 ─── */
+:root {
+  /* Backgrounds — deep dark green-tinted */
+  --bg:      #0e1410;
+  --bg2:     #131a12;
+  --bg3:     #1a2419;
+  --surface: #162014;
+
+  /* Borders — subtle dark green */
+  --border:  #243020;
+  --border2: #3a5035;
+
+  /* PRIMARY: Blue for CTAs, actions, interactive */
+  --primary:     #5b92b8;
+  --primary-dk:  #4a7fa5;
+  --primary-dim: rgba(91,146,184,0.12);
+
+  /* ACCENT: Sage green for highlights, labels, decorative */
+  --accent:      #b8ca96;
+  --accent-dk:   #a0bc78;
+  --accent-dim:  rgba(184,202,150,0.12);
+
+  /* Ink / text — inverted for dark */
+  --ink:     #ddecd4;
+  --ink2:    #131a12;
+  --gray:    #7a9470;
+  --gray2:   #506044;
+  --muted:   #3a5035;
+  --muted2:  #2a3828;
+
+  /* Legacy alias so var(--red) still works everywhere */
+  --red:  #5b92b8;
+  --red2: #4a7fa5;
+  --red-dim: rgba(91,146,184,0.12);
+  --sand:    #b8ca96;
+  --sand2:   #3a5035;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Barlow',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR — blue dot */
+.cursor{width:10px;height:10px;background:var(--primary);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{width:34px;height:34px;border:1.5px solid rgba(74,127,165,0.45);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out,opacity 0.3s;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:0 52px;height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.3s;
+}
+nav.scrolled{
+  background:rgba(14,20,16,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.nav-logo{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:30px;font-weight:900;letter-spacing:-0.5px;color:var(--ink);
+}
+/* Logo dot — accent green */
+.nav-logo span{color:var(--accent-dk);}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gray);text-decoration:none;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--ink);}
+/* CTA nav button — blue */
+.nav-cta{
+  background:var(--primary);color:#fff !important;
+  padding:10px 22px;border-radius:3px;
+  transition:background 0.2s !important;
+}
+.nav-cta:hover{background:var(--primary-dk) !important;}
+
+/* ============================
+   HERO
+   ============================ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 52px 88px;
+  position:relative;overflow:hidden;
+  background:var(--bg);
+}
+
+/* Grid texture — green-tinted */
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:64px 64px;
+  opacity:0.4;
+}
+
+/* Tyre rings — outer blue, inner green */
+.hero-bg{position:absolute;inset:0;overflow:hidden;}
+.hero-bg::before{
+  content:'';position:absolute;
+  top:-8%;right:-4%;
+  width:68vw;height:68vw;border-radius:50%;
+  border:72px solid rgba(74,127,165,0.07);
+  animation:ringPulse 9s ease-in-out infinite;
+}
+.hero-bg::after{
+  content:'';position:absolute;
+  top:6%;right:10%;
+  width:50vw;height:50vw;border-radius:50%;
+  border:36px solid rgba(184,202,150,0.09);
+  animation:ringPulse 9s ease-in-out infinite 1.2s;
+}
+.hero-ring3{
+  position:absolute;top:14%;right:18%;
+  width:34vw;height:34vw;border-radius:50%;
+  border:2px solid rgba(74,127,165,0.14);
+  animation:ringPulse 9s ease-in-out infinite 2.2s;
+}
+.hero-ring4{
+  position:absolute;top:20%;right:24%;
+  width:20vw;height:20vw;border-radius:50%;
+  border:1.5px solid rgba(184,202,150,0.35);
+  animation:ringPulse 9s ease-in-out infinite 3.2s;
+}
+
+/* Slash — green wash */
+.hero-slash{
+  position:absolute;bottom:-20%;left:-5%;
+  width:52%;height:140%;
+  background:linear-gradient(135deg,rgba(184,202,150,0.09) 0%,rgba(74,127,165,0.04) 55%);
+  transform:skewX(-12deg);
+}
+
+/* Decorative outlined number — green stroke */
+.hero-deco-num{
+  position:absolute;
+  right:48px;top:120px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(160px,20vw,280px);
+  font-weight:900;line-height:1;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--border2);
+  letter-spacing:-8px;
+  opacity:0;animation:fadeIn 1s ease forwards 1.8s;
+  user-select:none;
+}
+
+@keyframes ringPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.55;transform:scale(1.025);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* Eyebrow — accent green */
+.hero-eyebrow{
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.32em;color:var(--accent-dk);text-transform:uppercase;
+  margin-bottom:22px;
+  opacity:0;animation:fadeUp 0.8s ease forwards 0.3s;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';display:inline-block;width:36px;height:2px;background:var(--accent-dk);}
+
+.hero-heading{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(68px,10.5vw,152px);
+  font-weight:900;line-height:0.88;
+  letter-spacing:-2px;text-transform:uppercase;
+  margin-bottom:32px;max-width:860px;
+}
+.hero-heading .line1{display:block;color:var(--ink);opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;}
+/* Middle italic line — blue */
+.hero-heading .line2{display:block;color:var(--primary);font-style:italic;opacity:0;animation:fadeUp 0.8s ease forwards 0.72s;}
+.hero-heading .line3{display:block;color:var(--ink);opacity:0;animation:fadeUp 0.8s ease forwards 0.94s;}
+
+.hero-sub{
+  font-size:17px;font-weight:400;color:var(--gray);
+  max-width:460px;line-height:1.75;margin-bottom:44px;
+  opacity:0;animation:fadeUp 0.8s ease forwards 1.15s;
+}
+
+.hero-ctas{
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.8s ease forwards 1.35s;
+}
+/* Primary CTA — blue */
+.btn-hero-primary{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:17px 38px;border:none;border-radius:3px;
+  cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-hero-primary:hover{background:var(--primary-dk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,127,165,0.28);}
+.btn-hero-secondary{
+  background:transparent;color:var(--ink);
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:16px 38px;border:1.5px solid var(--border2);border-radius:3px;
+  cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-hero-secondary:hover{border-color:var(--primary);background:var(--primary);color:#fff;}
+
+/* Hero stats */
+.hero-stats{
+  position:absolute;right:52px;bottom:88px;
+  display:flex;flex-direction:column;gap:28px;
+  opacity:0;animation:fadeIn 1s ease forwards 1.6s;
+}
+.hero-stat-item{text-align:right;}
+.hero-stat-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:44px;font-weight:900;line-height:1;color:var(--ink);letter-spacing:-1px;
+}
+/* Stat accent digit — green */
+.hero-stat-num .accent{color:var(--accent-dk);}
+.hero-stat-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.22em;color:var(--gray);text-transform:uppercase;margin-top:3px;
+}
+.hero-stat-divider{width:36px;height:1px;background:var(--border2);margin-left:auto;margin-top:10px;}
+
+/* Scroll indicator — green line */
+.scroll-indicator{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;animation:fadeIn 1s ease forwards 2.1s;
+}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--accent-dk),transparent);animation:scrollAnim 2s ease-in-out infinite;}
+@keyframes scrollAnim{0%,100%{transform:scaleY(1);opacity:1;}50%{transform:scaleY(0.4);opacity:0.3;}}
+.scroll-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray2);text-transform:uppercase;writing-mode:vertical-rl;}
+
+/* ============================
+   TICKER — dark bar, green bullets
+   ============================ */
+.ticker-wrap{
+  background:var(--ink2);overflow:hidden;padding:14px 0;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.ticker-track{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;}
+.ticker-item{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.65);padding:0 36px;white-space:nowrap;
+  display:flex;align-items:center;gap:16px;
+}
+/* Green bullets in ticker */
+.ticker-item::after{content:'●';font-size:7px;opacity:0.7;color:var(--accent);}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ============================
+   SECTIONS COMMON
+   ============================ */
+section{position:relative;}
+/* Section label — green */
+.section-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:0.3em;color:var(--accent-dk);text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:12px;
+}
+.section-label::before{content:'';display:inline-block;width:28px;height:2px;background:var(--accent-dk);flex-shrink:0;}
+.section-heading{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(38px,5vw,64px);font-weight:900;
+  text-transform:uppercase;line-height:0.95;letter-spacing:-1px;color:var(--ink);
+}
+/* Italic accent in headings — blue */
+.section-heading em{color:var(--primary);font-style:italic;}
+
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ============================
+   SHOP / PRODUCTS
+   ============================ */
+.shop-section{padding:100px 52px;background:var(--surface);}
+.shop-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;flex-wrap:wrap;gap:20px;}
+.shop-sub{font-size:15px;color:var(--gray);max-width:360px;line-height:1.75;margin-top:14px;}
+.shop-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:8px 18px;border-radius:3px;border:1.5px solid var(--border2);
+  background:transparent;color:var(--gray);cursor:none;transition:all 0.2s;
+}
+/* Active filter — blue */
+.filter-btn.active,.filter-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:2px;}
+.product-card{
+  background:var(--bg3);padding:30px;
+  position:relative;overflow:hidden;cursor:none;
+  transition:all 0.3s;border:1px solid var(--border);
+}
+/* Card hover — blue border */
+.product-card:hover{box-shadow:0 12px 40px rgba(74,127,165,0.13);transform:translateY(-3px);border-color:var(--primary);}
+.product-card:hover .product-cta{opacity:1;transform:translateY(0);}
+.product-card:hover .product-tyre-icon{transform:rotate(12deg) scale(1.06);}
+/* Brand tag — green */
+.product-brand-tag{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.22em;color:var(--accent-dk);text-transform:uppercase;margin-bottom:10px;
+}
+.product-tyre-icon{font-size:64px;display:block;margin:14px 0;transition:transform 0.4s ease;line-height:1;}
+.product-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.02em;color:var(--ink);margin-bottom:5px;
+}
+.product-size{font-family:'DM Mono',monospace;font-size:11px;color:var(--gray2);margin-bottom:14px;}
+.product-meta{display:flex;justify-content:space-between;align-items:flex-end;}
+.product-price{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--ink);}
+.product-price span{font-size:13px;color:var(--gray2);font-weight:400;}
+/* In-stock — green, low-stock — blue (warning without red) */
+.product-stock{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--accent-dk);}
+.product-stock.low{color:var(--primary);}
+/* Product CTA slide-up — blue */
+.product-cta{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:15px 30px;background:var(--primary);
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;color:#fff;border:none;cursor:none;
+  opacity:0;transform:translateY(10px);transition:all 0.25s;
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* CART BAR — dark with green accent */
+.cart-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--ink2);
+  padding:16px 52px;display:flex;align-items:center;justify-content:space-between;
+  z-index:500;transform:translateY(100%);transition:transform 0.3s;
+  border-top:2px solid var(--accent);
+}
+.cart-bar.visible{transform:translateY(0);}
+.cart-info{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:0.06em;color:#fff;}
+/* Checkout — blue */
+.btn-checkout{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:11px 26px;border:none;border-radius:3px;cursor:none;transition:all 0.2s;
+}
+.btn-checkout:hover{background:var(--primary-dk);}
+
+/* ============================
+   TRUSTED BY
+   ============================ */
+.trust-section{
+  padding:80px 52px;background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.trust-header{text-align:center;margin-bottom:52px;}
+.trust-strip{display:flex;gap:0;animation:trustScroll 30s linear infinite;width:max-content;}
+.trust-strip:hover{animation-play-state:paused;}
+.trust-logo{
+  padding:20px 48px;border-right:1px solid var(--border);
+  white-space:nowrap;flex-shrink:0;transition:all 0.25s;
+}
+.trust-logo:hover{background:var(--bg3);}
+/* Muted green for company names */
+.trust-company-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.05em;color:var(--muted2);transition:color 0.3s;
+}
+.trust-logo:hover .trust-company-name{color:var(--ink);}
+.trust-company-sub{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:3px;transition:color 0.3s;
+}
+.trust-logo:hover .trust-company-sub{color:var(--gray);}
+@keyframes trustScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ============================
+   WHOLESALE
+   ============================ */
+.wholesale-section{
+  padding:120px 52px;background:var(--bg3);
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+@media(max-width:900px){.wholesale-section{grid-template-columns:1fr;gap:48px;}}
+.wholesale-features{margin-top:40px;display:flex;flex-direction:column;gap:24px;}
+.wholesale-feat{display:flex;gap:16px;align-items:flex-start;}
+.wholesale-feat-icon{
+  width:44px;height:44px;border:1.5px solid var(--border);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  flex-shrink:0;
+  /* Green-tinted icon bg */
+  background:var(--surface);
+}
+.wholesale-feat-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;color:var(--ink);
+}
+.wholesale-feat-desc{font-size:13px;color:var(--gray);line-height:1.65;}
+
+.wholesale-form-card{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:6px;
+  padding:40px;position:relative;
+}
+/* Form card top stripe — green */
+.wholesale-form-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent-dk);border-radius:6px 6px 0 0;
+}
+.form-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;color:var(--ink);
+}
+.form-sub{font-size:13px;color:var(--gray);margin-bottom:26px;line-height:1.65;}
+.form-group{margin-bottom:14px;}
+.form-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);
+  display:block;margin-bottom:7px;
+}
+.form-input{
+  width:100%;padding:12px 14px;
+  background:var(--bg);border:1.5px solid var(--border2);border-radius:3px;
+  color:var(--ink);font-family:'Barlow',sans-serif;font-size:14px;
+  outline:none;transition:border-color 0.2s;
+}
+/* Input focus — blue ring */
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(91,146,184,0.15);}
+.form-input::placeholder{color:var(--gray2);}
+select.form-input option{background:var(--bg3);color:var(--ink);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* Submit — blue */
+.btn-submit{
+  width:100%;background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:16px;border:none;border-radius:3px;cursor:none;
+  transition:all 0.2s;margin-top:8px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-submit:hover{background:var(--primary-dk);transform:translateY(-1px);box-shadow:0 8px 24px rgba(74,127,165,0.25);}
+
+/* ============================
+   WHY BIUP
+   ============================ */
+.why-section{padding:120px 52px;background:var(--surface);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;}
+@media(max-width:800px){.why-grid{grid-template-columns:1fr;}}
+.why-card{
+  background:var(--bg3);padding:40px 34px;border:1px solid var(--border);
+  position:relative;overflow:hidden;transition:all 0.3s;
+}
+/* Why card hover — green border + blue number */
+.why-card:hover{border-color:var(--accent-dk);box-shadow:0 4px 24px rgba(184,202,150,0.2);}
+.why-card:hover .why-num{-webkit-text-stroke-color:var(--primary);}
+.why-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:72px;font-weight:900;line-height:1;
+  color:transparent;-webkit-text-stroke:1.5px var(--border2);
+  margin-bottom:14px;transition:all 0.3s;letter-spacing:-3px;
+}
+.why-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;color:var(--ink);
+}
+.why-desc{font-size:13px;color:var(--gray);line-height:1.7;}
+
+/* ============================
+   TESTIMONIALS
+   ============================ */
+.testimonials-section{padding:120px 52px;background:var(--bg);overflow:hidden;}
+.testimonials-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;flex-wrap:wrap;gap:20px;}
+.testi-nav{display:flex;gap:10px;}
+.testi-btn{
+  width:46px;height:46px;border:1.5px solid var(--border2);background:transparent;
+  border-radius:3px;color:var(--ink);font-size:17px;cursor:none;
+  transition:all 0.2s;display:flex;align-items:center;justify-content:center;
+}
+/* Carousel nav hover — blue */
+.testi-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+.testi-track-wrap{overflow:hidden;}
+.testi-track{display:flex;gap:20px;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);}
+.testi-card{
+  flex:0 0 calc(50% - 10px);background:var(--bg3);border:1px solid var(--border);
+  padding:38px;border-radius:4px;position:relative;transition:all 0.3s;
+}
+.testi-card:hover{box-shadow:0 8px 32px rgba(74,127,165,0.1);}
+@media(max-width:800px){.testi-card{flex:0 0 100%;}}
+/* Big quote mark — green */
+.testi-quote-mark{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:72px;line-height:0.6;color:var(--accent-dk);font-weight:900;
+  margin-bottom:18px;display:block;
+}
+.testi-text{font-size:16px;line-height:1.75;color:var(--ink);margin-bottom:28px;font-weight:300;}
+.testi-author{display:flex;align-items:center;gap:14px;}
+/* Avatar — blue */
+.testi-avatar{
+  width:42px;height:42px;border-radius:50%;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;
+  color:#fff;flex-shrink:0;
+}
+.testi-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);
+}
+.testi-company{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;margin-top:3px;
+}
+
+/* ============================
+   CTA STRIP — dark bg, green + blue buttons
+   ============================ */
+.quick-strip{
+  background:var(--ink2);padding:64px 52px;
+  display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;
+}
+.quick-strip-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(30px,4vw,52px);font-weight:900;text-transform:uppercase;
+  line-height:1;letter-spacing:-0.5px;color:#fff;
+}
+.quick-strip-sub{font-size:15px;color:rgba(255,255,255,0.45);margin-top:8px;}
+.quick-strip-actions{display:flex;gap:12px;flex-wrap:wrap;}
+/* Primary strip button — blue */
+.btn-strip-primary{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:16px 30px;border:none;border-radius:3px;cursor:none;transition:all 0.2s;
+}
+.btn-strip-primary:hover{background:var(--primary-dk);}
+/* Secondary strip button — green-tinted outline */
+.btn-strip-secondary{
+  background:transparent;color:rgba(255,255,255,0.85);
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:15px 30px;border:1.5px solid rgba(184,202,150,0.35);border-radius:3px;
+  cursor:none;transition:all 0.2s;
+}
+.btn-strip-secondary:hover{border-color:var(--accent);background:rgba(184,202,150,0.1);color:#fff;}
+
+/* ============================
+   CONTACT / FOOTER
+   ============================ */
+.contact-section{
+  padding:100px 52px 60px;background:var(--bg2);
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:56px;
+  border-top:1px solid var(--border);
+}
+@media(max-width:900px){.contact-section{grid-template-columns:1fr;gap:40px;}}
+.contact-col-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;color:var(--ink);
+}
+.contact-link{
+  display:block;font-size:13px;color:var(--gray);text-decoration:none;
+  margin-bottom:10px;transition:color 0.2s;line-height:1.8;
+}
+.contact-link:hover{color:var(--ink);}
+.contact-info-row{display:flex;gap:10px;margin-bottom:12px;font-size:13px;color:var(--gray);}
+/* Contact icons — green */
+.contact-info-row span:first-child{color:var(--accent-dk);font-size:15px;flex-shrink:0;}
+.footer-bottom{
+  border-top:1px solid var(--border);padding:22px 52px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;background:var(--bg2);
+}
+.footer-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.3px;color:var(--ink);}
+/* Footer logo dot — green */
+.footer-logo span{color:var(--accent-dk);}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;}
+
+/* MODALS */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(5,10,6,0.75);
+  z-index:2000;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:6px;
+  width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,0.5);
+}
+/* Modal top stripe — blue */
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary);border-radius:6px 6px 0 0;}
+.modal-head{
+  padding:26px 30px 18px;border-bottom:1px solid var(--border2);
+  display:flex;align-items:flex-start;justify-content:space-between;
+}
+.modal-head-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);
+}
+.modal-close{background:none;border:none;color:var(--gray2);font-size:20px;cursor:none;padding:4px;transition:color 0.2s;}
+.modal-close:hover{color:var(--ink);}
+.modal-body{padding:26px 30px 30px;}
+
+/* TOAST — green left border */
+.toast-msg{
+  position:fixed;bottom:90px;right:36px;
+  background:var(--ink2);border-left:3px solid var(--accent);
+  color:#fff;padding:15px 22px;border-radius:3px;font-size:13px;font-weight:500;
+  z-index:5000;opacity:0;transform:translateX(16px);transition:all 0.25s;max-width:340px;
+}
+.toast-msg.show{opacity:1;transform:translateX(0);}
+
+/* WA FLOAT */
+.wa-float{
+  position:fixed;right:28px;bottom:80px;width:54px;height:54px;
+  border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  z-index:400;box-shadow:0 4px 20px rgba(37,211,102,0.35);cursor:none;
+  transition:all 0.2s;animation:waPulse 3s ease-in-out infinite;
+}
+.wa-float:hover{transform:scale(1.1);}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.35);}50%{box-shadow:0 4px 32px rgba(37,211,102,0.6);}}
+
+/* Stats strip — blue numbers */
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px;margin-top:40px;}
+.stats-box{background:var(--bg3);border:1px solid var(--border);padding:28px;text-align:center;}
+.stats-box-num{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:var(--primary);}
+.stats-box-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">BIUP<span>.</span></div>
+  <div class="nav-links">
+    <a href="#shop">Shop</a>
+    <a href="#wholesale">Wholesale</a>
+    <a href="#clients">Clients</a>
+    <a href="#about">Why BIUP</a>
+    <a href="#contact">Contact</a>
+    <a href="#wholesale" class="nav-cta">Bulk Enquiry</a>
+  </div>
+</nav>
+
+<!-- ============================
+     HERO
+     ============================ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-slash"></div>
+    <div class="hero-ring3"></div>
+    <div class="hero-ring4"></div>
+  </div>
+  <div class="hero-deco-num">16</div>
+
+  <div class="hero-eyebrow">Nigeria's Premier Tyre Distributor — Est. 2008</div>
+  <h1 class="hero-heading">
+    <span class="line1">Built For</span>
+    <span class="line2">The Road.</span>
+    <span class="line3">Built To Last.</span>
+  </h1>
+  <p class="hero-sub">From single-tyre retail to fleet-scale wholesale — BIUP delivers premium tyres to Nigeria's biggest industries, on time, every time.</p>
+  <div class="hero-ctas">
+    <a href="#shop" class="btn-hero-primary">Shop Now →</a>
+    <a href="#wholesale" class="btn-hero-secondary">Wholesale Enquiry</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">1,200<span style="color:var(--accent-dk);font-size:26px;">+</span></div>
+      <div class="hero-stat-label">SKUs in Stock</div>
+      <div class="hero-stat-divider"></div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">48<span style="color:var(--accent-dk);font-size:26px;">hr</span></div>
+      <div class="hero-stat-label">Nationwide Delivery</div>
+      <div class="hero-stat-divider"></div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">200<span style="color:var(--accent-dk);font-size:26px;">+</span></div>
+      <div class="hero-stat-label">Corporate Clients</div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <div class="scroll-label">Scroll</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <div class="ticker-item">Bridgestone 265/70 R17</div>
+    <div class="ticker-item">Michelin 275/80 R22.5</div>
+    <div class="ticker-item">Goodyear 315/80 R22.5</div>
+    <div class="ticker-item">Hankook 225/70 R15</div>
+    <div class="ticker-item">Continental 245/75 R16</div>
+    <div class="ticker-item">Dunlop 195/65 R15</div>
+    <div class="ticker-item">Pirelli 235/55 R18</div>
+    <div class="ticker-item">Firestone 215/75 R17.5</div>
+    <div class="ticker-item">Yokohama 245/70 R16</div>
+    <div class="ticker-item">Toyo 235/65 R17</div>
+    <div class="ticker-item">BF Goodrich 255/70 R16</div>
+    <div class="ticker-item">Bridgestone 265/70 R17</div>
+    <div class="ticker-item">Michelin 275/80 R22.5</div>
+    <div class="ticker-item">Goodyear 315/80 R22.5</div>
+    <div class="ticker-item">Hankook 225/70 R15</div>
+    <div class="ticker-item">Continental 245/75 R16</div>
+    <div class="ticker-item">Dunlop 195/65 R15</div>
+    <div class="ticker-item">Pirelli 235/55 R18</div>
+    <div class="ticker-item">Firestone 215/75 R17.5</div>
+    <div class="ticker-item">Yokohama 245/70 R16</div>
+    <div class="ticker-item">Toyo 235/65 R17</div>
+    <div class="ticker-item">BF Goodrich 255/70 R16</div>
+  </div>
+</div>
+
+<!-- ============================
+     SHOP
+     ============================ -->
+<section class="shop-section" id="shop">
+  <div class="shop-header reveal">
+    <div>
+      <div class="section-label">Quick Order</div>
+      <h2 class="section-heading">Shop <em>Our</em><br>Catalogue</h2>
+      <p class="shop-sub">Retail-ready. Order online, pick up or get delivered. All major brands in stock.</p>
+    </div>
+    <div>
+      <div class="shop-filters">
+        <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+        <button class="filter-btn" onclick="filterProducts('truck',this)">Truck</button>
+        <button class="filter-btn" onclick="filterProducts('suv',this)">SUV / 4×4</button>
+        <button class="filter-btn" onclick="filterProducts('passenger',this)">Passenger</button>
+        <button class="filter-btn" onclick="filterProducts('industrial',this)">Industrial</button>
+      </div>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+  <div style="text-align:center;margin-top:44px;">
+    <button class="btn-hero-secondary" onclick="showToast('Full catalogue: 200+ SKUs available. Contact us for the complete list.')">View Full Catalogue →</button>
+  </div>
+</section>
+
+<!-- ============================
+     TRUSTED BY
+     ============================ -->
+<section class="trust-section" id="clients">
+  <div class="trust-header reveal">
+    <div class="section-label" style="justify-content:center;">Trusted By Industry Leaders</div>
+    <h2 class="section-heading" style="text-align:center;">Nigeria's <em>Biggest</em><br>Names Run On BIUP</h2>
+  </div>
+  <div style="overflow:hidden;">
+    <div class="trust-strip">
+      <div class="trust-logo"><div class="trust-company-name">Dangote</div><div class="trust-company-sub">Cement · Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Lafarge</div><div class="trust-company-sub">Africa Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">BUA</div><div class="trust-company-sub">Cement Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Julius Berger</div><div class="trust-company-sub">Nigeria Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">NNPC</div><div class="trust-company-sub">Limited</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Oando</div><div class="trust-company-sub">Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Coscharis</div><div class="trust-company-sub">Motors Ltd</div></div>
+      <div class="trust-logo"><div class="trust-company-name">MTN</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Flour Mills</div><div class="trust-company-sub">Of Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Zenith Bank</div><div class="trust-company-sub">Fleet Div.</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Honeywell</div><div class="trust-company-sub">Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Guinness</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Dangote</div><div class="trust-company-sub">Cement · Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Lafarge</div><div class="trust-company-sub">Africa Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">BUA</div><div class="trust-company-sub">Cement Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Julius Berger</div><div class="trust-company-sub">Nigeria Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">NNPC</div><div class="trust-company-sub">Limited</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Oando</div><div class="trust-company-sub">Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Coscharis</div><div class="trust-company-sub">Motors Ltd</div></div>
+      <div class="trust-logo"><div class="trust-company-name">MTN</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Flour Mills</div><div class="trust-company-sub">Of Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Zenith Bank</div><div class="trust-company-sub">Fleet Div.</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Honeywell</div><div class="trust-company-sub">Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Guinness</div><div class="trust-company-sub">Nigeria</div></div>
+    </div>
+  </div>
+  <div class="stats-strip reveal">
+    <div class="stats-box"><div class="stats-box-num">200+</div><div class="stats-box-label">Corporate Accounts</div></div>
+    <div class="stats-box"><div class="stats-box-num">₦2B+</div><div class="stats-box-label">Annual Volume</div></div>
+    <div class="stats-box"><div class="stats-box-num">36</div><div class="stats-box-label">States Served</div></div>
+    <div class="stats-box"><div class="stats-box-num">99%</div><div class="stats-box-label">On-time Delivery</div></div>
+  </div>
+</section>
+
+<!-- ============================
+     WHOLESALE
+     ============================ -->
+<section class="wholesale-section" id="wholesale">
+  <div class="reveal">
+    <div class="section-label">For Wholesalers & Fleet Managers</div>
+    <h2 class="section-heading">Need Bulk?<br><em>Let's Talk</em><br>Volume.</h2>
+    <p style="font-size:15px;color:var(--gray);line-height:1.8;margin-top:18px;max-width:400px;">We supply corporate fleets, logistics companies, construction firms, and government agencies. Dedicated account managers, credit facilities, and serial-level tracking from our warehouse to your yard.</p>
+    <div class="wholesale-features">
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">💳</div>
+        <div><div class="wholesale-feat-title">Credit Facilities Available</div><div class="wholesale-feat-desc">Up to 90-day credit terms for approved clients. Dedicated finance team manages your account.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">📦</div>
+        <div><div class="wholesale-feat-title">Serial-Level Tracking</div><div class="wholesale-feat-desc">Every tyre tracked from our main yard to your delivery point. Full chain of custody.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">🔧</div>
+        <div><div class="wholesale-feat-title">Engineer Site Visits</div><div class="wholesale-feat-desc">Our engineers visit your fleet for tyre inspections, condition reporting, and replacement planning.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">🚛</div>
+        <div><div class="wholesale-feat-title">Nationwide Delivery</div><div class="wholesale-feat-desc">Multi-drop delivery across all 36 states with electronic proof of delivery.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wholesale-form-card reveal">
+    <div class="form-title">Book a Wholesale Enquiry</div>
+    <p class="form-sub">A senior account manager will respond within 2 business hours.</p>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Company Name *</label><input class="form-input" placeholder="e.g. Dangote Cement" id="ws-company"></div>
+      <div class="form-group"><label class="form-label">Industry *</label>
+        <select class="form-input" id="ws-industry">
+          <option value="">Select industry</option>
+          <option>Construction</option><option>Logistics / Transport</option>
+          <option>Oil & Gas</option><option>Manufacturing</option>
+          <option>Government / Public</option><option>Banking / Corporate Fleet</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Contact Name *</label><input class="form-input" placeholder="Full name" id="ws-name"></div>
+      <div class="form-group"><label class="form-label">Phone Number *</label><input class="form-input" placeholder="+234 000 000 0000" id="ws-phone"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" placeholder="procurement@company.com" type="email" id="ws-email"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Estimated Quantity</label>
+        <select class="form-input" id="ws-qty"><option>10 – 50 units</option><option>50 – 200 units</option><option>200 – 500 units</option><option>500+ units</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Payment Preference</label>
+        <select class="form-input" id="ws-payment"><option>Cash / Upfront</option><option>Credit Terms (30 days)</option><option>Credit Terms (60 days)</option><option>Credit Terms (90 days)</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Additional Notes</label><textarea class="form-input" rows="3" placeholder="Fleet size, specific tyre sizes, delivery location..." id="ws-notes" style="resize:vertical;"></textarea></div>
+    <button class="btn-submit" onclick="submitWholesale()">Submit Enquiry →</button>
+    <div style="text-align:center;margin-top:14px;">
+      <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;">Or reach us on </span>
+      <a href="#" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--primary);text-decoration:none;" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">WhatsApp →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     WHY BIUP
+     ============================ -->
+<section class="why-section" id="about">
+  <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto;">
+    <div class="section-label" style="justify-content:center;">Why Choose Us</div>
+    <h2 class="section-heading">The BIUP<br><em>Standard</em></h2>
+    <p style="font-size:15px;color:var(--gray);line-height:1.8;margin-top:18px;">We don't just sell tyres. We run an end-to-end supply chain — from import and warehousing to serial-tracked delivery and post-sale service.</p>
+  </div>
+  <div class="why-grid reveal">
+    <div class="why-card"><div class="why-num">01</div><div class="why-title">Real-Time Stock Visibility</div><div class="why-desc">Our unified inventory system tracks every serial number across our Main Yard and all warehouses. You always know exactly what's available before you order.</div></div>
+    <div class="why-card"><div class="why-num">02</div><div class="why-title">Electronic Proof of Delivery</div><div class="why-desc">Three-party sign-off on every dispatch — inventory officer, rider, and customer. Digital confirmation the moment your tyres are received.</div></div>
+    <div class="why-card"><div class="why-num">03</div><div class="why-title">Credit Facilities</div><div class="why-desc">Approved corporate clients get up to 90-day terms. Managed by a dedicated finance team with full account transparency.</div></div>
+    <div class="why-card"><div class="why-num">04</div><div class="why-title">Premium Global Brands</div><div class="why-desc">Official distributor for Bridgestone, Michelin, Goodyear, Hankook, Continental, Dunlop, Pirelli, and more. Every tyre authentic and certified.</div></div>
+    <div class="why-card"><div class="why-num">05</div><div class="why-title">Tyre Lifecycle Management</div><div class="why-desc">Our engineers conduct on-site fleet inspections and generate condition reports per tyre, per vehicle. We alert you before your fleet becomes a liability.</div></div>
+    <div class="why-card"><div class="why-num">06</div><div class="why-title">Hassle-Free Returns</div><div class="why-desc">Every return is tracked, inspected, and resolved with credit notes or replacements issued swiftly through our formal returns process.</div></div>
+  </div>
+</section>
+
+<!-- ============================
+     TESTIMONIALS
+     ============================ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="testimonials-header reveal">
+    <div>
+      <div class="section-label">What Our Clients Say</div>
+      <h2 class="section-heading">Built On<br><em>Trust.</em></h2>
+    </div>
+    <div class="testi-nav">
+      <button class="testi-btn" onclick="slideTesti(-1)">←</button>
+      <button class="testi-btn" onclick="slideTesti(1)">→</button>
+    </div>
+  </div>
+  <div class="testi-track-wrap">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">BIUP has been supplying our entire cement fleet for over 4 years. The serial tracking is what sets them apart — we know exactly which tyre is on which vehicle at all times. Their engineering team saved us from two major blowout incidents through early inspection alerts.</p>
+        <div class="testi-author"><div class="testi-avatar">DC</div><div><div class="testi-name">Chukwuemeka Eze</div><div class="testi-company">Fleet Manager · Dangote Cement Plc</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">The credit facility BIUP extended to us transformed how we manage procurement. The invoice terms are clear, the account team is responsive, and we've never had a delivery dispute that wasn't resolved within 24 hours.</p>
+        <div class="testi-author"><div class="testi-avatar">LA</div><div><div class="testi-name">Amaka Okonkwo</div><div class="testi-company">Procurement Director · Lafarge Africa Plc</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">We operate 400+ vehicles across Nigeria. BIUP is the only supplier that consistently delivers to multiple locations simultaneously with full documentation. The digital delivery confirmation is critical for our compliance audits.</p>
+        <div class="testi-author"><div class="testi-avatar">JB</div><div><div class="testi-name">Biodun Adeleke</div><div class="testi-company">Head of Logistics · Julius Berger Nigeria</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">As a mid-size logistics company, we needed a supplier who could grow with us. BIUP started us on cash terms and moved us onto credit after 6 months. The pricing is competitive and stock availability is second to none in Lagos.</p>
+        <div class="testi-author"><div class="testi-avatar">AT</div><div><div class="testi-name">Ngozi Adebayo</div><div class="testi-company">CEO · ABC Transport Co.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:8px;margin-top:28px;" id="testiDots">
+    <div style="width:28px;height:3px;background:var(--primary);border-radius:2px;transition:all 0.3s;"></div>
+    <div style="width:10px;height:3px;background:var(--border2);border-radius:2px;transition:all 0.3s;cursor:pointer;" onclick="goTesti(1)"></div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="quick-strip">
+  <div>
+    <div class="quick-strip-title">Ready To Order?<br>Let's Move.</div>
+    <div class="quick-strip-sub">WhatsApp orders welcome · Retail & wholesale · Fast delivery</div>
+  </div>
+  <div class="quick-strip-actions">
+    <button class="btn-strip-primary" onclick="openModal('modal-quick-order')">Quick Order Now</button>
+    <button class="btn-strip-secondary" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">📱 WhatsApp Us</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<section class="contact-section" id="contact">
+  <div>
+    <div class="footer-logo" style="margin-bottom:18px;font-size:28px;">BIUP<span>.</span></div>
+    <p style="font-size:13px;color:var(--gray);line-height:1.8;max-width:260px;">Nigeria's premier tyre distributor. Premium brands, serial-level tracking, credit facilities for corporate clients.</p>
+    <div style="display:flex;gap:10px;margin-top:22px;">
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">📘</div>
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">📷</div>
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">💬</div>
+    </div>
+  </div>
+  <div>
+    <div class="contact-col-title">Quick Links</div>
+    <a href="#shop" class="contact-link">Shop Tyres</a>
+    <a href="#wholesale" class="contact-link">Wholesale Enquiry</a>
+    <a href="#clients" class="contact-link">Our Clients</a>
+    <a href="#about" class="contact-link">Why BIUP</a>
+    <a href="#" class="contact-link" onclick="showToast('CRM Portal — staff login only')" style="color:var(--primary);">CRM Portal Login →</a>
+    <a href="#" class="contact-link">Track My Order</a>
+  </div>
+  <div>
+    <div class="contact-col-title">Contact Us</div>
+    <div class="contact-info-row"><span>📍</span><span>14 Oba Akran Avenue, Ikeja Industrial Estate, Lagos</span></div>
+    <div class="contact-info-row"><span>📞</span><span>+234 800 BIUP TYR</span></div>
+    <div class="contact-info-row"><span>✉️</span><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a2d1c3cec7d1e2c0cbd7d28cccc5">[email&#160;protected]</a></span></div>
+    <div class="contact-info-row"><span>💬</span><span>WhatsApp: +234 800 000 0001</span></div>
+    <div class="contact-info-row"><span>⏰</span><span>Mon – Sat: 7:30 AM – 6:00 PM</span></div>
+    <div style="margin-top:18px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray2);text-transform:uppercase;margin-bottom:10px;">Locations</div>
+      <div class="contact-link">Main Yard — Ikeja, Lagos</div>
+      <div class="contact-link">WH Lagos Island</div>
+      <div class="contact-link">WH Abuja FCT</div>
+    </div>
+  </div>
+</section>
+<div class="footer-bottom">
+  <div class="footer-logo">BIUP<span>.</span></div>
+  <div class="footer-copy">© 2025 BIUP Nigeria Ltd · All Rights Reserved · Certified Distributor</div>
+</div>
+
+<!-- WA FLOAT -->
+<div class="wa-float" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">💬</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-quick-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title">Quick Order</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">Retail orders — fast processing & delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-quick-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" placeholder="Full name" id="qo-name"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" placeholder="+234 800 000 0000" id="qo-phone"></div>
+        <div class="form-group"><label class="form-label">Delivery State</label><select class="form-input"><option>Lagos</option><option>Abuja</option><option>Port Harcourt</option><option>Kano</option><option>Ibadan</option><option>Other</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Tyre Size / Product *</label><input class="form-input" placeholder="e.g. Bridgestone 265/70 R17" id="qo-product"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Quantity *</label><input class="form-input" type="number" placeholder="4" min="1" id="qo-qty"></div>
+        <div class="form-group"><label class="form-label">Fulfilment</label><select class="form-input"><option>Delivery</option><option>Pickup — Main Yard (Ikeja)</option></select></div>
+      </div>
+      <button class="btn-submit" onclick="submitQuickOrder()">Place Order →</button>
+      <div style="margin-top:14px;padding:14px;background:var(--bg);border-radius:3px;border:1px solid var(--border);">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">How It Works</div>
+        <div style="font-size:12px;color:var(--gray);line-height:1.9;">1 · Submit order &nbsp; 2 · Team confirms stock & price via call/WhatsApp &nbsp; 3 · Pay & receive delivery within 24–48hrs</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-product-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title" id="po-modal-title">Order Tyres</div><div style="font-size:12px;color:var(--gray);margin-top:3px;" id="po-modal-sub">Select quantity and delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-product-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:4px;padding:18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;text-transform:uppercase;color:var(--ink);" id="po-product-name">Bridgestone 265/70 R17</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gray2);margin-top:4px;" id="po-product-size">In Stock</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:var(--primary);" id="po-product-price">₦60,000</div>
+      </div>
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" placeholder="Full name" id="po-name"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" placeholder="+234 800 000 0000" id="po-phone"></div>
+        <div class="form-group"><label class="form-label">Quantity *</label><input class="form-input" type="number" placeholder="4" min="1" value="4" id="po-qty" oninput="updateTotal()"></div>
+      </div>
+      <div style="background:var(--bg);border-radius:3px;border:1px solid var(--border2);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;">Estimated Total</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--primary);" id="po-total">₦240,000</span>
+      </div>
+      <div class="form-group"><label class="form-label">Fulfilment</label><select class="form-input"><option>Delivery — Lagos</option><option>Delivery — Other State</option><option>Pickup — Main Yard (Ikeja)</option></select></div>
+      <button class="btn-submit" onclick="submitProductOrder()">Add to Order →</button>
+      <p style="font-size:11px;color:var(--gray2);text-align:center;margin-top:10px;">Final price confirmed by our team. Indicative only.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+<div class="cart-bar" id="cartBar">
+  <div class="cart-info" id="cartInfo">0 items</div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;" id="cartTotal">₦0</span>
+    <button class="btn-checkout" onclick="showToast('Our team will contact you to confirm your cart and process payment.')">Checkout →</button>
+    <button style="background:rgba(255,255,255,0.15);border:none;color:rgba(255,255,255,0.8);padding:8px 14px;border-radius:3px;cursor:none;font-size:12px;" onclick="clearCart()">Clear</button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
+document.querySelectorAll('a,button,.product-card,.trust-logo,.filter-btn,.testi-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});
+});
+
+// NAV
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);});
+
+// PRODUCTS
+const products=[
+  {brand:'Bridgestone',name:'Dueler A/T',size:'265/70 R17',price:60000,type:'suv',emoji:'🔴',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Michelin',name:'X Multi Z',size:'275/80 R22.5',price:95000,type:'truck',emoji:'🔵',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Goodyear',name:'WT Cargo',size:'315/80 R22.5',price:110000,type:'truck',emoji:'🟡',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Hankook',name:'Kinergy EX',size:'225/70 R15',price:38000,type:'passenger',emoji:'🟢',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Continental',name:'AllSeasonContact',size:'245/75 R16',price:52000,type:'suv',emoji:'⚫',stock:'Low Stock',stockLevel:'low'},
+  {brand:'Dunlop',name:'SP Touring',size:'195/65 R15',price:28000,type:'passenger',emoji:'🔵',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Pirelli',name:'Scorpion ATR',size:'235/55 R18',price:72000,type:'suv',emoji:'🔴',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Firestone',name:'FS818',size:'215/75 R17.5',price:68000,type:'industrial',emoji:'🟤',stock:'In Stock',stockLevel:'ok'},
+];
+
+function renderProducts(filter='all'){
+  const grid=document.getElementById('productsGrid');
+  const filtered=filter==='all'?products:products.filter(p=>p.type===filter);
+  grid.innerHTML=filtered.map(p=>`
+    <div class="product-card" data-type="${p.type}">
+      <div class="product-brand-tag">${p.brand}</div>
+      <div class="product-tyre-icon">${p.emoji}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-size">${p.size} · ${p.type.toUpperCase()}</div>
+      <div class="product-meta">
+        <div class="product-price">₦${p.price.toLocaleString()}<span>/unit</span></div>
+        <div class="product-stock ${p.stockLevel==='low'?'low':''}">● ${p.stock}</div>
+      </div>
+      <button class="product-cta" onclick="openProductOrder('${p.brand} ${p.name}','${p.size}',${p.price})">Order Now <span>→</span></button>
+    </div>
+  `).join('');
+  document.querySelectorAll('.product-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});
+  });
+}
+renderProducts();
+
+function filterProducts(type,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderProducts(type);
+}
+
+// CART
+let cartItems=[],cartTotal=0;
+function openProductOrder(name,size,price){
+  document.getElementById('po-modal-title').textContent='Order '+name;
+  document.getElementById('po-product-name').textContent=name;
+  document.getElementById('po-product-size').textContent=size;
+  document.getElementById('po-product-price').textContent='₦'+price.toLocaleString();
+  document.getElementById('po-qty').value=4;
+  document.getElementById('po-qty').dataset.price=price;
+  updateTotal();openModal('modal-product-order');
+}
+function updateTotal(){
+  const qty=parseInt(document.getElementById('po-qty').value)||1;
+  const price=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  document.getElementById('po-total').textContent='₦'+(qty*price).toLocaleString();
+}
+function submitProductOrder(){
+  const name=document.getElementById('po-name').value;
+  const phone=document.getElementById('po-phone').value;
+  if(!name||!phone){showToast('Please fill in your name and phone number.');return;}
+  const product=document.getElementById('po-product-name').textContent;
+  const qty=parseInt(document.getElementById('po-qty').value)||1;
+  const price=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  cartItems.push({product,qty,price});cartTotal+=qty*price;
+  closeModal('modal-product-order');updateCartBar();
+  showToast(`✅ ${product} × ${qty} added to your order!`);
+}
+function updateCartBar(){
+  const bar=document.getElementById('cartBar');
+  document.getElementById('cartInfo').textContent=cartItems.length+' item'+(cartItems.length!==1?'s':'')+' in cart';
+  document.getElementById('cartTotal').textContent='₦'+cartTotal.toLocaleString();
+  bar.classList.toggle('visible',cartItems.length>0);
+}
+function clearCart(){cartItems=[];cartTotal=0;updateCartBar();showToast('Cart cleared.');}
+
+// FORMS
+function submitQuickOrder(){
+  const name=document.getElementById('qo-name').value;
+  const phone=document.getElementById('qo-phone').value;
+  const product=document.getElementById('qo-product').value;
+  if(!name||!phone||!product){showToast('Please fill in all required fields.');return;}
+  closeModal('modal-quick-order');
+  showToast(`✅ Order received! Our team will call ${phone} within 30 minutes to confirm.`);
+}
+function submitWholesale(){
+  const company=document.getElementById('ws-company').value;
+  const name=document.getElementById('ws-name').value;
+  const phone=document.getElementById('ws-phone').value;
+  if(!company||!name||!phone){showToast('Please fill in all required fields.');return;}
+  showToast(`✅ Enquiry received for ${company}. A senior account manager will contact you within 2 business hours.`);
+  ['ws-company','ws-name','ws-phone','ws-email','ws-notes'].forEach(id=>document.getElementById(id).value='');
+}
+
+// TESTIMONIALS
+let testiIndex=0;
+function slideTesti(dir){
+  const cards=document.querySelectorAll('.testi-card');
+  const perView=window.innerWidth>800?2:1;
+  const max=Math.ceil(cards.length/perView)-1;
+  testiIndex=Math.max(0,Math.min(testiIndex+dir,max));
+  const w=document.querySelector('.testi-card').offsetWidth+20;
+  document.getElementById('testiTrack').style.transform=`translateX(-${testiIndex*(perView===2?w*2+20:w)}px)`;
+  updateDots();
+}
+function goTesti(i){testiIndex=i;slideTesti(0);}
+function updateDots(){
+  document.querySelectorAll('#testiDots>div').forEach((d,i)=>{d.style.width=i===testiIndex?'28px':'10px';d.style.background=i===testiIndex?'var(--primary)':'var(--border2)';});
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+
+// TOAST
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),4200);
+}
+
+// REVEAL
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
