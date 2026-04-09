@@ -3,1699 +3,1335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIUP Nigeria CRM</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>BIUP — Nigeria's Premier Tyre Distributor</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --sidebar:#ffffff;--sidebar-hover:#f9fafb;--sidebar-active:#f3f4f6;
-  --sidebar-text:#6b7280;--sidebar-active-text:#111827;
-  --brand-accent:#2563eb;
-  --primary:#4a7fa5;--accent:#b8ca96;--bg:#f4f5f7;
-  --card:#ffffff;--red:#dc2626;--text:#111827;--muted:#6b7280;
-  --border:#e5e7eb;--sidebar-w:228px;--topbar-h:56px;
+/* ─── COLOUR PALETTE: Green #b8ca96 + Blue #4a7fa5 ─── */
+:root {
+  /* Backgrounds — cooler, fresher greens replacing warm sands */
+  --bg:      #f3f7f0;
+  --bg2:     #e8f0e3;
+  --bg3:     #ffffff;
+  --surface: #eef4ea;
+
+  /* Borders — green-tinted neutrals */
+  --border:  #cddfc6;
+  --border2: #b8ca96;
+
+  /* PRIMARY: Blue for CTAs, actions, interactive */
+  --primary:     #4a7fa5;
+  --primary-dk:  #3a6f94;
+  --primary-dim: rgba(74,127,165,0.10);
+
+  /* ACCENT: Sage green for highlights, labels, decorative */
+  --accent:      #b8ca96;
+  --accent-dk:   #9db87c;
+  --accent-dim:  rgba(184,202,150,0.18);
+
+  /* Ink / text */
+  --ink:     #1a2410;
+  --ink2:    #2c3620;
+  --gray:    #5a6b50;
+  --gray2:   #8a9e82;
+  --muted:   #b8ca96;
+  --muted2:  #d4e2be;
+
+  /* Legacy alias so var(--red) still works everywhere */
+  --red:  #4a7fa5;
+  --red2: #3a6f94;
+  --red-dim: rgba(74,127,165,0.10);
+  --sand:    #b8ca96;
+  --sand2:   #d4e2be;
 }
-body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-h1,h2,h3,h4,h5,.heading{font-family:'Barlow Condensed',sans-serif}
-.mono{font-family:'DM Mono',monospace}
 
-/* ── LOGIN ── */
-#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
-.login-box{background:#fff;border-radius:12px;padding:40px;width:400px;max-width:95vw;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.login-logo{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--text);margin-bottom:4px}
-.login-logo span{color:var(--brand-accent)}
-.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
-.login-box label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;margin-top:14px;text-transform:uppercase;letter-spacing:.5px}
-.login-box input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:7px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:.2s;color:var(--text)}
-.login-box input:focus{border-color:var(--brand-accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
-.btn-login{width:100%;margin-top:22px;padding:11px;background:#111827;color:#fff;border:none;border-radius:7px;font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:.2px;transition:.15s}
-.btn-login:hover{background:#1f2937}
-.login-error{color:var(--red);font-size:13px;margin-top:10px;display:none}
-.login-hints{margin-top:20px;background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:12px}
-.login-hints p{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-.hint-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.hint-row:last-child{border-bottom:none}
-.hint-role{font-size:10px;font-family:'DM Mono',monospace;background:#f3f4f6;color:#374151;padding:2px 7px;border-radius:4px;white-space:nowrap;font-weight:500}
-.hint-creds{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
-
-/* ── APP SHELL ── */
-#app{display:none;height:100vh;flex-direction:column}
-#app.active{display:flex}
-
-/* TOPBAR */
-.topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:stretch;flex-shrink:0;z-index:100}
-.topbar-logo{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);display:flex;align-items:center;padding:0 20px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--text);letter-spacing:.3px}
-.topbar-logo span{color:var(--brand-accent)}
-.topbar-controls{flex:1;display:flex;align-items:center;padding:0 20px;gap:12px}
-.topbar-spacer{flex:1}
-.topbar-user{display:flex;align-items:center;gap:10px}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--brand-accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0}
-.user-name{color:var(--text);font-size:14px;font-weight:500}
-.user-role-badge{font-size:11px;font-family:'DM Mono',monospace;background:#f3f4f6;color:var(--muted);padding:2px 8px;border-radius:10px}
-.role-switcher{background:#f9fafb;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px;cursor:pointer;outline:none}
-.role-switcher option{background:#fff}
-
-/* LAYOUT */
-.app-body{display:flex;flex:1;overflow:hidden}
-.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;padding-top:4px}
-.sidebar-section{padding:4px 0}
-.sidebar-label{font-size:10px;font-weight:600;color:#d1d5db;text-transform:uppercase;letter-spacing:.8px;padding:10px 16px 4px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:7px 10px;margin:1px 8px;border-radius:6px;cursor:pointer;color:var(--sidebar-text);font-size:13.5px;font-weight:500;border-left:none;transition:.12s;user-select:none}
-.nav-item:hover{background:var(--sidebar-hover);color:#111827}
-.nav-item.active{background:var(--sidebar-active);color:var(--sidebar-active-text);font-weight:600}
-.nav-item .nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;opacity:.8}
-.nav-badge{margin-left:auto;background:#fee2e2;color:#dc2626;font-size:10px;font-family:'DM Mono',monospace;padding:1px 6px;border-radius:10px;font-weight:600}
-
-/* MAIN */
-.main{flex:1;overflow-y:auto;padding:24px}
-.page{display:none}
-.page.active{display:block}
-
-/* CARDS */
-.card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:20px;margin-bottom:14px}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-title{font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;color:var(--text)}
-
-/* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:20px}
-.kpi-card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:18px 20px}
-.kpi-label{font-size:11px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;color:var(--text);line-height:1}
-.kpi-sub{font-size:12px;color:var(--muted);margin-top:5px}
-.kpi-up{color:#16a34a}.kpi-dn{color:var(--red)}
-
-/* TABLES */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
-td{padding:11px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafafa}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;white-space:nowrap}
-.badge-green{background:#dcf5e6;color:#1a6b3c}
-.badge-blue{background:#dbeeff;color:#1a4d6b}
-.badge-orange{background:#fff0d6;color:#8b5e00}
-.badge-red{background:#ffe0de;color:#8b0000}
-.badge-gray{background:#f0f0f0;color:#555}
-.badge-purple{background:#f0e6ff;color:#5a1a8b}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:.12s;letter-spacing:.1px}
-.btn-primary{background:#111827;color:#fff}.btn-primary:hover{background:#1f2937}
-.btn-accent{background:var(--accent);color:#1f2937}.btn-accent:hover{background:#a8ba86}
-.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#b91c1c}
-.btn-outline{background:#fff;color:#374151;border:1px solid var(--border)}.btn-outline:hover{border-color:#9ca3af;color:#111827}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:#9ca3af;color:#374151;background:#f9fafb}
-.btn-sm{padding:5px 10px;font-size:12.5px}
-
-/* FORMS */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-group{display:flex;flex-direction:column;gap:4px}
-.form-group label{font-size:11px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px}
-.form-group input,.form-group select,.form-group textarea{padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-family:'Barlow',sans-serif;font-size:13.5px;outline:none;transition:.15s;background:#fff;color:var(--text)}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--brand-accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
-
-/* PROGRESS BAR */
-.progress{background:#f3f4f6;border-radius:4px;height:6px;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:var(--brand-accent);transition:.3s}
-.progress-fill.warn{background:#f59e0b}
-.progress-fill.danger{background:var(--red)}
-
-/* KANBAN */
-.kanban{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px}
-.kanban-col{background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:12px}
-.kanban-col-title{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-.kanban-count{background:#fff;border:1px solid var(--border);color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;padding:1px 6px;border-radius:10px}
-.kanban-card{background:#fff;border:1px solid var(--border);border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer;transition:.12s}
-.kanban-card:hover{border-color:#d1d5db;box-shadow:0 2px 6px rgba(0,0,0,.05)}
-.kanban-card-name{font-size:13px;font-weight:600;margin-bottom:3px;color:var(--text)}
-.kanban-card-meta{font-size:11px;color:#9ca3af;font-family:'DM Mono',monospace}
-
-/* TOAST */
-#toast-container{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px}
-.toast{background:#fff;color:var(--text);padding:12px 16px;border-radius:8px;font-size:13.5px;display:flex;align-items:center;gap:10px;min-width:260px;box-shadow:0 4px 24px rgba(0,0,0,.1);animation:slideIn .25s ease;border:1px solid var(--border);border-left:3px solid var(--border)}
-.toast.error{border-left-color:var(--red)}
-.toast.success{border-left-color:#16a34a}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-
-/* MODAL */
-#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9990;display:none;align-items:center;justify-content:center;padding:20px}
-#modal-overlay.active{display:flex}
-.modal{background:#fff;border-radius:12px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
-.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700}
-.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:4px}
-.modal-close:hover{color:var(--red)}
-.modal-body{padding:24px}
-.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:#fafafa;border-radius:0 0 12px 12px}
-
-/* TABS */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab{padding:9px 16px;font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.12s}
-.tab:hover{color:var(--text)}
-.tab.active{color:var(--text);border-bottom-color:#111827;font-weight:600}
-
-/* STEP TRACKER */
-.step-track{display:flex;gap:0;margin:16px 0}
-.step{flex:1;text-align:center;position:relative}
-.step::before{content:'';position:absolute;top:13px;left:-50%;width:100%;height:1.5px;background:#e5e7eb;z-index:0}
-.step:first-child::before{display:none}
-.step-dot{width:26px;height:26px;border-radius:50%;border:1.5px solid #e5e7eb;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;position:relative;z-index:1;font-size:11px;font-weight:700;color:#9ca3af;transition:.25s}
-.step.done .step-dot{background:#16a34a;border-color:#16a34a;color:#fff}
-.step.active .step-dot{background:var(--brand-accent);border-color:var(--brand-accent);color:#fff}
-.step-label{font-size:11px;color:#9ca3af;font-weight:500}
-.step.done .step-label,.step.active .step-label{color:var(--text);font-weight:600}
-
-/* UTILISATION BAR */
-.util-bar{margin-bottom:14px}
-.util-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
-.util-name{font-weight:600}
-.util-pct{font-family:'DM Mono',monospace;color:var(--muted)}
-
-/* RIDER FULLSCREEN */
-#rider-view{display:none;position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;padding:20px}
-#rider-view.active{display:block}
-.rider-header{background:#111827;color:#fff;padding:14px 20px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
-.rider-header-brand{font-family:'Barlow',sans-serif;font-size:18px;font-weight:700}
-.rider-header-brand span{color:var(--brand-accent)}
-.delivery-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.delivery-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
-.delivery-id{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:4px}
-.delivery-customer{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700}
-.delivery-address{font-size:14px;color:var(--muted);margin-top:4px}
-.delivery-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;background:var(--bg);border-radius:8px;padding:14px}
-.delivery-meta-item label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:2px}
-.delivery-meta-item span{font-size:15px;font-weight:600;font-family:'Barlow Condensed',sans-serif}
-
-/* ACTIVITY FEED */
-.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.activity-item:last-child{border-bottom:none}
-.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:6px;flex-shrink:0}
-.activity-text{font-size:13px;color:var(--text)}
-.activity-time{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
-
-/* SLA TIMER */
-.sla-timer{font-family:'DM Mono',monospace;font-size:13px;padding:4px 8px;border-radius:4px;background:#fff0d6;color:#8b5e00}
-.sla-timer.breach{background:#ffe0de;color:var(--red)}
-
-/* PAGE HEADER */
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.page-title{font-family:'Barlow',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.3px}
-.page-subtitle{font-size:13px;color:#9ca3af;margin-top:2px;font-weight:400}
-.page-actions{display:flex;gap:8px}
-
-/* DUNNING */
-.dunning-stage{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:.15s}
-.dunning-stage:hover{border-color:var(--primary);background:#f0f7ff}
-.dunning-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-
-/* RESPONSIVE TWEAKS */
-@media(max-width:768px){
-  .kpi-grid{grid-template-columns:1fr 1fr}
-  .form-grid{grid-template-columns:1fr}
-  :root{--sidebar-w:200px}
+/* ─── DARK MODE OVERRIDES ─── */
+html.dark {
+  --bg:      #0e1410;
+  --bg2:     #131a12;
+  --bg3:     #1a2419;
+  --surface: #162014;
+  --border:  #243020;
+  --border2: #3a5035;
+  --primary:     #5b92b8;
+  --primary-dk:  #4a7fa5;
+  --primary-dim: rgba(91,146,184,0.12);
+  --accent:      #b8ca96;
+  --accent-dk:   #a0bc78;
+  --accent-dim:  rgba(184,202,150,0.12);
+  --ink:     #ddecd4;
+  --ink2:    #131a12;
+  --gray:    #7a9470;
+  --gray2:   #506044;
+  --muted:   #3a5035;
+  --muted2:  #2a3828;
+  --red:  #5b92b8;
+  --red2: #4a7fa5;
+  --red-dim: rgba(91,146,184,0.12);
+  --sand:    #b8ca96;
+  --sand2:   #3a5035;
 }
+
+/* ─── THEME TOGGLE BUTTON ─── */
+.theme-toggle {
+  width: 38px; height: 38px;
+  border: 1.5px solid var(--border2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gray);
+  font-size: 16px;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Barlow',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR — blue dot */
+.cursor{width:10px;height:10px;background:var(--primary);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{width:34px;height:34px;border:1.5px solid rgba(74,127,165,0.45);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out,opacity 0.3s;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:0 52px;height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.3s;
+}
+nav.scrolled{
+  background:rgba(243,247,240,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+html.dark nav.scrolled { background: rgba(14,20,16,0.97); }
+.nav-logo{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:30px;font-weight:900;letter-spacing:-0.5px;color:var(--ink);
+}
+/* Logo dot — accent green */
+.nav-logo span{color:var(--accent-dk);}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gray);text-decoration:none;transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--ink);}
+/* CTA nav button — blue */
+.nav-cta{
+  background:var(--primary);color:#fff !important;
+  padding:10px 22px;border-radius:3px;
+  transition:background 0.2s !important;
+}
+.nav-cta:hover{background:var(--primary-dk) !important;}
+
+/* ============================
+   HERO
+   ============================ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 52px 88px;
+  position:relative;overflow:hidden;
+  background:var(--bg);
+}
+
+/* Hero photo — Unsplash background (light mode) */
+.hero-photo {
+  position:absolute; top:0; right:0;
+  width:65%; height:100%;
+  background:
+    url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1600&q=80')
+    center/cover no-repeat;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 25%, black 60%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 25%, black 60%);
+  opacity: 0.22;
+  pointer-events: none;
+}
+html.dark .hero-photo { opacity: 0; }
+
+/* Dark Axle — dark mode hero image */
+.hero-dark-axle {
+  position:absolute;
+  right: -2%;
+  bottom: -4%;
+  width: clamp(420px, 52vw, 720px);
+  height: auto;
+  pointer-events: none;
+  display: none;
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.3) 12%,
+    rgba(0,0,0,0.75) 28%,
+    black 48%
+  );
+  mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.3) 12%,
+    rgba(0,0,0,0.75) 28%,
+    black 48%
+  );
+  opacity: 0;
+  animation: none;
+  filter: brightness(0.88) contrast(1.08);
+}
+html.dark .hero-dark-axle {
+  display: block;
+  opacity: 0;
+  animation: axleFadeIn 1.1s ease forwards 0.6s;
+}
+@keyframes axleFadeIn {
+  from { opacity:0; transform: translateX(24px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+
+/* Grid texture — green-tinted */
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:64px 64px;
+  opacity:0.4;
+}
+
+/* Tyre rings — outer blue, inner green */
+.hero-bg{position:absolute;inset:0;overflow:hidden;}
+.hero-bg::before{
+  content:'';position:absolute;
+  top:-8%;right:-4%;
+  width:68vw;height:68vw;border-radius:50%;
+  border:72px solid rgba(74,127,165,0.07);
+  animation:ringPulse 9s ease-in-out infinite;
+}
+.hero-bg::after{
+  content:'';position:absolute;
+  top:6%;right:10%;
+  width:50vw;height:50vw;border-radius:50%;
+  border:36px solid rgba(184,202,150,0.09);
+  animation:ringPulse 9s ease-in-out infinite 1.2s;
+}
+.hero-ring3{
+  position:absolute;top:14%;right:18%;
+  width:34vw;height:34vw;border-radius:50%;
+  border:2px solid rgba(74,127,165,0.14);
+  animation:ringPulse 9s ease-in-out infinite 2.2s;
+}
+.hero-ring4{
+  position:absolute;top:20%;right:24%;
+  width:20vw;height:20vw;border-radius:50%;
+  border:1.5px solid rgba(184,202,150,0.35);
+  animation:ringPulse 9s ease-in-out infinite 3.2s;
+}
+
+/* Slash — green wash */
+.hero-slash{
+  position:absolute;bottom:-20%;left:-5%;
+  width:52%;height:140%;
+  background:linear-gradient(135deg,rgba(184,202,150,0.09) 0%,rgba(74,127,165,0.04) 55%);
+  transform:skewX(-12deg);
+}
+
+/* Decorative outlined number — green stroke */
+.hero-deco-num{
+  position:absolute;
+  right:48px;top:120px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(160px,20vw,280px);
+  font-weight:900;line-height:1;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--border2);
+  letter-spacing:-8px;
+  opacity:0;animation:fadeIn 1s ease forwards 1.8s;
+  user-select:none;
+}
+
+@keyframes ringPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.55;transform:scale(1.025);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* Eyebrow — accent green */
+.hero-eyebrow{
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.32em;color:var(--accent-dk);text-transform:uppercase;
+  margin-bottom:22px;
+  opacity:0;animation:fadeUp 0.8s ease forwards 0.3s;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:'';display:inline-block;width:36px;height:2px;background:var(--accent-dk);}
+
+.hero-heading{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(68px,10.5vw,152px);
+  font-weight:900;line-height:0.88;
+  letter-spacing:-2px;text-transform:uppercase;
+  margin-bottom:32px;max-width:860px;
+}
+.hero-heading .line1{display:block;color:var(--ink);opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;}
+/* Middle italic line — blue */
+.hero-heading .line2{display:block;color:var(--primary);font-style:italic;opacity:0;animation:fadeUp 0.8s ease forwards 0.72s;}
+.hero-heading .line3{display:block;color:var(--ink);opacity:0;animation:fadeUp 0.8s ease forwards 0.94s;}
+
+.hero-sub{
+  font-size:17px;font-weight:400;color:var(--gray);
+  max-width:460px;line-height:1.75;margin-bottom:44px;
+  opacity:0;animation:fadeUp 0.8s ease forwards 1.15s;
+}
+
+.hero-ctas{
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.8s ease forwards 1.35s;
+}
+/* Primary CTA — blue */
+.btn-hero-primary{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:17px 38px;border:none;border-radius:3px;
+  cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-hero-primary:hover{background:var(--primary-dk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,127,165,0.28);}
+.btn-hero-secondary{
+  background:transparent;color:var(--ink);
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:16px 38px;border:1.5px solid var(--border2);border-radius:3px;
+  cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-hero-secondary:hover{border-color:var(--primary);background:var(--primary);color:#fff;}
+
+/* Hero stats */
+.hero-stats{
+  position:absolute;right:52px;bottom:88px;
+  display:flex;flex-direction:column;gap:28px;
+  opacity:0;animation:fadeIn 1s ease forwards 1.6s;
+}
+.hero-stat-item{text-align:right;}
+.hero-stat-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:44px;font-weight:900;line-height:1;color:var(--ink);letter-spacing:-1px;
+}
+/* Stat accent digit — green */
+.hero-stat-num .accent{color:var(--accent-dk);}
+.hero-stat-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.22em;color:var(--gray);text-transform:uppercase;margin-top:3px;
+}
+.hero-stat-divider{width:36px;height:1px;background:var(--border2);margin-left:auto;margin-top:10px;}
+
+/* Scroll indicator — green line */
+.scroll-indicator{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;animation:fadeIn 1s ease forwards 2.1s;
+}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--accent-dk),transparent);animation:scrollAnim 2s ease-in-out infinite;}
+@keyframes scrollAnim{0%,100%{transform:scaleY(1);opacity:1;}50%{transform:scaleY(0.4);opacity:0.3;}}
+.scroll-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray2);text-transform:uppercase;writing-mode:vertical-rl;}
+
+/* ============================
+   TICKER — dark bar, green bullets
+   ============================ */
+.ticker-wrap{
+  background:var(--ink2);overflow:hidden;padding:14px 0;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.ticker-track{display:flex;gap:0;animation:ticker 40s linear infinite;width:max-content;}
+.ticker-item{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.65);padding:0 36px;white-space:nowrap;
+  display:flex;align-items:center;gap:16px;
+}
+/* Green bullets in ticker */
+.ticker-item::after{content:'●';font-size:7px;opacity:0.7;color:var(--accent);}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ============================
+   SECTIONS COMMON
+   ============================ */
+section{position:relative;}
+/* Section label — green */
+.section-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:0.3em;color:var(--accent-dk);text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:12px;
+}
+.section-label::before{content:'';display:inline-block;width:28px;height:2px;background:var(--accent-dk);flex-shrink:0;}
+.section-heading{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(38px,5vw,64px);font-weight:900;
+  text-transform:uppercase;line-height:0.95;letter-spacing:-1px;color:var(--ink);
+}
+/* Italic accent in headings — blue */
+.section-heading em{color:var(--primary);font-style:italic;}
+
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ============================
+   SHOP / PRODUCTS
+   ============================ */
+.shop-section{padding:100px 52px;background:var(--surface);}
+.shop-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;flex-wrap:wrap;gap:20px;}
+.shop-sub{font-size:15px;color:var(--gray);max-width:360px;line-height:1.75;margin-top:14px;}
+.shop-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-btn{
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:8px 18px;border-radius:3px;border:1.5px solid var(--border2);
+  background:transparent;color:var(--gray);cursor:none;transition:all 0.2s;
+}
+/* Active filter — blue */
+.filter-btn.active,.filter-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;}
+.product-card{
+  background:var(--bg3);padding:28px 28px 72px;
+  position:relative;overflow:hidden;cursor:none;
+  transition:all 0.3s;border:1px solid var(--border);
+  min-height:380px;
+}
+.product-tyre-wrap{
+  display:flex;align-items:center;justify-content:center;
+  padding:12px 0 16px;
+}
+/* Card hover — blue border */
+.product-card:hover{box-shadow:0 12px 40px rgba(74,127,165,0.13);transform:translateY(-3px);border-color:var(--primary);}
+.product-card:hover .product-cta{opacity:1;transform:translateY(0);}
+.product-card:hover .product-tyre-icon{transform:rotate(12deg) scale(1.06);}
+/* Brand tag — green */
+.product-brand-tag{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.22em;color:var(--accent-dk);text-transform:uppercase;margin-bottom:10px;
+}
+.product-tyre-icon{display:block;transition:transform 0.4s ease;line-height:1;}
+.product-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.02em;color:var(--ink);margin-bottom:5px;
+}
+.product-size{font-family:'DM Mono',monospace;font-size:11px;color:var(--gray2);margin-bottom:14px;}
+.product-meta{display:flex;justify-content:space-between;align-items:flex-end;}
+.product-price{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--ink);}
+.product-price span{font-size:13px;color:var(--gray2);font-weight:400;}
+/* In-stock — green, low-stock — blue (warning without red) */
+.product-stock{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--accent-dk);}
+.product-stock.low{color:var(--primary);}
+/* Product CTA slide-up — blue */
+.product-cta{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:15px 30px;background:var(--primary);
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;color:#fff;border:none;cursor:none;
+  opacity:0;transform:translateY(10px);transition:all 0.25s;
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* CART BAR — dark with green accent */
+.cart-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--ink2);
+  padding:16px 52px;display:flex;align-items:center;justify-content:space-between;
+  z-index:500;transform:translateY(100%);transition:transform 0.3s;
+  border-top:2px solid var(--accent);
+}
+.cart-bar.visible{transform:translateY(0);}
+.cart-info{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:0.06em;color:#fff;}
+/* Checkout — blue */
+.btn-checkout{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:11px 26px;border:none;border-radius:3px;cursor:none;transition:all 0.2s;
+}
+.btn-checkout:hover{background:var(--primary-dk);}
+
+/* ============================
+   TRUSTED BY
+   ============================ */
+.trust-section{
+  padding:80px 52px;background:var(--bg2);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.trust-header{text-align:center;margin-bottom:52px;}
+.trust-strip{display:flex;gap:0;animation:trustScroll 30s linear infinite;width:max-content;}
+.trust-strip:hover{animation-play-state:paused;}
+.trust-logo{
+  padding:20px 48px;border-right:1px solid var(--border);
+  white-space:nowrap;flex-shrink:0;transition:all 0.25s;
+}
+.trust-logo:hover{background:var(--bg3);}
+/* Muted green for company names */
+.trust-company-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.05em;color:var(--muted2);transition:color 0.3s;
+}
+.trust-logo:hover .trust-company-name{color:var(--ink);}
+.trust-company-sub{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-top:3px;transition:color 0.3s;
+}
+.trust-logo:hover .trust-company-sub{color:var(--gray);}
+@keyframes trustScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ============================
+   WHOLESALE
+   ============================ */
+.wholesale-section{
+  padding:120px 52px;background:var(--bg3);
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+@media(max-width:900px){.wholesale-section{grid-template-columns:1fr;gap:48px;}}
+.wholesale-features{margin-top:40px;display:flex;flex-direction:column;gap:24px;}
+.wholesale-feat{display:flex;gap:16px;align-items:flex-start;}
+.wholesale-feat-icon{
+  width:44px;height:44px;border:1.5px solid var(--border);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  flex-shrink:0;
+  /* Green-tinted icon bg */
+  background:var(--surface);
+}
+.wholesale-feat-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;color:var(--ink);
+}
+.wholesale-feat-desc{font-size:13px;color:var(--gray);line-height:1.65;}
+
+.wholesale-form-card{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:6px;
+  padding:40px;position:relative;
+}
+/* Form card top stripe — green */
+.wholesale-form-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent-dk);border-radius:6px 6px 0 0;
+}
+.form-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;color:var(--ink);
+}
+.form-sub{font-size:13px;color:var(--gray);margin-bottom:26px;line-height:1.65;}
+.form-group{margin-bottom:14px;}
+.form-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);
+  display:block;margin-bottom:7px;
+}
+.form-input{
+  width:100%;padding:12px 14px;
+  background:#fff;border:1.5px solid var(--border2);border-radius:3px;
+  color:var(--ink);font-family:'Barlow',sans-serif;font-size:14px;
+  outline:none;transition:border-color 0.2s;
+}
+html.dark .form-input { background: var(--bg); color: var(--ink); }
+html.dark .form-input::placeholder { color: var(--gray2); }
+html.dark select.form-input option { background: var(--bg3); color: var(--ink); }
+/* Input focus — blue ring */
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(74,127,165,0.12);}
+.form-input::placeholder{color:var(--muted);}
+select.form-input option{background:#fff;color:var(--ink);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* Submit — blue */
+.btn-submit{
+  width:100%;background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:16px;border:none;border-radius:3px;cursor:none;
+  transition:all 0.2s;margin-top:8px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-submit:hover{background:var(--primary-dk);transform:translateY(-1px);box-shadow:0 8px 24px rgba(74,127,165,0.25);}
+
+/* ============================
+   WHY BIUP
+   ============================ */
+.why-section{padding:120px 52px;background:var(--surface);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;}
+@media(max-width:800px){.why-grid{grid-template-columns:1fr;}}
+.why-card{
+  background:var(--bg3);padding:40px 34px;border:1px solid var(--border);
+  position:relative;overflow:hidden;transition:all 0.3s;
+}
+/* Why card hover — green border + blue number */
+.why-card:hover{border-color:var(--accent-dk);box-shadow:0 4px 24px rgba(184,202,150,0.2);}
+.why-card:hover .why-num{-webkit-text-stroke-color:var(--primary);}
+.why-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:72px;font-weight:900;line-height:1;
+  color:transparent;-webkit-text-stroke:1.5px var(--border2);
+  margin-bottom:14px;transition:all 0.3s;letter-spacing:-3px;
+}
+.why-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;color:var(--ink);
+}
+.why-desc{font-size:13px;color:var(--gray);line-height:1.7;}
+
+/* ============================
+   TESTIMONIALS
+   ============================ */
+.testimonials-section{padding:120px 52px;background:var(--bg);overflow:hidden;}
+.testimonials-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;flex-wrap:wrap;gap:20px;}
+.testi-nav{display:flex;gap:10px;}
+.testi-btn{
+  width:46px;height:46px;border:1.5px solid var(--border2);background:transparent;
+  border-radius:3px;color:var(--ink);font-size:17px;cursor:none;
+  transition:all 0.2s;display:flex;align-items:center;justify-content:center;
+}
+/* Carousel nav hover — blue */
+.testi-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+.testi-track-wrap{overflow:hidden;}
+.testi-track{display:flex;gap:20px;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);}
+.testi-card{
+  flex:0 0 calc(50% - 10px);background:var(--bg3);border:1px solid var(--border);
+  padding:38px;border-radius:4px;position:relative;transition:all 0.3s;
+}
+.testi-card:hover{box-shadow:0 8px 32px rgba(74,127,165,0.1);}
+@media(max-width:800px){.testi-card{flex:0 0 100%;}}
+/* Big quote mark — green */
+.testi-quote-mark{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:72px;line-height:0.6;color:var(--accent-dk);font-weight:900;
+  margin-bottom:18px;display:block;
+}
+.testi-text{font-size:16px;line-height:1.75;color:var(--ink2);margin-bottom:28px;font-weight:300;}
+html.dark .testi-text { color: var(--ink); }
+.testi-author{display:flex;align-items:center;gap:14px;}
+/* Avatar — blue */
+.testi-avatar{
+  width:42px;height:42px;border-radius:50%;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;
+  color:#fff;flex-shrink:0;
+}
+.testi-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);
+}
+.testi-company{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;margin-top:3px;
+}
+
+/* ============================
+   CTA STRIP — dark bg, green + blue buttons
+   ============================ */
+.quick-strip{
+  background:var(--ink2);padding:64px 52px;
+  display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;
+}
+.quick-strip-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(30px,4vw,52px);font-weight:900;text-transform:uppercase;
+  line-height:1;letter-spacing:-0.5px;color:#fff;
+}
+.quick-strip-sub{font-size:15px;color:rgba(255,255,255,0.45);margin-top:8px;}
+.quick-strip-actions{display:flex;gap:12px;flex-wrap:wrap;}
+/* Primary strip button — blue */
+.btn-strip-primary{
+  background:var(--primary);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:16px 30px;border:none;border-radius:3px;cursor:none;transition:all 0.2s;
+}
+.btn-strip-primary:hover{background:var(--primary-dk);}
+/* Secondary strip button — green-tinted outline */
+.btn-strip-secondary{
+  background:transparent;color:rgba(255,255,255,0.85);
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:15px 30px;border:1.5px solid rgba(184,202,150,0.35);border-radius:3px;
+  cursor:none;transition:all 0.2s;
+}
+.btn-strip-secondary:hover{border-color:var(--accent);background:rgba(184,202,150,0.1);color:#fff;}
+
+/* ============================
+   CONTACT / FOOTER
+   ============================ */
+.contact-section{
+  padding:100px 52px 60px;background:var(--bg2);
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:56px;
+  border-top:1px solid var(--border);
+}
+@media(max-width:900px){.contact-section{grid-template-columns:1fr;gap:40px;}}
+.contact-col-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;color:var(--ink);
+}
+.contact-link{
+  display:block;font-size:13px;color:var(--gray);text-decoration:none;
+  margin-bottom:10px;transition:color 0.2s;line-height:1.8;
+}
+.contact-link:hover{color:var(--ink);}
+.contact-info-row{display:flex;gap:10px;margin-bottom:12px;font-size:13px;color:var(--gray);}
+/* Contact icons — green */
+.contact-info-row span:first-child{color:var(--accent-dk);font-size:15px;flex-shrink:0;}
+.footer-bottom{
+  border-top:1px solid var(--border);padding:22px 52px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;background:var(--bg2);
+}
+.footer-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.3px;color:var(--ink);}
+/* Footer logo dot — green */
+.footer-logo span{color:var(--accent-dk);}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;}
+
+/* MODALS */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(26,36,16,0.60);
+  z-index:2000;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;
+  box-shadow:0 24px 80px rgba(74,127,165,0.15);
+}
+html.dark .modal-box { background: var(--bg3); border-color: var(--border2); box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
+html.dark .modal-overlay { background: rgba(5,10,6,0.75); }
+/* Modal top stripe — blue */
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary);border-radius:6px 6px 0 0;}
+.modal-head{
+  padding:26px 30px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;
+}
+.modal-head-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;
+  text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);
+}
+.modal-close{background:none;border:none;color:var(--gray2);font-size:20px;cursor:none;padding:4px;transition:color 0.2s;}
+.modal-close:hover{color:var(--ink);}
+.modal-body{padding:26px 30px 30px;}
+
+/* TOAST — green left border */
+.toast-msg{
+  position:fixed;bottom:90px;right:36px;
+  background:var(--ink2);border-left:3px solid var(--accent);
+  color:#fff;padding:15px 22px;border-radius:3px;font-size:13px;font-weight:500;
+  z-index:5000;opacity:0;transform:translateX(16px);transition:all 0.25s;max-width:340px;
+}
+.toast-msg.show{opacity:1;transform:translateX(0);}
+
+/* WA FLOAT */
+.wa-float{
+  position:fixed;right:28px;bottom:80px;width:54px;height:54px;
+  border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  z-index:400;box-shadow:0 4px 20px rgba(37,211,102,0.35);cursor:none;
+  transition:all 0.2s;animation:waPulse 3s ease-in-out infinite;
+}
+.wa-float:hover{transform:scale(1.1);}
+@keyframes waPulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.35);}50%{box-shadow:0 4px 32px rgba(37,211,102,0.6);}}
+
+/* Stats strip — blue numbers */
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px;margin-top:40px;}
+.stats-box{background:var(--bg3);border:1px solid var(--border);padding:28px;text-align:center;}
+.stats-box-num{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:var(--primary);}
+.stats-box-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-top:6px;}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">BIUP<span>NG</span></div>
-    <div class="login-sub">Business Intelligence & Unified Platform · Nigeria</div>
-    <label for="l-email">Email Address</label>
-    <input type="email" id="l-email" placeholder="your@biup.ng">
-    <label for="l-pass">Password</label>
-    <input type="password" id="l-pass" placeholder="••••••••">
-    <div class="login-error" id="login-error">Invalid credentials. Please try again.</div>
-    <button class="btn-login" onclick="doLogin()">Sign In</button>
-    <div class="login-hints">
-      <p>Demo Accounts — click to fill</p>
-      <div class="hint-row" onclick="fillLogin('ibrahim.musa@biup.ng','biup2024')"><span class="hint-role">Superior</span><span class="hint-creds">ibrahim.musa@biup.ng</span></div>
-      <div class="hint-row" onclick="fillLogin('kemi.adeyemi@biup.ng','biup2024')"><span class="hint-role">Sales</span><span class="hint-creds">kemi.adeyemi@biup.ng</span></div>
-      <div class="hint-row" onclick="fillLogin('adaeze.obi@biup.ng','biup2024')"><span class="hint-role">Finance</span><span class="hint-creds">adaeze.obi@biup.ng</span></div>
-      <div class="hint-row" onclick="fillLogin('bola.james@biup.ng','biup2024')"><span class="hint-role">Inventory</span><span class="hint-creds">bola.james@biup.ng</span></div>
-      <div class="hint-row" onclick="fillLogin('emeka.okafor@biup.ng','biup2024')"><span class="hint-role">Rider</span><span class="hint-creds">emeka.okafor@biup.ng</span></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">BIUP<span>.</span></div>
+  <div class="nav-links">
+    <a href="#shop">Shop</a>
+    <a href="#wholesale">Wholesale</a>
+    <a href="#clients">Clients</a>
+    <a href="#about">Why BIUP</a>
+    <a href="#contact">Contact</a>
+    <a href="#wholesale" class="nav-cta">Bulk Enquiry</a>
+    <button class="theme-toggle" onclick="toggleDark()" id="themeToggle" title="Toggle dark mode">🌙</button>
+  </div>
+</nav>
+
+<!-- ============================
+     HERO
+     ============================ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-slash"></div>
+    <div class="hero-ring3"></div>
+    <div class="hero-ring4"></div>
+  </div>
+  <div class="hero-photo"></div>
+  <img class="hero-dark-axle" src="/Dark%20Axle.png" alt="" aria-hidden="true">
+  <div class="hero-deco-num">16</div>
+
+  <div class="hero-eyebrow">Nigeria's Premier Tyre Distributor — Est. 2008</div>
+  <h1 class="hero-heading">
+    <span class="line1">Built For</span>
+    <span class="line2">The Road.</span>
+    <span class="line3">Built To Last.</span>
+  </h1>
+  <p class="hero-sub">From single-tyre retail to fleet-scale wholesale — BIUP delivers premium tyres to Nigeria's biggest industries, on time, every time.</p>
+  <div class="hero-ctas">
+    <a href="#shop" class="btn-hero-primary">Shop Now →</a>
+    <a href="#wholesale" class="btn-hero-secondary">Wholesale Enquiry</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">1,200<span style="color:var(--accent-dk);font-size:26px;">+</span></div>
+      <div class="hero-stat-label">SKUs in Stock</div>
+      <div class="hero-stat-divider"></div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">48<span style="color:var(--accent-dk);font-size:26px;">hr</span></div>
+      <div class="hero-stat-label">Nationwide Delivery</div>
+      <div class="hero-stat-divider"></div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">200<span style="color:var(--accent-dk);font-size:26px;">+</span></div>
+      <div class="hero-stat-label">Corporate Clients</div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <div class="scroll-label">Scroll</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <div class="ticker-item">Bridgestone 265/70 R17</div>
+    <div class="ticker-item">Michelin 275/80 R22.5</div>
+    <div class="ticker-item">Goodyear 315/80 R22.5</div>
+    <div class="ticker-item">Hankook 225/70 R15</div>
+    <div class="ticker-item">Continental 245/75 R16</div>
+    <div class="ticker-item">Dunlop 195/65 R15</div>
+    <div class="ticker-item">Pirelli 235/55 R18</div>
+    <div class="ticker-item">Firestone 215/75 R17.5</div>
+    <div class="ticker-item">Yokohama 245/70 R16</div>
+    <div class="ticker-item">Toyo 235/65 R17</div>
+    <div class="ticker-item">BF Goodrich 255/70 R16</div>
+    <div class="ticker-item">Bridgestone 265/70 R17</div>
+    <div class="ticker-item">Michelin 275/80 R22.5</div>
+    <div class="ticker-item">Goodyear 315/80 R22.5</div>
+    <div class="ticker-item">Hankook 225/70 R15</div>
+    <div class="ticker-item">Continental 245/75 R16</div>
+    <div class="ticker-item">Dunlop 195/65 R15</div>
+    <div class="ticker-item">Pirelli 235/55 R18</div>
+    <div class="ticker-item">Firestone 215/75 R17.5</div>
+    <div class="ticker-item">Yokohama 245/70 R16</div>
+    <div class="ticker-item">Toyo 235/65 R17</div>
+    <div class="ticker-item">BF Goodrich 255/70 R16</div>
+  </div>
+</div>
+
+<!-- ============================
+     SHOP
+     ============================ -->
+<section class="shop-section" id="shop">
+  <div class="shop-header reveal">
+    <div>
+      <div class="section-label">Quick Order</div>
+      <h2 class="section-heading">Shop <em>Our</em><br>Catalogue</h2>
+      <p class="shop-sub">Retail-ready. Order online, pick up or get delivered. All major brands in stock.</p>
+    </div>
+    <div>
+      <div class="shop-filters">
+        <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+        <button class="filter-btn" onclick="filterProducts('truck',this)">Truck</button>
+        <button class="filter-btn" onclick="filterProducts('suv',this)">SUV / 4×4</button>
+        <button class="filter-btn" onclick="filterProducts('passenger',this)">Passenger</button>
+        <button class="filter-btn" onclick="filterProducts('industrial',this)">Industrial</button>
+      </div>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+  <div style="text-align:center;margin-top:44px;">
+    <button class="btn-hero-secondary" onclick="showToast('Full catalogue: 200+ SKUs available. Contact us for the complete list.')">View Full Catalogue →</button>
+  </div>
+</section>
+
+<!-- ============================
+     TRUSTED BY
+     ============================ -->
+<section class="trust-section" id="clients">
+  <div class="trust-header reveal">
+    <div class="section-label" style="justify-content:center;">Trusted By Industry Leaders</div>
+    <h2 class="section-heading" style="text-align:center;">Nigeria's <em>Biggest</em><br>Names Run On BIUP</h2>
+  </div>
+  <div style="overflow:hidden;">
+    <div class="trust-strip">
+      <div class="trust-logo"><div class="trust-company-name">Dangote</div><div class="trust-company-sub">Cement · Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Lafarge</div><div class="trust-company-sub">Africa Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">BUA</div><div class="trust-company-sub">Cement Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Julius Berger</div><div class="trust-company-sub">Nigeria Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">NNPC</div><div class="trust-company-sub">Limited</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Oando</div><div class="trust-company-sub">Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Coscharis</div><div class="trust-company-sub">Motors Ltd</div></div>
+      <div class="trust-logo"><div class="trust-company-name">MTN</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Flour Mills</div><div class="trust-company-sub">Of Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Zenith Bank</div><div class="trust-company-sub">Fleet Div.</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Honeywell</div><div class="trust-company-sub">Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Guinness</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Dangote</div><div class="trust-company-sub">Cement · Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Lafarge</div><div class="trust-company-sub">Africa Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">BUA</div><div class="trust-company-sub">Cement Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Julius Berger</div><div class="trust-company-sub">Nigeria Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">NNPC</div><div class="trust-company-sub">Limited</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Oando</div><div class="trust-company-sub">Plc</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Coscharis</div><div class="trust-company-sub">Motors Ltd</div></div>
+      <div class="trust-logo"><div class="trust-company-name">MTN</div><div class="trust-company-sub">Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Flour Mills</div><div class="trust-company-sub">Of Nigeria</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Zenith Bank</div><div class="trust-company-sub">Fleet Div.</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Honeywell</div><div class="trust-company-sub">Group</div></div>
+      <div class="trust-logo"><div class="trust-company-name">Guinness</div><div class="trust-company-sub">Nigeria</div></div>
+    </div>
+  </div>
+  <div class="stats-strip reveal">
+    <div class="stats-box"><div class="stats-box-num">200+</div><div class="stats-box-label">Corporate Accounts</div></div>
+    <div class="stats-box"><div class="stats-box-num">₦2B+</div><div class="stats-box-label">Annual Volume</div></div>
+    <div class="stats-box"><div class="stats-box-num">36</div><div class="stats-box-label">States Served</div></div>
+    <div class="stats-box"><div class="stats-box-num">99%</div><div class="stats-box-label">On-time Delivery</div></div>
+  </div>
+</section>
+
+<!-- ============================
+     WHOLESALE
+     ============================ -->
+<section class="wholesale-section" id="wholesale">
+  <div class="reveal">
+    <div class="section-label">For Wholesalers & Fleet Managers</div>
+    <h2 class="section-heading">Need Bulk?<br><em>Let's Talk</em><br>Volume.</h2>
+    <p style="font-size:15px;color:var(--gray);line-height:1.8;margin-top:18px;max-width:400px;">We supply corporate fleets, logistics companies, construction firms, and government agencies. Dedicated account managers, credit facilities, and serial-level tracking from our warehouse to your yard.</p>
+    <div class="wholesale-features">
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">💳</div>
+        <div><div class="wholesale-feat-title">Credit Facilities Available</div><div class="wholesale-feat-desc">Up to 90-day credit terms for approved clients. Dedicated finance team manages your account.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">📦</div>
+        <div><div class="wholesale-feat-title">Serial-Level Tracking</div><div class="wholesale-feat-desc">Every tyre tracked from our main yard to your delivery point. Full chain of custody.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">🔧</div>
+        <div><div class="wholesale-feat-title">Engineer Site Visits</div><div class="wholesale-feat-desc">Our engineers visit your fleet for tyre inspections, condition reporting, and replacement planning.</div></div>
+      </div>
+      <div class="wholesale-feat">
+        <div class="wholesale-feat-icon">🚛</div>
+        <div><div class="wholesale-feat-title">Nationwide Delivery</div><div class="wholesale-feat-desc">Multi-drop delivery across all 36 states with electronic proof of delivery.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wholesale-form-card reveal">
+    <div class="form-title">Book a Wholesale Enquiry</div>
+    <p class="form-sub">A senior account manager will respond within 2 business hours.</p>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Company Name *</label><input class="form-input" placeholder="e.g. Dangote Cement" id="ws-company"></div>
+      <div class="form-group"><label class="form-label">Industry *</label>
+        <select class="form-input" id="ws-industry">
+          <option value="">Select industry</option>
+          <option>Construction</option><option>Logistics / Transport</option>
+          <option>Oil & Gas</option><option>Manufacturing</option>
+          <option>Government / Public</option><option>Banking / Corporate Fleet</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Contact Name *</label><input class="form-input" placeholder="Full name" id="ws-name"></div>
+      <div class="form-group"><label class="form-label">Phone Number *</label><input class="form-input" placeholder="+234 000 000 0000" id="ws-phone"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" placeholder="procurement@company.com" type="email" id="ws-email"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Estimated Quantity</label>
+        <select class="form-input" id="ws-qty"><option>10 – 50 units</option><option>50 – 200 units</option><option>200 – 500 units</option><option>500+ units</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Payment Preference</label>
+        <select class="form-input" id="ws-payment"><option>Cash / Upfront</option><option>Credit Terms (30 days)</option><option>Credit Terms (60 days)</option><option>Credit Terms (90 days)</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Additional Notes</label><textarea class="form-input" rows="3" placeholder="Fleet size, specific tyre sizes, delivery location..." id="ws-notes" style="resize:vertical;"></textarea></div>
+    <button class="btn-submit" onclick="submitWholesale()">Submit Enquiry →</button>
+    <div style="text-align:center;margin-top:14px;">
+      <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray2);text-transform:uppercase;">Or reach us on </span>
+      <a href="#" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--primary);text-decoration:none;" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">WhatsApp →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     WHY BIUP
+     ============================ -->
+<section class="why-section" id="about">
+  <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto;">
+    <div class="section-label" style="justify-content:center;">Why Choose Us</div>
+    <h2 class="section-heading">The BIUP<br><em>Standard</em></h2>
+    <p style="font-size:15px;color:var(--gray);line-height:1.8;margin-top:18px;">We don't just sell tyres. We run an end-to-end supply chain — from import and warehousing to serial-tracked delivery and post-sale service.</p>
+  </div>
+  <div class="why-grid reveal">
+    <div class="why-card"><div class="why-num">01</div><div class="why-title">Real-Time Stock Visibility</div><div class="why-desc">Our unified inventory system tracks every serial number across our Main Yard and all warehouses. You always know exactly what's available before you order.</div></div>
+    <div class="why-card"><div class="why-num">02</div><div class="why-title">Electronic Proof of Delivery</div><div class="why-desc">Three-party sign-off on every dispatch — inventory officer, rider, and customer. Digital confirmation the moment your tyres are received.</div></div>
+    <div class="why-card"><div class="why-num">03</div><div class="why-title">Credit Facilities</div><div class="why-desc">Approved corporate clients get up to 90-day terms. Managed by a dedicated finance team with full account transparency.</div></div>
+    <div class="why-card"><div class="why-num">04</div><div class="why-title">Premium Global Brands</div><div class="why-desc">Official distributor for Bridgestone, Michelin, Goodyear, Hankook, Continental, Dunlop, Pirelli, and more. Every tyre authentic and certified.</div></div>
+    <div class="why-card"><div class="why-num">05</div><div class="why-title">Tyre Lifecycle Management</div><div class="why-desc">Our engineers conduct on-site fleet inspections and generate condition reports per tyre, per vehicle. We alert you before your fleet becomes a liability.</div></div>
+    <div class="why-card"><div class="why-num">06</div><div class="why-title">Hassle-Free Returns</div><div class="why-desc">Every return is tracked, inspected, and resolved with credit notes or replacements issued swiftly through our formal returns process.</div></div>
+  </div>
+</section>
+
+<!-- ============================
+     TESTIMONIALS
+     ============================ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="testimonials-header reveal">
+    <div>
+      <div class="section-label">What Our Clients Say</div>
+      <h2 class="section-heading">Built On<br><em>Trust.</em></h2>
+    </div>
+    <div class="testi-nav">
+      <button class="testi-btn" onclick="slideTesti(-1)">←</button>
+      <button class="testi-btn" onclick="slideTesti(1)">→</button>
+    </div>
+  </div>
+  <div class="testi-track-wrap">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">BIUP has been supplying our entire cement fleet for over 4 years. The serial tracking is what sets them apart — we know exactly which tyre is on which vehicle at all times. Their engineering team saved us from two major blowout incidents through early inspection alerts.</p>
+        <div class="testi-author"><div class="testi-avatar">DC</div><div><div class="testi-name">Chukwuemeka Eze</div><div class="testi-company">Fleet Manager · Dangote Cement Plc</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">The credit facility BIUP extended to us transformed how we manage procurement. The invoice terms are clear, the account team is responsive, and we've never had a delivery dispute that wasn't resolved within 24 hours.</p>
+        <div class="testi-author"><div class="testi-avatar">LA</div><div><div class="testi-name">Amaka Okonkwo</div><div class="testi-company">Procurement Director · Lafarge Africa Plc</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">We operate 400+ vehicles across Nigeria. BIUP is the only supplier that consistently delivers to multiple locations simultaneously with full documentation. The digital delivery confirmation is critical for our compliance audits.</p>
+        <div class="testi-author"><div class="testi-avatar">JB</div><div><div class="testi-name">Biodun Adeleke</div><div class="testi-company">Head of Logistics · Julius Berger Nigeria</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">As a mid-size logistics company, we needed a supplier who could grow with us. BIUP started us on cash terms and moved us onto credit after 6 months. The pricing is competitive and stock availability is second to none in Lagos.</p>
+        <div class="testi-author"><div class="testi-avatar">AT</div><div><div class="testi-name">Ngozi Adebayo</div><div class="testi-company">CEO · ABC Transport Co.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:8px;margin-top:28px;" id="testiDots">
+    <div style="width:28px;height:3px;background:var(--primary);border-radius:2px;transition:all 0.3s;"></div>
+    <div style="width:10px;height:3px;background:var(--border2);border-radius:2px;transition:all 0.3s;cursor:pointer;" onclick="goTesti(1)"></div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="quick-strip">
+  <div>
+    <div class="quick-strip-title">Ready To Order?<br>Let's Move.</div>
+    <div class="quick-strip-sub">WhatsApp orders welcome · Retail & wholesale · Fast delivery</div>
+  </div>
+  <div class="quick-strip-actions">
+    <button class="btn-strip-primary" onclick="openModal('modal-quick-order')">Quick Order Now</button>
+    <button class="btn-strip-secondary" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">📱 WhatsApp Us</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<section class="contact-section" id="contact">
+  <div>
+    <div class="footer-logo" style="margin-bottom:18px;font-size:28px;">BIUP<span>.</span></div>
+    <p style="font-size:13px;color:var(--gray);line-height:1.8;max-width:260px;">Nigeria's premier tyre distributor. Premium brands, serial-level tracking, credit facilities for corporate clients.</p>
+    <div style="display:flex;gap:10px;margin-top:22px;">
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">📘</div>
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">📷</div>
+      <div style="width:38px;height:38px;border:1.5px solid var(--border2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:none;transition:all 0.2s;" onmouseover="this.style.background='var(--primary)';this.style.borderColor='var(--primary)'" onmouseout="this.style.background='';this.style.borderColor='var(--border2)'">💬</div>
+    </div>
+  </div>
+  <div>
+    <div class="contact-col-title">Quick Links</div>
+    <a href="#shop" class="contact-link">Shop Tyres</a>
+    <a href="#wholesale" class="contact-link">Wholesale Enquiry</a>
+    <a href="#clients" class="contact-link">Our Clients</a>
+    <a href="#about" class="contact-link">Why BIUP</a>
+    <a href="/crm.html" class="contact-link" style="color:var(--primary);">CRM Portal Login →</a>
+    <a href="#" class="contact-link">Track My Order</a>
+  </div>
+  <div>
+    <div class="contact-col-title">Contact Us</div>
+    <div class="contact-info-row"><span>📍</span><span>14 Oba Akran Avenue, Ikeja Industrial Estate, Lagos</span></div>
+    <div class="contact-info-row"><span>📞</span><span>+234 800 BIUP TYR</span></div>
+    <div class="contact-info-row"><span>✉️</span><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a2d1c3cec7d1e2c0cbd7d28cccc5">[email&#160;protected]</a></span></div>
+    <div class="contact-info-row"><span>💬</span><span>WhatsApp: +234 800 000 0001</span></div>
+    <div class="contact-info-row"><span>⏰</span><span>Mon – Sat: 7:30 AM – 6:00 PM</span></div>
+    <div style="margin-top:18px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gray2);text-transform:uppercase;margin-bottom:10px;">Locations</div>
+      <div class="contact-link">Main Yard — Ikeja, Lagos</div>
+      <div class="contact-link">WH Lagos Island</div>
+      <div class="contact-link">WH Abuja FCT</div>
+    </div>
+  </div>
+</section>
+<div class="footer-bottom">
+  <div class="footer-logo">BIUP<span>.</span></div>
+  <div class="footer-copy">© 2025 BIUP Nigeria Ltd · All Rights Reserved · Certified Distributor</div>
+</div>
+
+<!-- WA FLOAT -->
+<div class="wa-float" onclick="showToast('WhatsApp: +234 800 BIUP TYR')">💬</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-quick-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title">Quick Order</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">Retail orders — fast processing & delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-quick-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" placeholder="Full name" id="qo-name"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" placeholder="+234 800 000 0000" id="qo-phone"></div>
+        <div class="form-group"><label class="form-label">Delivery State</label><select class="form-input"><option>Lagos</option><option>Abuja</option><option>Port Harcourt</option><option>Kano</option><option>Ibadan</option><option>Other</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Tyre Size / Product *</label><input class="form-input" placeholder="e.g. Bridgestone 265/70 R17" id="qo-product"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Quantity *</label><input class="form-input" type="number" placeholder="4" min="1" id="qo-qty"></div>
+        <div class="form-group"><label class="form-label">Fulfilment</label><select class="form-input"><option>Delivery</option><option>Pickup — Main Yard (Ikeja)</option></select></div>
+      </div>
+      <button class="btn-submit" onclick="submitQuickOrder()">Place Order →</button>
+      <div style="margin-top:14px;padding:14px;background:var(--surface);border-radius:3px;border:1px solid var(--border);">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;">How It Works</div>
+        <div style="font-size:12px;color:var(--gray);line-height:1.9;">1 · Submit order &nbsp; 2 · Team confirms stock & price via call/WhatsApp &nbsp; 3 · Pay & receive delivery within 24–48hrs</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="topbar">
-    <div class="topbar-logo">BIUP<span>NG</span></div>
-    <div class="topbar-controls">
-      <div class="topbar-spacer"></div>
-      <div class="topbar-user">
-        <div class="user-avatar" id="user-avatar">IM</div>
+<div class="modal-overlay" id="modal-product-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title" id="po-modal-title">Order Tyres</div><div style="font-size:12px;color:var(--gray);margin-top:3px;" id="po-modal-sub">Select quantity and delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-product-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:4px;padding:18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div class="user-name" id="user-name">Ibrahim Musa</div>
-          <div class="user-role-badge" id="user-role-badge">Superior Officer</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;text-transform:uppercase;color:var(--ink);" id="po-product-name">Bridgestone 265/70 R17</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gray2);margin-top:4px;" id="po-product-size">In Stock</div>
         </div>
-        <select class="role-switcher" id="role-switcher" onchange="switchRole(this.value)">
-          <option value="superior">Superior Officer</option>
-          <option value="sales">Sales Officer</option>
-          <option value="finance">Finance Officer</option>
-          <option value="inventory">Inventory Officer</option>
-          <option value="rider">Rider</option>
-        </select>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:var(--primary);" id="po-product-price">₦60,000</div>
       </div>
-    </div>
-  </div>
-  <div class="app-body">
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Operations</div>
-        <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')"><span class="nav-icon">⊞</span>Dashboard</div>
-        <div class="nav-item" data-page="customers" onclick="navigate('customers')"><span class="nav-icon">👥</span>Customers</div>
-        <div class="nav-item" data-page="enquiries" onclick="navigate('enquiries')"><span class="nav-icon">💬</span>Enquiries</div>
-        <div class="nav-item" data-page="quotes" onclick="navigate('quotes')"><span class="nav-icon">📋</span>Quotes</div>
-        <div class="nav-item" data-page="orders" onclick="navigate('orders')"><span class="nav-icon">📦</span>Orders / POs</div>
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" placeholder="Full name" id="po-name"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" placeholder="+234 800 000 0000" id="po-phone"></div>
+        <div class="form-group"><label class="form-label">Quantity *</label><input class="form-input" type="number" placeholder="4" min="1" value="4" id="po-qty" oninput="updateTotal()"></div>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Finance</div>
-        <div class="nav-item" data-page="approvals" onclick="navigate('approvals')"><span class="nav-icon">✅</span>Approvals<span class="nav-badge" id="badge-approvals">3</span></div>
-        <div class="nav-item" data-page="invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span>Invoices</div>
-        <div class="nav-item" data-page="credit" onclick="navigate('credit')"><span class="nav-icon">💳</span>Credit Accounts</div>
+      <div style="background:var(--surface);border-radius:3px;border:1px solid var(--border);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;">Estimated Total</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--primary);" id="po-total">₦240,000</span>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Warehouse</div>
-        <div class="nav-item" data-page="inventory" onclick="navigate('inventory')"><span class="nav-icon">🏭</span>Inventory</div>
-        <div class="nav-item" data-page="transfers" onclick="navigate('transfers')"><span class="nav-icon">🔄</span>Transfers<span class="nav-badge" id="badge-transfers">2</span></div>
-        <div class="nav-item" data-page="dispatch" onclick="navigate('dispatch')"><span class="nav-icon">🚚</span>Dispatch</div>
-        <div class="nav-item" data-page="fleet" onclick="navigate('fleet')"><span class="nav-icon">🚛</span>Fleet</div>
-        <div class="nav-item" data-page="returns" onclick="navigate('returns')"><span class="nav-icon">↩️</span>Returns</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Admin</div>
-        <div class="nav-item" data-page="staff" onclick="navigate('staff')"><span class="nav-icon">🪪</span>Staff</div>
-        <div class="nav-item" data-page="assets" onclick="navigate('assets')"><span class="nav-icon">🏗️</span>Assets</div>
-        <div class="nav-item" data-page="service" onclick="navigate('service')"><span class="nav-icon">🔧</span>Service</div>
-      </div>
-    </nav>
-    <main class="main">
-
-<!-- DASHBOARD -->
-<div class="page active" id="page-dashboard">
-  <div class="page-header">
-    <div><div class="page-title" id="dash-title">Operations Dashboard</div><div class="page-subtitle">Today, 8 April 2026 · Q2 FY2026</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Report exported','success')">Export Report</button></div>
-  </div>
-  <div class="kpi-grid" id="dash-kpi"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card">
-      <div class="card-header"><div class="card-title">Pipeline</div></div>
-      <div class="kanban" id="dash-kanban"></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title">Activity Feed</div></div>
-      <div id="activity-feed"></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px" id="dash-quick-actions">
-    <div class="card-header"><div class="card-title">Quick Actions</div></div>
-    <div id="quick-actions-container" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-  </div>
-</div>
-
-<!-- CUSTOMERS -->
-<div class="page" id="page-customers">
-  <div class="page-header">
-    <div><div class="page-title">Customers</div><div class="page-subtitle">All accounts · 24 active</div></div>
-    <div class="page-actions">
-      <input type="text" placeholder="Search customers…" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;width:220px" oninput="filterCustomers(this.value)">
-      <button class="btn btn-primary" onclick="openNewCustomerModal()">+ New Customer</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table id="customers-table">
-        <thead><tr><th>Name</th><th>Type</th><th>Industry</th><th>City</th><th>Credit Limit</th><th>Outstanding</th><th>Status</th><th></th></tr></thead>
-        <tbody id="customers-tbody"></tbody>
-      </table>
+      <div class="form-group"><label class="form-label">Fulfilment</label><select class="form-input"><option>Delivery — Lagos</option><option>Delivery — Other State</option><option>Pickup — Main Yard (Ikeja)</option></select></div>
+      <button class="btn-submit" onclick="submitProductOrder()">Add to Order →</button>
+      <p style="font-size:11px;color:var(--gray2);text-align:center;margin-top:10px;">Final price confirmed by our team. Indicative only.</p>
     </div>
   </div>
 </div>
 
-<!-- ENQUIRIES -->
-<div class="page" id="page-enquiries">
-  <div class="page-header">
-    <div><div class="page-title">Enquiries</div><div class="page-subtitle">Inbound leads & RFQs</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="openNewEnquiryModal()">+ Capture Enquiry</button></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card">
-      <div class="card-header"><div class="card-title">Enquiry Log</div></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Ref</th><th>Customer</th><th>Product</th><th>Qty</th><th>Status</th><th>Date</th></tr></thead>
-          <tbody id="enquiries-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card" id="enquiry-form-card">
-      <div class="card-header"><div class="card-title">Capture Enquiry</div></div>
-      <div class="form-grid">
-        <div class="form-group"><label>Customer</label><select id="enq-customer"><option>Dangote Cement Plc</option><option>MTN Nigeria</option><option>Lafarge Africa</option><option>Flour Mills of Nigeria</option><option>BUA Foods Plc</option><option>Nigerian Breweries</option><option>Nestle Nigeria</option><option>Unilever Nigeria</option></select></div>
-        <div class="form-group"><label>Product</label><select id="enq-product"><option>Portland Cement 50kg</option><option>Steel Rod 12mm</option><option>PVC Pipe 3inch</option><option>Transformer Oil 200L</option><option>Generator 45KVA</option><option>Safety Helmet</option></select></div>
-        <div class="form-group"><label>Qty Requested</label><input type="number" id="enq-qty" placeholder="e.g. 500"></div>
-        <div class="form-group"><label>Delivery City</label><select id="enq-city"><option>Lagos</option><option>Abuja</option><option>Kano</option><option>Port Harcourt</option><option>Ibadan</option><option>Enugu</option></select></div>
-        <div class="form-group" style="grid-column:span 2"><label>Notes</label><textarea rows="3" id="enq-notes" placeholder="Additional requirements…"></textarea></div>
-      </div>
-      <div style="margin-top:16px;display:flex;gap:10px">
-        <button class="btn btn-primary" onclick="submitEnquiry()">Submit Enquiry</button>
-        <button class="btn btn-ghost" onclick="showToast('Convert to Quote','success')">Convert to Quote</button>
-      </div>
-    </div>
+<div class="toast-msg" id="toastMsg"></div>
+<div class="cart-bar" id="cartBar">
+  <div class="cart-info" id="cartInfo">0 items</div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;" id="cartTotal">₦0</span>
+    <button class="btn-checkout" onclick="showToast('Our team will contact you to confirm your cart and process payment.')">Checkout →</button>
+    <button style="background:rgba(255,255,255,0.15);border:none;color:rgba(255,255,255,0.8);padding:8px 14px;border-radius:3px;cursor:none;font-size:12px;" onclick="clearCart()">Clear</button>
   </div>
 </div>
 
-<!-- QUOTES -->
-<div class="page" id="page-quotes">
-  <div class="page-header">
-    <div><div class="page-title">Quotations</div><div class="page-subtitle">All quotes · version history</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('New quote created','success')">+ New Quote</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Quote #</th><th>Customer</th><th>Product</th><th>Amount</th><th>Version</th><th>Validity</th><th>Status</th><th></th></tr></thead>
-        <tbody id="quotes-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
+document.querySelectorAll('a,button,.product-card,.trust-logo,.filter-btn,.testi-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});
+});
 
-<!-- ORDERS -->
-<div class="page" id="page-orders">
-  <div class="page-header">
-    <div><div class="page-title">Orders / Purchase Orders</div><div class="page-subtitle">All sales orders</div></div>
-    <div class="page-actions">
-      <button class="btn btn-ghost btn-sm" id="btn-raise-return" onclick="openReturnsFlow()">↩ Raise Return</button>
-      <button class="btn btn-primary" onclick="showToast('New order created','success')">+ New Order</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Order #</th><th>Customer</th><th>Products</th><th>Value</th><th>Date</th><th>Dispatch Status</th><th>Payment</th><th></th></tr></thead>
-        <tbody id="orders-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+// NAV
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);});
 
-<!-- APPROVALS -->
-<div class="page" id="page-approvals">
-  <div class="page-header">
-    <div><div class="page-title">Approvals</div><div class="page-subtitle">Pending actions requiring sign-off</div></div>
-  </div>
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab(this,'approval-credit')">Credit Requests</div>
-    <div class="tab" onclick="switchTab(this,'approval-transfer')">Transfer SLA</div>
-    <div class="tab" onclick="switchTab(this,'approval-creditnote')">Credit Notes</div>
-  </div>
-  <div id="approval-credit">
-    <div id="credit-requests-list"></div>
-  </div>
-  <div id="approval-transfer" style="display:none">
-    <div id="transfer-sla-list"></div>
-  </div>
-  <div id="approval-creditnote" style="display:none">
-    <div id="credit-note-list"></div>
-  </div>
-</div>
+// THEME TOGGLE
+function toggleDark(){
+  const isDark=document.documentElement.classList.toggle('dark');
+  document.getElementById('themeToggle').textContent=isDark?'☀️':'🌙';
+  localStorage.setItem('biup-theme',isDark?'dark':'light');
+}
+(function(){
+  const saved=localStorage.getItem('biup-theme');
+  if(saved==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeToggle').textContent='☀️';}
+})();
 
-<!-- INVOICES -->
-<div class="page" id="page-invoices">
-  <div class="page-header">
-    <div><div class="page-title">Invoices</div><div class="page-subtitle">Dunning pipeline · ₦ receivables</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Invoice created','success')">+ Issue Invoice</button></div>
-  </div>
-  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi-card"><div class="kpi-label">Total Outstanding</div><div class="kpi-value">₦847M</div><div class="kpi-sub">62 invoices</div></div>
-    <div class="kpi-card" style="--c:#f59e0b"><div class="kpi-label">Day 7 — Reminder</div><div class="kpi-value" style="color:#8b5e00">₦212M</div><div class="kpi-sub">18 invoices</div></div>
-    <div class="kpi-card"><div class="kpi-label">Day 14 — Follow-up</div><div class="kpi-value" style="color:var(--primary)">₦310M</div><div class="kpi-sub">24 invoices</div></div>
-    <div class="kpi-card"><div class="kpi-label">Day 30+ — Critical</div><div class="kpi-value" style="color:var(--red)">₦325M</div><div class="kpi-sub">20 invoices</div></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Invoice #</th><th>Customer</th><th>Amount</th><th>Issued</th><th>Due</th><th>Days Overdue</th><th>Stage</th><th></th></tr></thead>
-        <tbody id="invoices-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
+// PRODUCTS
+function tyreSVG(rimColor){
+  return `<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+    <ellipse cx="80" cy="156" rx="44" ry="5" fill="rgba(0,0,0,0.18)"/>
+    <circle cx="80" cy="80" r="74" fill="#1a1a1a"/>
+    <circle cx="80" cy="80" r="74" fill="none" stroke="#242424" stroke-width="11"/>
+    <circle cx="80" cy="80" r="69" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="10 5"/>
+    <circle cx="80" cy="80" r="63" fill="none" stroke="#191919" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <circle cx="80" cy="80" r="56" fill="#1e1e1e"/>
+    <circle cx="80" cy="80" r="49" fill="#272727" stroke="#323232" stroke-width="1"/>
+    <g fill="${rimColor}" opacity="0.88">
+      <rect x="77" y="32" width="6" height="24" rx="3" transform="rotate(0 80 80)"/>
+      <rect x="77" y="32" width="6" height="24" rx="3" transform="rotate(72 80 80)"/>
+      <rect x="77" y="32" width="6" height="24" rx="3" transform="rotate(144 80 80)"/>
+      <rect x="77" y="32" width="6" height="24" rx="3" transform="rotate(216 80 80)"/>
+      <rect x="77" y="32" width="6" height="24" rx="3" transform="rotate(288 80 80)"/>
+    </g>
+    <circle cx="80" cy="80" r="28" fill="#1f1f1f" stroke="#2e2e2e" stroke-width="1.5"/>
+    <circle cx="80" cy="80" r="11" fill="#171717" stroke="${rimColor}" stroke-width="1.5"/>
+    <circle cx="80" cy="80" r="4" fill="#0e0e0e"/>
+  </svg>`;
+}
 
-<!-- CREDIT -->
-<div class="page" id="page-credit">
-  <div class="page-header">
-    <div><div class="page-title">Credit Accounts</div><div class="page-subtitle">Utilisation & limits</div></div>
-    <div class="page-actions">
-      <button class="btn btn-outline btn-sm" id="btn-recommend-credit" onclick="showToast('Credit recommendation submitted','success')">Recommend Credit</button>
-      <button class="btn btn-primary btn-sm" id="btn-final-approve-credit" onclick="showToast('Credit limit approved','success')">Final Approve Credit</button>
-    </div>
-  </div>
-  <div id="credit-accounts-list"></div>
-</div>
-
-<!-- INVENTORY -->
-<div class="page" id="page-inventory">
-  <div class="page-header">
-    <div><div class="page-title">Inventory Ledger</div><div class="page-subtitle">MY + WH Lagos + WH Abuja</div></div>
-    <div class="page-actions">
-      <button class="btn btn-ghost btn-sm" id="btn-signoff-inventory" onclick="doInventorySignOff()">Sign Off — Inventory Release</button>
-      <button class="btn btn-primary" onclick="showToast('Stock adjustment saved','success')">+ Adjust Stock</button>
-    </div>
-  </div>
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab(this,'inv-all')">All Locations</div>
-    <div class="tab" onclick="switchTab(this,'inv-my')">Manufacturing Yard</div>
-    <div class="tab" onclick="switchTab(this,'inv-lag')">WH Lagos</div>
-    <div class="tab" onclick="switchTab(this,'inv-abj')">WH Abuja</div>
-  </div>
-  <div id="inv-all" class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>SKU</th><th>Product</th><th>MY Stock</th><th>WH Lagos</th><th>WH Abuja</th><th>Total</th><th>Reorder Level</th><th>Status</th></tr></thead>
-        <tbody id="inventory-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div id="inv-my" style="display:none" class="card"><p style="padding:20px;color:var(--muted)">Manufacturing Yard view — same data filtered to MY column.</p></div>
-  <div id="inv-lag" style="display:none" class="card"><p style="padding:20px;color:var(--muted)">WH Lagos view — filtered inventory.</p></div>
-  <div id="inv-abj" style="display:none" class="card"><p style="padding:20px;color:var(--muted)">WH Abuja view — filtered inventory.</p></div>
-</div>
-
-<!-- TRANSFERS -->
-<div class="page" id="page-transfers">
-  <div class="page-header">
-    <div><div class="page-title">Stock Transfers</div><div class="page-subtitle">Inter-warehouse movements · 2hr SLA</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Transfer request raised','success')">+ Raise Transfer</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Transfer #</th><th>From</th><th>To</th><th>Product</th><th>Qty</th><th>Raised</th><th>SLA Remaining</th><th>Status</th></tr></thead>
-        <tbody id="transfers-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- DISPATCH -->
-<div class="page" id="page-dispatch">
-  <div class="page-header">
-    <div><div class="page-title">Dispatch</div><div class="page-subtitle">3-step sign-off gate</div></div>
-  </div>
-  <div id="dispatch-list"></div>
-</div>
-
-<!-- FLEET -->
-<div class="page" id="page-fleet">
-  <div class="page-header">
-    <div><div class="page-title">Fleet Management</div><div class="page-subtitle">All vehicles</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Vehicle added','success')">+ Add Vehicle</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Plate</th><th>Type</th><th>Make / Model</th><th>Capacity</th><th>Driver</th><th>Last Service</th><th>Status</th><th></th></tr></thead>
-        <tbody id="fleet-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- RETURNS -->
-<div class="page" id="page-returns">
-  <div class="page-header">
-    <div><div class="page-title">Returns</div><div class="page-subtitle">6-step tracker</div></div>
-    <div class="page-actions">
-      <button class="btn btn-primary" id="btn-raise-return2" onclick="openReturnsFlow()">↩ Raise Return</button>
-    </div>
-  </div>
-  <div id="returns-list"></div>
-</div>
-
-<!-- STAFF -->
-<div class="page" id="page-staff">
-  <div class="page-header">
-    <div><div class="page-title">Staff Directory</div><div class="page-subtitle">All employees</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Staff record added','success')">+ Add Staff</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Phone</th><th>Status</th></tr></thead>
-        <tbody id="staff-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ASSETS -->
-<div class="page" id="page-assets">
-  <div class="page-header">
-    <div><div class="page-title">Assets Register</div><div class="page-subtitle">Fixed & movable assets</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Asset registered','success')">+ Register Asset</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Tag</th><th>Description</th><th>Category</th><th>Location</th><th>Value (₦)</th><th>Condition</th><th>Last Audit</th></tr></thead>
-        <tbody id="assets-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- SERVICE -->
-<div class="page" id="page-service">
-  <div class="page-header">
-    <div><div class="page-title">Service Tickets</div><div class="page-subtitle">Maintenance & support</div></div>
-    <div class="page-actions"><button class="btn btn-primary" onclick="showToast('Service ticket raised','success')">+ Raise Ticket</button></div>
-  </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Ticket #</th><th>Asset / Item</th><th>Issue</th><th>Priority</th><th>Assigned</th><th>Status</th><th>Raised</th></tr></thead>
-        <tbody id="service-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-    </main>
-  </div>
-</div>
-
-<!-- RIDER VIEW -->
-<div id="rider-view">
-  <div class="rider-header">
-    <div class="rider-header-brand">BIUP<span>NG</span> · Rider Portal</div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="color:rgba(255,255,255,.7);font-size:13px" id="rider-name-display">Emeka Okafor</div>
-      <select class="role-switcher" onchange="switchRole(this.value)">
-        <option value="rider" selected>Rider</option>
-        <option value="superior">Superior Officer</option>
-        <option value="sales">Sales Officer</option>
-        <option value="finance">Finance Officer</option>
-        <option value="inventory">Inventory Officer</option>
-      </select>
-    </div>
-  </div>
-  <div id="rider-cards"></div>
-</div>
-
-<!-- MODAL -->
-<div id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">Modal</div>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
-    <div class="modal-footer" id="modal-footer"></div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast-container"></div>
-
-<script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
-
-const USERS = {
-  'ibrahim.musa@biup.ng':  {pass:'biup2024',role:'superior',name:'Ibrahim Musa',initials:'IM'},
-  'kemi.adeyemi@biup.ng':  {pass:'biup2024',role:'sales',name:'Kemi Adeyemi',initials:'KA'},
-  'adaeze.obi@biup.ng':    {pass:'biup2024',role:'finance',name:'Adaeze Obi',initials:'AO'},
-  'bola.james@biup.ng':    {pass:'biup2024',role:'inventory',name:'Bola James',initials:'BJ'},
-  'emeka.okafor@biup.ng':  {pass:'biup2024',role:'rider',name:'Emeka Okafor',initials:'EO'},
-};
-
-const ROLE_NAV = {
-  superior: ['dashboard','customers','enquiries','quotes','orders','approvals','invoices','credit','inventory','transfers','dispatch','fleet','returns','staff','assets','service'],
-  sales:    ['dashboard','customers','enquiries','quotes','orders','returns'],
-  finance:  ['dashboard','orders','approvals','invoices','credit'],
-  inventory:['dashboard','inventory','transfers','dispatch','fleet'],
-  rider:    [],
-};
-
-const ROLE_LABELS = {superior:'Superior Officer',sales:'Sales Officer',finance:'Finance Officer',inventory:'Inventory Officer',rider:'Rider'};
-
-let currentRole = 'superior';
-let currentUser = USERS['ibrahim.musa@biup.ng'];
-
-const CUSTOMERS = [
-  {id:'C001',name:'Dangote Cement Plc',type:'Enterprise',industry:'Manufacturing',city:'Lagos',limit:500000000,outstanding:210000000,status:'Active'},
-  {id:'C002',name:'MTN Nigeria',type:'Enterprise',industry:'Telecom',city:'Lagos',limit:350000000,outstanding:85000000,status:'Active'},
-  {id:'C003',name:'Lafarge Africa',type:'Enterprise',industry:'Manufacturing',city:'Lagos',limit:280000000,outstanding:145000000,status:'Active'},
-  {id:'C004',name:'Flour Mills of Nigeria',type:'Enterprise',industry:'FMCG',city:'Lagos',limit:200000000,outstanding:62000000,status:'Active'},
-  {id:'C005',name:'BUA Foods Plc',type:'Enterprise',industry:'FMCG',city:'Abuja',limit:180000000,outstanding:91000000,status:'Active'},
-  {id:'C006',name:'Nigerian Breweries',type:'Enterprise',industry:'Beverages',city:'Lagos',limit:150000000,outstanding:38000000,status:'Active'},
-  {id:'C007',name:'Nestle Nigeria',type:'Enterprise',industry:'FMCG',city:'Lagos',limit:120000000,outstanding:27000000,status:'Active'},
-  {id:'C008',name:'Unilever Nigeria',type:'Enterprise',industry:'FMCG',city:'Lagos',limit:100000000,outstanding:41000000,status:'Active'},
-  {id:'C009',name:'Access Bank Plc',type:'Enterprise',industry:'Banking',city:'Lagos',limit:80000000,outstanding:0,status:'Active'},
-  {id:'C010',name:'Zenith Bank',type:'Enterprise',industry:'Banking',city:'Lagos',limit:80000000,outstanding:16000000,status:'Active'},
-  {id:'C011',name:'Julius Berger Nigeria',type:'Enterprise',industry:'Construction',city:'Abuja',limit:250000000,outstanding:178000000,status:'On Hold'},
-  {id:'C012',name:'Total Energies Nigeria',type:'Enterprise',industry:'Energy',city:'Lagos',limit:300000000,outstanding:95000000,status:'Active'},
+const products=[
+  {brand:'Bridgestone',name:'Dueler A/T',size:'265/70 R17',price:60000,type:'suv',rimColor:'#c0392b',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Michelin',name:'X Multi Z',size:'275/80 R22.5',price:95000,type:'truck',rimColor:'#2980b9',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Goodyear',name:'WT Cargo',size:'315/80 R22.5',price:110000,type:'truck',rimColor:'#d4ac0d',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Hankook',name:'Kinergy EX',size:'225/70 R15',price:38000,type:'passenger',rimColor:'#27ae60',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Continental',name:'AllSeasonContact',size:'245/75 R16',price:52000,type:'suv',rimColor:'#7f8c8d',stock:'Low Stock',stockLevel:'low'},
+  {brand:'Dunlop',name:'SP Touring',size:'195/65 R15',price:28000,type:'passenger',rimColor:'#2471a3',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Pirelli',name:'Scorpion ATR',size:'235/55 R18',price:72000,type:'suv',rimColor:'#cb4335',stock:'In Stock',stockLevel:'ok'},
+  {brand:'Firestone',name:'FS818',size:'215/75 R17.5',price:68000,type:'industrial',rimColor:'#935116',stock:'In Stock',stockLevel:'ok'},
 ];
 
-const ENQUIRIES = [
-  {ref:'ENQ-0041',customer:'Dangote Cement Plc',product:'Portland Cement 50kg',qty:10000,status:'Converted',date:'2026-04-06'},
-  {ref:'ENQ-0042',customer:'MTN Nigeria',product:'Generator 45KVA',qty:12,status:'Quoted',date:'2026-04-07'},
-  {ref:'ENQ-0043',customer:'Lafarge Africa',product:'Safety Helmet',qty:500,status:'New',date:'2026-04-08'},
-  {ref:'ENQ-0044',customer:'BUA Foods Plc',product:'PVC Pipe 3inch',qty:800,status:'New',date:'2026-04-08'},
-  {ref:'ENQ-0040',customer:'Nestle Nigeria',product:'Transformer Oil 200L',qty:50,status:'Closed',date:'2026-04-03'},
-];
-
-const QUOTES = [
-  {no:'QT-2026-0188',customer:'Dangote Cement Plc',product:'Portland Cement 50kg',amount:85000000,version:'v3',validity:'2026-04-20',status:'Accepted'},
-  {no:'QT-2026-0189',customer:'MTN Nigeria',product:'Generator 45KVA',amount:6800000,version:'v1',validity:'2026-04-15',status:'Pending'},
-  {no:'QT-2026-0190',customer:'Lafarge Africa',product:'Steel Rod 12mm',amount:12400000,version:'v2',validity:'2026-04-18',status:'Under Review'},
-  {no:'QT-2026-0187',customer:'Nestle Nigeria',product:'Transformer Oil 200L',amount:2750000,version:'v1',validity:'2026-04-10',status:'Expired'},
-  {no:'QT-2026-0186',customer:'Flour Mills of Nigeria',product:'PVC Pipe 3inch',amount:4200000,version:'v2',validity:'2026-04-25',status:'Accepted'},
-];
-
-const ORDERS = [
-  {no:'ORD-2026-0422',customer:'Dangote Cement Plc',products:'Portland Cement 50kg × 10,000',value:85000000,date:'2026-04-06',dispatch:'Dispatched',payment:'Invoiced'},
-  {no:'ORD-2026-0423',customer:'Flour Mills of Nigeria',products:'PVC Pipe 3inch × 800',value:4200000,date:'2026-04-07',dispatch:'Pending Release',payment:'Pending'},
-  {no:'ORD-2026-0424',customer:'Nigerian Breweries',products:'Safety Helmet × 500',value:1750000,date:'2026-04-07',dispatch:'In Transit',payment:'Part-Paid'},
-  {no:'ORD-2026-0425',customer:'MTN Nigeria',products:'Generator 45KVA × 12',value:6800000,date:'2026-04-08',dispatch:'Pending Release',payment:'Pending'},
-  {no:'ORD-2026-0420',customer:'BUA Foods Plc',products:'Steel Rod 12mm × 200',value:3100000,date:'2026-04-05',dispatch:'Delivered',payment:'Paid'},
-];
-
-const INVOICES = [
-  {no:'INV-2026-1102',customer:'Dangote Cement Plc',amount:85000000,issued:'2026-03-24',due:'2026-04-07',overdue:1,stage:'Day 7'},
-  {no:'INV-2026-1089',customer:'Julius Berger Nigeria',amount:42000000,issued:'2026-03-18',due:'2026-04-01',overdue:7,stage:'Day 14'},
-  {no:'INV-2026-1075',customer:'Lafarge Africa',amount:28500000,issued:'2026-03-08',due:'2026-03-22',overdue:17,stage:'Day 30'},
-  {no:'INV-2026-1060',customer:'MTN Nigeria',amount:12800000,issued:'2026-02-22',due:'2026-03-08',overdue:31,stage:'Day 45'},
-  {no:'INV-2026-1098',customer:'Nestle Nigeria',amount:6200000,issued:'2026-03-20',due:'2026-04-03',overdue:5,stage:'Day 7'},
-  {no:'INV-2026-1080',customer:'Total Energies Nigeria',amount:18900000,issued:'2026-03-12',due:'2026-03-26',overdue:13,stage:'Day 14'},
-];
-
-const CREDIT_ACCOUNTS = [
-  {customer:'Dangote Cement Plc',limit:500000000,used:210000000,requests:[]},
-  {customer:'Lafarge Africa',limit:280000000,used:145000000},
-  {customer:'Julius Berger Nigeria',limit:250000000,used:178000000},
-  {customer:'MTN Nigeria',limit:350000000,used:85000000},
-  {customer:'BUA Foods Plc',limit:180000000,used:91000000},
-  {customer:'Total Energies Nigeria',limit:300000000,used:95000000},
-];
-
-const INVENTORY = [
-  {sku:'SKU-001',product:'Portland Cement 50kg',my:45000,lag:12000,abj:8000,reorder:5000,status:'OK'},
-  {sku:'SKU-002',product:'Steel Rod 12mm',my:8200,lag:3100,abj:1800,reorder:2000,status:'OK'},
-  {sku:'SKU-003',product:'PVC Pipe 3inch',my:3400,lag:1200,abj:600,reorder:1500,status:'Low'},
-  {sku:'SKU-004',product:'Transformer Oil 200L',my:420,lag:180,abj:95,reorder:200,status:'OK'},
-  {sku:'SKU-005',product:'Generator 45KVA',my:24,lag:8,abj:4,reorder:10,status:'OK'},
-  {sku:'SKU-006',product:'Safety Helmet',my:6800,lag:2400,abj:1200,reorder:1000,status:'OK'},
-  {sku:'SKU-007',product:'Lubricant Oil 5L',my:1200,lag:380,abj:190,reorder:500,status:'Low'},
-  {sku:'SKU-008',product:'Industrial Cable 100m',my:890,lag:240,abj:120,reorder:300,status:'OK'},
-];
-
-const TRANSFERS = [
-  {no:'TRF-0221',from:'MY',to:'WH Lagos',product:'Portland Cement 50kg',qty:5000,raised:'2026-04-08 07:30',sla:'01:15',status:'In Progress',breach:false},
-  {no:'TRF-0222',from:'WH Lagos',to:'WH Abuja',product:'PVC Pipe 3inch',qty:600,raised:'2026-04-08 06:10',sla:'00:05',status:'In Progress',breach:true},
-  {no:'TRF-0220',from:'MY',to:'WH Lagos',product:'Safety Helmet',qty:1000,raised:'2026-04-07 14:00',sla:'Done',status:'Completed',breach:false},
-  {no:'TRF-0219',from:'MY',to:'WH Abuja',product:'Steel Rod 12mm',qty:800,raised:'2026-04-07 09:00',sla:'Done',status:'Completed',breach:false},
-];
-
-const DISPATCH_JOBS = [
-  {no:'DSP-0411',order:'ORD-2026-0424',customer:'Nigerian Breweries',address:'1 Abebe Village Rd, Lagos',product:'Safety Helmet × 500',vehicle:'LND-421-KJ',invDone:true,riderDone:false,custDone:false},
-  {no:'DSP-0412',order:'ORD-2026-0422',customer:'Dangote Cement Plc',address:'1 Alfred Rewane Rd, Lagos',product:'Portland Cement × 10,000',vehicle:'LKJ-882-BK',invDone:true,riderDone:true,custDone:false},
-  {no:'DSP-0410',order:'ORD-2026-0420',customer:'BUA Foods Plc',address:'3 Muhammadu Buhari Way, Abuja',product:'Steel Rod 12mm × 200',vehicle:'ABJ-553-HT',invDone:true,riderDone:true,custDone:true},
-];
-
-const FLEET = [
-  {plate:'LND-421-KJ',type:'Truck',make:'Man TGS 18.250',capacity:'10T',driver:'Emeka Okafor',service:'2026-03-15',status:'Active'},
-  {plate:'LKJ-882-BK',type:'Truck',make:'Mercedes Actros 1845',capacity:'15T',driver:'Chukwuma Eze',service:'2026-02-28',status:'Active'},
-  {plate:'ABJ-553-HT',type:'Van',make:'Toyota Hiace',capacity:'3T',driver:'Yakubu Danladi',service:'2026-04-01',status:'Active'},
-  {plate:'LOS-334-GT',type:'Truck',make:'Iveco Stralis',capacity:'12T',driver:'—',service:'2026-01-10',status:'In Maintenance'},
-  {plate:'KAN-112-MW',type:'Pickup',make:'Hilux GD6',capacity:'1T',driver:'Musa Garba',service:'2026-03-20',status:'Active'},
-];
-
-const RETURNS = [
-  {no:'RET-0089',order:'ORD-2026-0415',customer:'Nestle Nigeria',product:'Safety Helmet × 50',reason:'Defective batch',step:3,steps:['Raised','Approved','Stock Inspected','QC Passed','Credit Issued','Closed']},
-  {no:'RET-0090',order:'ORD-2026-0418',customer:'Flour Mills of Nigeria',product:'PVC Pipe 3inch × 100',reason:'Wrong spec delivered',step:1,steps:['Raised','Approved','Stock Inspected','QC Passed','Credit Issued','Closed']},
-];
-
-const STAFF = [
-  {name:'Ibrahim Musa',role:'Superior Officer',dept:'Management',email:'ibrahim.musa@biup.ng',phone:'+234 801 234 5678',status:'Active'},
-  {name:'Kemi Adeyemi',role:'Sales Officer',dept:'Sales',email:'kemi.adeyemi@biup.ng',phone:'+234 802 345 6789',status:'Active'},
-  {name:'Adaeze Obi',role:'Finance Officer',dept:'Finance',email:'adaeze.obi@biup.ng',phone:'+234 803 456 7890',status:'Active'},
-  {name:'Bola James',role:'Inventory Officer',dept:'Warehouse',email:'bola.james@biup.ng',phone:'+234 804 567 8901',status:'Active'},
-  {name:'Emeka Okafor',role:'Rider',dept:'Logistics',email:'emeka.okafor@biup.ng',phone:'+234 805 678 9012',status:'Active'},
-  {name:'Chukwuma Eze',role:'Rider',dept:'Logistics',email:'chukwuma.eze@biup.ng',phone:'+234 806 789 0123',status:'Active'},
-  {name:'Yakubu Danladi',role:'Rider',dept:'Logistics',email:'yakubu.danladi@biup.ng',phone:'+234 807 890 1234',status:'Active'},
-  {name:'Fatima Suleiman',role:'Accounts Officer',dept:'Finance',email:'fatima.suleiman@biup.ng',phone:'+234 808 901 2345',status:'Active'},
-];
-
-const ASSETS = [
-  {tag:'AST-001',desc:'Forklift Toyota 3T',cat:'Machinery',loc:'WH Lagos',value:8500000,cond:'Good',audit:'2026-03-01'},
-  {tag:'AST-002',desc:'Pallet Racking System',cat:'Furniture',loc:'WH Abuja',value:2200000,cond:'Good',audit:'2026-02-15'},
-  {tag:'AST-003',desc:'Generator 100KVA',cat:'Equipment',loc:'MY',value:4800000,cond:'Fair',audit:'2026-01-20'},
-  {tag:'AST-004',desc:'Office Server Dell R740',cat:'IT',loc:'Head Office',value:3600000,cond:'Good',audit:'2026-03-10'},
-  {tag:'AST-005',desc:'Weighbridge 80T',cat:'Machinery',loc:'MY',value:18000000,cond:'Good',audit:'2026-04-01'},
-];
-
-const SERVICE_TICKETS = [
-  {no:'SVC-0211',asset:'Forklift Toyota 3T',issue:'Hydraulic leak',priority:'High',assigned:'Bola James',status:'Open',raised:'2026-04-06'},
-  {no:'SVC-0210',asset:'Generator 100KVA',issue:'Annual service',priority:'Medium',assigned:'External Vendor',status:'In Progress',raised:'2026-04-05'},
-  {no:'SVC-0209',asset:'LOS-334-GT Iveco Stralis',issue:'Gearbox fault',priority:'High',assigned:'Chukwuma Eze',status:'Awaiting Parts',raised:'2026-04-03'},
-  {no:'SVC-0208',asset:'Office Server Dell R740',issue:'RAM upgrade',priority:'Low',assigned:'IT Dept',status:'Closed',raised:'2026-04-01'},
-];
-
-const CREDIT_REQUESTS = [
-  {id:'CR-041',customer:'Julius Berger Nigeria',requested:50000000,current:250000000,reason:'Major infrastructure contract Q2 2026',recommended:true,status:'Pending Final Approval'},
-  {id:'CR-042',customer:'BUA Foods Plc',requested:20000000,current:180000000,reason:'Seasonal stock build-up Ramadan period',recommended:false,status:'Pending Recommendation'},
-  {id:'CR-043',customer:'Lafarge Africa',requested:30000000,current:280000000,reason:'New product line launch',recommended:false,status:'Pending Recommendation'},
-];
-
-const ACTIVITIES = [
-  {text:'ORD-2026-0425 created — MTN Nigeria · Generator 45KVA × 12',time:'08:42'},
-  {text:'INV-2026-1102 payment reminder sent — Dangote Cement',time:'08:30'},
-  {text:'TRF-0221 dispatched from Manufacturing Yard',time:'07:35'},
-  {text:'CR-041 recommended by Finance — Julius Berger Nigeria',time:'07:10'},
-  {text:'RET-0089 stock inspection passed — Nestle Nigeria',time:'06:55'},
-  {text:'DSP-0412 pickup confirmed by rider — LKJ-882-BK',time:'06:40'},
-  {text:'ENQ-0043 received from Lafarge Africa',time:'06:15'},
-  {text:'QT-2026-0186 accepted — Flour Mills of Nigeria',time:'Yesterday'},
-];
-
-// ─── AUTH ────────────────────────────────────────────────────────────────────
-
-function fillLogin(e,p){document.getElementById('l-email').value=e;document.getElementById('l-pass').value=p}
-
-function doLogin(){
-  const e=document.getElementById('l-email').value.trim();
-  const p=document.getElementById('l-pass').value;
-  const u=USERS[e];
-  if(u&&u.pass===p){
-    currentUser=u;
-    currentRole=u.role;
-    document.getElementById('login-screen').style.display='none';
-    initApp();
-  } else {
-    document.getElementById('login-error').style.display='block';
-  }
-}
-
-document.getElementById('l-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-
-// ─── APP INIT ────────────────────────────────────────────────────────────────
-
-function initApp(){
-  document.getElementById('app').classList.add('active');
-  applyRole(currentRole);
-  renderAll();
-}
-
-function applyRole(role){
-  currentRole=role;
-  const u=Object.values(USERS).find(x=>x.role===role)||currentUser;
-  document.getElementById('user-avatar').textContent=u.initials;
-  document.getElementById('user-name').textContent=u.name;
-  document.getElementById('user-role-badge').textContent=ROLE_LABELS[role];
-  document.getElementById('role-switcher').value=role;
-
-  // rider = special view
-  if(role==='rider'){
-    document.getElementById('app').style.display='none';
-    document.getElementById('rider-view').classList.add('active');
-    renderRiderView();
-    return;
-  }
-  document.getElementById('app').style.display='flex';
-  document.getElementById('rider-view').classList.remove('active');
-
-  // update nav visibility
-  const allowed=ROLE_NAV[role];
-  document.querySelectorAll('.nav-item[data-page]').forEach(el=>{
-    el.style.display=allowed.includes(el.dataset.page)?'flex':'none';
-  });
-
-  // role-gated buttons
-  const show=(id,roles)=>{const el=document.getElementById(id);if(el)el.style.display=roles.includes(role)?'':'none'};
-  show('btn-raise-return',['sales','superior']);
-  show('btn-raise-return2',['sales','superior']);
-  show('btn-recommend-credit',['finance','superior']);
-  show('btn-final-approve-credit',['superior']);
-  show('btn-signoff-inventory',['inventory','superior']);
-
-  // navigate to first allowed page
-  const first=allowed[0]||'dashboard';
-  navigate(first);
-}
-
-function switchRole(role){applyRole(role);renderDashboard()}
-
-// ─── NAVIGATION ──────────────────────────────────────────────────────────────
-
-function navigate(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const pg=document.getElementById('page-'+page);
-  if(pg)pg.classList.add('active');
-  const ni=document.querySelector(`.nav-item[data-page="${page}"]`);
-  if(ni)ni.classList.add('active');
-}
-
-// ─── RENDER ALL ──────────────────────────────────────────────────────────────
-
-function renderAll(){
-  renderDashboard();
-  renderCustomers();
-  renderEnquiries();
-  renderQuotes();
-  renderOrders();
-  renderInvoices();
-  renderCreditAccounts();
-  renderInventory();
-  renderTransfers();
-  renderDispatch();
-  renderFleet();
-  renderReturns();
-  renderApprovals();
-  renderStaff();
-  renderAssets();
-  renderService();
-}
-
-// ─── DASHBOARD ───────────────────────────────────────────────────────────────
-
-const DASH_DATA = {
-  superior:{
-    kpis:[
-      {label:'Total Revenue MTD',value:'₦312M',sub:'↑ 18% vs last month',cls:'kpi-up'},
-      {label:'Open Orders',value:'24',sub:'₦98M pipeline'},
-      {label:'Overdue Invoices',value:'₦847M',sub:'62 invoices',cls:'kpi-dn'},
-      {label:'Credit Utilisation',value:'68%',sub:'Across all accounts'},
-      {label:'Active Customers',value:'24',sub:'3 on hold'},
-      {label:'Inventory Value',value:'₦1.4B',sub:'3 locations'},
-    ],
-    quick:['New Order','Issue Invoice','Approve Credit','Run Report'],
-  },
-  sales:{
-    kpis:[
-      {label:'My Quotes This Month',value:'14',sub:'₦42M value'},
-      {label:'Converted Enquiries',value:'9',sub:'64% conversion'},
-      {label:'Open Orders',value:'5',sub:'₦11M value'},
-      {label:'Returns Raised',value:'2',sub:'Pending QC'},
-    ],
-    quick:['New Enquiry','Create Quote','Raise Return'],
-  },
-  finance:{
-    kpis:[
-      {label:'Overdue Receivables',value:'₦847M',sub:'62 invoices',cls:'kpi-dn'},
-      {label:'Pending Approvals',value:'3',sub:'Credit requests'},
-      {label:'Avg Days to Pay',value:'28 days',sub:'Target: 30 days'},
-      {label:'Total Credit Exposed',value:'₦1.36B',sub:'6 accounts'},
-    ],
-    quick:['Recommend Credit','Issue Invoice','Dunning Run'],
-  },
-  inventory:{
-    kpis:[
-      {label:'Total SKUs',value:'8',sub:'3 locations'},
-      {label:'Pending Transfers',value:'2',sub:'1 SLA breach',cls:'kpi-dn'},
-      {label:'Dispatch Queue',value:'2',sub:'Awaiting sign-off'},
-      {label:'Low Stock Items',value:'2',sub:'PVC Pipe, Lubricant'},
-    ],
-    quick:['Sign Off Release','Raise Transfer','Adjust Stock'],
-  },
-};
-
-function renderDashboard(){
-  const d=DASH_DATA[currentRole]||DASH_DATA.superior;
-  const kpiEl=document.getElementById('dash-kpi');
-  kpiEl.innerHTML=d.kpis.map(k=>`
-    <div class="kpi-card">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.value}</div>
-      <div class="kpi-sub ${k.cls||''}">${k.sub}</div>
-    </div>`).join('');
-
-  document.getElementById('dash-title').textContent=
-    {superior:'Operations Dashboard',sales:'Sales Dashboard',finance:'Finance Dashboard',inventory:'Warehouse Dashboard'}[currentRole]||'Dashboard';
-
-  // Kanban
-  const stages=['Enquiry','Quoted','Ordered','Dispatched','Invoiced'];
-  const counts=[5,8,6,4,3];
-  const sample=[
-    ['ENQ-0043 · Lafarge','ENQ-0044 · BUA Foods'],
-    ['QT-0189 · MTN ₦6.8M','QT-0190 · Lafarge ₦12.4M','QT-0186 · FMN ₦4.2M'],
-    ['ORD-0423 · FMN','ORD-0424 · NBrew','ORD-0425 · MTN'],
-    ['DSP-0411 · NBrew','DSP-0412 · Dangote'],
-    ['INV-1102 · Dangote','INV-1098 · Nestle'],
-  ];
-  document.getElementById('dash-kanban').innerHTML=stages.map((s,i)=>`
-    <div class="kanban-col">
-      <div class="kanban-col-title">${s}<span class="kanban-count">${counts[i]}</span></div>
-      ${(sample[i]||[]).map(c=>`<div class="kanban-card"><div class="kanban-card-name">${c.split('·')[1]||c}</div><div class="kanban-card-meta">${c.split('·')[0]}</div></div>`).join('')}
-    </div>`).join('');
-
-  // Activity
-  document.getElementById('activity-feed').innerHTML=ACTIVITIES.slice(0,6).map(a=>`
-    <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>`).join('');
-
-  // Quick actions
-  document.getElementById('quick-actions-container').innerHTML=(d.quick||[]).map(q=>`<button class="btn btn-outline" onclick="showToast('${q} — action triggered','success')">${q}</button>`).join('');
-}
-
-// ─── CUSTOMERS ───────────────────────────────────────────────────────────────
-
-function renderCustomers(filter=''){
-  const data=filter?CUSTOMERS.filter(c=>c.name.toLowerCase().includes(filter.toLowerCase())):CUSTOMERS;
-  document.getElementById('customers-tbody').innerHTML=data.map(c=>`
-    <tr>
-      <td><strong>${c.name}</strong><div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${c.id}</div></td>
-      <td>${c.type}</td>
-      <td>${c.industry}</td>
-      <td>${c.city}</td>
-      <td class="mono">₦${fmt(c.limit)}</td>
-      <td class="mono" style="color:${c.outstanding>c.limit*0.7?'var(--red)':'inherit'}">₦${fmt(c.outstanding)}</td>
-      <td><span class="badge ${c.status==='Active'?'badge-green':'badge-orange'}">${c.status}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openCustomerModal('${c.id}')">View</button></td>
-    </tr>`).join('');
-}
-
-function filterCustomers(v){renderCustomers(v)}
-
-function openCustomerModal(id){
-  const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;
-  const pct=Math.round(c.outstanding/c.limit*100);
-  openModal(c.name,`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <div><div class="kpi-label">Customer ID</div><div class="mono" style="font-size:15px">${c.id}</div></div>
-      <div><div class="kpi-label">Type</div><div>${c.type}</div></div>
-      <div><div class="kpi-label">Industry</div><div>${c.industry}</div></div>
-      <div><div class="kpi-label">City</div><div>${c.city}</div></div>
-      <div><div class="kpi-label">Credit Limit</div><div class="mono">₦${fmt(c.limit)}</div></div>
-      <div><div class="kpi-label">Outstanding</div><div class="mono" style="color:${pct>70?'var(--red)':'inherit'}">₦${fmt(c.outstanding)}</div></div>
+function renderProducts(filter='all'){
+  const grid=document.getElementById('productsGrid');
+  const filtered=filter==='all'?products:products.filter(p=>p.type===filter);
+  grid.innerHTML=filtered.map(p=>`
+    <div class="product-card" data-type="${p.type}">
+      <div class="product-brand-tag">${p.brand}</div>
+      <div class="product-tyre-wrap">
+        <div class="product-tyre-icon">${tyreSVG(p.rimColor)}</div>
+      </div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-size">${p.size} · ${p.type.toUpperCase()}</div>
+      <div class="product-meta">
+        <div class="product-price">₦${p.price.toLocaleString()}<span>/unit</span></div>
+        <div class="product-stock ${p.stockLevel==='low'?'low':''}">● ${p.stock}</div>
+      </div>
+      <button class="product-cta" onclick="openProductOrder('${p.brand} ${p.name}','${p.size}',${p.price})">Order Now <span>→</span></button>
     </div>
-    <div class="kpi-label">Credit Utilisation (${pct}%)</div>
-    <div class="progress" style="margin-top:6px"><div class="progress-fill ${pct>80?'danger':pct>60?'warn':''}" style="width:${pct}%"></div></div>
-    <div style="margin-top:20px"><div class="card-title" style="margin-bottom:10px;font-size:16px">Recent Orders</div>
-    ${ORDERS.filter(o=>o.customer===c.name).map(o=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span class="mono" style="font-size:13px">${o.no}</span><span>₦${fmt(o.value)}</span><span class="badge ${dispatchBadge(o.dispatch)}">${o.dispatch}</span></div>`).join('') || '<div style="color:var(--muted);font-size:13px">No recent orders</div>'}
-    </div>`,
-    [
-      {label:'New Enquiry',cls:'btn-outline',fn:`closeModalDirect();openNewEnquiryModal('${c.name}')`},
-      {label:'Create Quote',cls:'btn-primary',fn:`closeModalDirect();navigate('quotes');showToast('Create a quote for ${c.name}','success')`},
-    ]
-  );
-}
-
-// ─── ENQUIRIES ───────────────────────────────────────────────────────────────
-
-function renderEnquiries(){
-  document.getElementById('enquiries-tbody').innerHTML=ENQUIRIES.map(e=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${e.ref}</td>
-      <td>${e.customer}</td>
-      <td>${e.product}</td>
-      <td>${e.qty.toLocaleString()}</td>
-      <td><span class="badge ${enqBadge(e.status)}">${e.status}</span></td>
-      <td class="mono" style="font-size:12px">${e.date}</td>
-    </tr>`).join('');
-}
-
-function enqBadge(s){return{New:'badge-blue',Quoted:'badge-orange',Converted:'badge-green',Closed:'badge-gray'}[s]||'badge-gray'}
-
-function submitEnquiry(){
-  const c=document.getElementById('enq-customer').value;
-  const p=document.getElementById('enq-product').value;
-  const q=document.getElementById('enq-qty').value;
-  if(!q){showToast('Please enter quantity','error');return}
-  const ref='ENQ-00'+Math.floor(Math.random()*99+45);
-  ENQUIRIES.unshift({ref,customer:c,product:p,qty:parseInt(q)||0,status:'New',date:'2026-04-08'});
-  renderEnquiries();
-  showToast(`Enquiry ${ref} captured successfully`,'success');
-  document.getElementById('enq-qty').value='';
-  document.getElementById('enq-notes').value='';
-}
-
-function openEnquiryForm(){navigate('enquiries');document.getElementById('enq-qty').focus()}
-
-// ─── QUOTES ──────────────────────────────────────────────────────────────────
-
-function renderQuotes(){
-  document.getElementById('quotes-tbody').innerHTML=QUOTES.map(q=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${q.no}</td>
-      <td>${q.customer}</td>
-      <td>${q.product}</td>
-      <td class="mono">₦${fmt(q.amount)}</td>
-      <td><span class="badge badge-blue">${q.version}</span></td>
-      <td class="mono" style="font-size:12px">${q.validity}</td>
-      <td><span class="badge ${quoteBadge(q.status)}">${q.status}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openQuoteModal('${q.no}')">History</button></td>
-    </tr>`).join('');
-}
-
-function quoteBadge(s){return{Accepted:'badge-green','Pending':'badge-orange','Under Review':'badge-blue',Expired:'badge-gray'}[s]||'badge-gray'}
-
-function openQuoteModal(no){
-  const q=QUOTES.find(x=>x.no===no);if(!q)return;
-  openModal(`${q.no} — Version History`,`
-    <div style="margin-bottom:16px"><strong>${q.customer}</strong> · ${q.product}</div>
-    ${['v1','v2','v3'].filter((_,i)=>i<parseInt(q.version.replace('v',''))).map((v,i)=>`
-    <div style="padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong style="font-family:'Barlow Condensed',sans-serif">${v}</strong><span class="badge ${i===parseInt(q.version.replace('v',''))-1?'badge-green':'badge-gray'}">${i===parseInt(q.version.replace('v',''))-1?'Current':'Superseded'}</span></div>
-      <div class="mono" style="font-size:13px">₦${fmt(q.amount*(0.85+i*0.1))}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">${i===0?'Initial quote':'Price revision '+(i===1?'after negotiation':'final agreed')}</div>
-    </div>`).join('')}`,
-    [{label:'Convert to Order',cls:'btn-primary',fn:`showToast('Order created from ${no}','success');closeModalDirect()`}]
-  );
-}
-
-// ─── ORDERS ──────────────────────────────────────────────────────────────────
-
-function renderOrders(){
-  document.getElementById('orders-tbody').innerHTML=ORDERS.map(o=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${o.no}</td>
-      <td>${o.customer}</td>
-      <td style="font-size:13px">${o.products}</td>
-      <td class="mono">₦${fmt(o.value)}</td>
-      <td class="mono" style="font-size:12px">${o.date}</td>
-      <td><span class="badge ${dispatchBadge(o.dispatch)}">${o.dispatch}</span></td>
-      <td><span class="badge ${payBadge(o.payment)}">${o.payment}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openOrderModal('${o.no}')">View</button></td>
-    </tr>`).join('');
-}
-
-function dispatchBadge(s){return{Delivered:'badge-green','In Transit':'badge-blue','Pending Release':'badge-orange',Dispatched:'badge-blue'}[s]||'badge-gray'}
-function payBadge(s){return{Paid:'badge-green',Invoiced:'badge-blue','Part-Paid':'badge-orange',Pending:'badge-gray'}[s]||'badge-gray'}
-
-function openOrderModal(no){
-  const o=ORDERS.find(x=>x.no===no);if(!o)return;
-  const d=DISPATCH_JOBS.find(x=>x.order===no);
-  const steps=d?[
-    {label:'Inv Release',done:d.invDone},
-    {label:'Rider Pickup',done:d.riderDone},
-    {label:'Delivered',done:d.custDone},
-  ]:[];
-  openModal(o.no,`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <div><div class="kpi-label">Customer</div><div>${o.customer}</div></div>
-      <div><div class="kpi-label">Order Value</div><div class="mono">₦${fmt(o.value)}</div></div>
-      <div><div class="kpi-label">Products</div><div>${o.products}</div></div>
-      <div><div class="kpi-label">Date</div><div class="mono">${o.date}</div></div>
-      <div><div class="kpi-label">Dispatch</div><div><span class="badge ${dispatchBadge(o.dispatch)}">${o.dispatch}</span></div></div>
-      <div><div class="kpi-label">Payment</div><div><span class="badge ${payBadge(o.payment)}">${o.payment}</span></div></div>
-    </div>
-    ${d?`<div class="kpi-label" style="margin-bottom:12px">Dispatch Sign-Off Status</div>
-    <div class="step-track">${steps.map((s,i)=>`<div class="step ${s.done?'done':i===steps.filter(x=>x.done).length?'active':''}"><div class="step-dot">${s.done?'✓':i+1}</div><div class="step-label">${s.label}</div></div>`).join('')}</div>`:'<div style="color:var(--muted);font-size:13px">No dispatch record found.</div>'}`,
-    [
-      {label:'Issue Invoice',cls:'btn-outline',fn:`showToast('Invoice issued','success');closeModalDirect()`},
-      {label:'Dispatch Details',cls:'btn-primary',fn:`closeModalDirect();navigate('dispatch')`},
-    ]
-  );
-}
-
-// ─── APPROVALS ───────────────────────────────────────────────────────────────
-
-function renderApprovals(){
-  // Credit requests
-  document.getElementById('credit-requests-list').innerHTML=CREDIT_REQUESTS.map(r=>`
-    <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
-        <div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700">${r.customer}</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:2px">${r.id} · ${r.reason}</div>
-        </div>
-        <span class="badge ${r.recommended?'badge-blue':'badge-orange'}">${r.status}</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0">
-        <div><div class="kpi-label">Current Limit</div><div class="mono">₦${fmt(r.current)}</div></div>
-        <div><div class="kpi-label">Increase Requested</div><div class="mono" style="color:var(--primary)">+₦${fmt(r.requested)}</div></div>
-        <div><div class="kpi-label">New Total</div><div class="mono">₦${fmt(r.current+r.requested)}</div></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${!r.recommended&&['finance','superior'].includes(currentRole)?`<button class="btn btn-outline btn-sm" onclick="recommendCredit('${r.id}')">Recommend Credit</button>`:''}
-        ${r.recommended&&currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="approveCredit('${r.id}')">Final Approve Credit</button>`:''}
-        ${currentRole==='superior'&&r.recommended?`<button class="btn btn-danger btn-sm" onclick="showToast('Credit request declined','error')">Decline</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="showToast('Notes viewed','success')">View Notes</button>
-      </div>
-    </div>`).join('');
-
-  // Transfer SLA
-  document.getElementById('transfer-sla-list').innerHTML=TRANSFERS.filter(t=>t.status!=='Completed').map(t=>`
-    <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700">${t.no}</div>
-          <div style="font-size:13px;color:var(--muted)">${t.from} → ${t.to} · ${t.product} × ${t.qty.toLocaleString()}</div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center">
-          <span class="sla-timer ${t.breach?'breach':''}">${t.breach?'⚠ BREACH: ':''} ${t.sla} remaining</span>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Transfer ${t.no} approved','success')">Approve</button>
-        </div>
-      </div>
-    </div>`).join('');
-
-  // Credit notes
-  document.getElementById('credit-note-list').innerHTML=`
-    <div class="card"><div style="padding:10px;color:var(--muted)">RET-0089 — Nestle Nigeria · 50 × Safety Helmet · ₦175,000 credit note pending approval</div>
-    <div style="padding:0 10px 14px;display:flex;gap:8px">
-      ${currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="showToast('Credit note approved','success')">Approve Credit Note</button>`:''}
-      <button class="btn btn-ghost btn-sm">View Return</button>
-    </div></div>`;
-}
-
-function recommendCredit(id){
-  const r=CREDIT_REQUESTS.find(x=>x.id===id);
-  if(r){r.recommended=true;r.status='Pending Final Approval';renderApprovals();showToast(`${id} recommended for approval`,'success')}
-}
-function approveCredit(id){
-  const r=CREDIT_REQUESTS.find(x=>x.id===id);
-  if(r){r.status='Approved';CREDIT_REQUESTS.splice(CREDIT_REQUESTS.indexOf(r),1);renderApprovals();renderCreditAccounts();showToast(`${id} credit approved`,'success')}
-}
-
-// ─── INVOICES ────────────────────────────────────────────────────────────────
-
-function renderInvoices(){
-  const stageBadge=s=>({
-    'Day 7':'badge-orange','Day 14':'badge-blue','Day 30':'badge-red','Day 45':'badge-red'
-  }[s]||'badge-gray');
-  document.getElementById('invoices-tbody').innerHTML=INVOICES.map(i=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${i.no}</td>
-      <td>${i.customer}</td>
-      <td class="mono">₦${fmt(i.amount)}</td>
-      <td class="mono" style="font-size:12px">${i.issued}</td>
-      <td class="mono" style="font-size:12px">${i.due}</td>
-      <td style="color:${i.overdue>30?'var(--red)':i.overdue>14?'var(--primary)':'inherit'};font-family:'DM Mono',monospace;font-size:13px">${i.overdue}d</td>
-      <td><span class="badge ${stageBadge(i.stage)}">${i.stage}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="showToast('Reminder sent for ${i.no}','success')">Send Reminder</button></td>
-    </tr>`).join('');
-}
-
-// ─── CREDIT ACCOUNTS ─────────────────────────────────────────────────────────
-
-function renderCreditAccounts(){
-  document.getElementById('credit-accounts-list').innerHTML=`<div class="card">`+
-    CREDIT_ACCOUNTS.map(c=>{
-      const pct=Math.round(c.used/c.limit*100);
-      return `<div class="util-bar">
-        <div class="util-label"><span class="util-name">${c.customer}</span><span class="util-pct">₦${fmt(c.used)} / ₦${fmt(c.limit)} · ${pct}%</span></div>
-        <div class="progress"><div class="progress-fill ${pct>80?'danger':pct>60?'warn':''}" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('')+`</div>`;
-}
-
-// ─── INVENTORY ───────────────────────────────────────────────────────────────
-
-function renderInventory(){
-  document.getElementById('inventory-tbody').innerHTML=INVENTORY.map(i=>{
-    const total=i.my+i.lag+i.abj;
-    const low=total<i.reorder;
-    return `<tr>
-      <td class="mono" style="font-size:12px">${i.sku}</td>
-      <td><strong>${i.product}</strong></td>
-      <td class="mono">${i.my.toLocaleString()}</td>
-      <td class="mono">${i.lag.toLocaleString()}</td>
-      <td class="mono">${i.abj.toLocaleString()}</td>
-      <td class="mono"><strong>${total.toLocaleString()}</strong></td>
-      <td class="mono" style="font-size:12px">${i.reorder.toLocaleString()}</td>
-      <td><span class="badge ${low?'badge-red':'badge-green'}">${low?'Low Stock':'OK'}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-function doInventorySignOff(){
-  showModal('Inventory Release Sign-Off',`
-    <div style="margin-bottom:16px;color:var(--muted)">Confirm release of goods from warehouse for pending dispatch jobs.</div>
-    ${DISPATCH_JOBS.filter(d=>!d.invDone).map(d=>`
-    <div style="padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <div><strong>${d.no}</strong> — ${d.customer}<div style="font-size:12px;color:var(--muted)">${d.product}</div></div>
-      <button class="btn btn-primary btn-sm" onclick="signOffInventory('${d.no}')">Sign Off</button>
-    </div>`).join('') || '<div style="color:var(--muted)">No pending releases.</div>'}`,
-    []
-  );
-}
-
-function signOffInventory(no){
-  const d=DISPATCH_JOBS.find(x=>x.no===no);
-  if(d){d.invDone=true;showToast(`Inventory release signed: ${no}`,'success');closeModalDirect();renderDispatch()}
-}
-
-// ─── TRANSFERS ───────────────────────────────────────────────────────────────
-
-function renderTransfers(){
-  document.getElementById('transfers-tbody').innerHTML=TRANSFERS.map(t=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${t.no}</td>
-      <td>${t.from}</td>
-      <td>${t.to}</td>
-      <td>${t.product}</td>
-      <td class="mono">${t.qty.toLocaleString()}</td>
-      <td class="mono" style="font-size:12px">${t.raised}</td>
-      <td><span class="sla-timer ${t.breach?'breach':''}">${t.sla==='Done'?'✓ Done':t.breach?'⚠ '+t.sla:t.sla}</span></td>
-      <td><span class="badge ${t.status==='Completed'?'badge-green':t.breach?'badge-red':'badge-blue'}">${t.status}</span></td>
-    </tr>`).join('');
-}
-
-// ─── DISPATCH ────────────────────────────────────────────────────────────────
-
-function renderDispatch(){
-  document.getElementById('dispatch-list').innerHTML=DISPATCH_JOBS.map(d=>{
-    const step=d.invDone&&d.riderDone&&d.custDone?3:d.invDone&&d.riderDone?2:d.invDone?1:0;
-    const steps=[
-      {label:'Inventory Release',done:d.invDone,role:'inventory'},
-      {label:'Rider Pickup',done:d.riderDone,role:'rider'},
-      {label:'Customer Delivery',done:d.custDone,role:'customer'},
-    ];
-    return `<div class="card" style="margin-bottom:16px">
-      <div class="card-header">
-        <div>
-          <div class="card-title">${d.no} — ${d.customer}</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:2px">${d.product} · Vehicle: ${d.vehicle}</div>
-        </div>
-        <span class="badge ${d.custDone?'badge-green':d.riderDone?'badge-blue':'badge-orange'}">${d.custDone?'Delivered':d.riderDone?'In Transit':'Pending'}</span>
-      </div>
-      <div class="step-track">
-        ${steps.map((s,i)=>`<div class="step ${s.done?'done':i===step?'active':''}">
-          <div class="step-dot">${s.done?'✓':i+1}</div>
-          <div class="step-label">${s.label}</div>
-        </div>`).join('')}
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-        ${!d.invDone&&['inventory','superior'].includes(currentRole)?`<button class="btn btn-primary btn-sm" onclick="signOffDispatch('${d.no}','inv')">Sign Off — Inventory Release</button>`:''}
-        ${d.invDone&&!d.riderDone&&['rider','superior'].includes(currentRole)?`<button class="btn btn-primary btn-sm" onclick="signOffDispatch('${d.no}','rider')">Sign Off — Pickup Confirmed</button>`:''}
-        ${d.riderDone&&!d.custDone&&['superior','sales'].includes(currentRole)?`<button class="btn btn-accent btn-sm" onclick="signOffDispatch('${d.no}','cust')">Confirm Delivery</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="openDispatchDetailModal('${d.no}')">View Details</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function signOffDispatch(no,type){
-  const d=DISPATCH_JOBS.find(x=>x.no===no);if(!d)return;
-  if(type==='inv')d.invDone=true;
-  else if(type==='rider')d.riderDone=true;
-  else if(type==='cust')d.custDone=true;
-  renderDispatch();
-  const msgs={inv:'Inventory release signed',rider:'Pickup confirmed by rider',cust:'Delivery confirmed'};
-  showToast(`${msgs[type]} — ${no}`,'success');
-}
-
-// ─── FLEET ───────────────────────────────────────────────────────────────────
-
-function renderFleet(){
-  document.getElementById('fleet-tbody').innerHTML=FLEET.map(v=>`
-    <tr>
-      <td class="mono" style="font-weight:600">${v.plate}</td>
-      <td>${v.type}</td>
-      <td>${v.make}</td>
-      <td>${v.capacity}</td>
-      <td>${v.driver}</td>
-      <td class="mono" style="font-size:12px">${v.service}</td>
-      <td><span class="badge ${v.status==='Active'?'badge-green':'badge-orange'}">${v.status}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="showToast('Fleet record for ${v.plate}','success')">Details</button></td>
-    </tr>`).join('');
-}
-
-// ─── RETURNS ─────────────────────────────────────────────────────────────────
-
-function renderReturns(){
-  document.getElementById('returns-list').innerHTML=RETURNS.map(r=>`
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-header">
-        <div>
-          <div class="card-title">${r.no} — ${r.customer}</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:2px">${r.product} · Reason: ${r.reason}</div>
-        </div>
-        <span class="badge badge-blue">Step ${r.step+1}/6</span>
-      </div>
-      <div class="step-track">
-        ${r.steps.map((s,i)=>`<div class="step ${i<r.step?'done':i===r.step?'active':''}">
-          <div class="step-dot">${i<r.step?'✓':i+1}</div>
-          <div class="step-label" style="font-size:10px">${s}</div>
-        </div>`).join('')}
-      </div>
-      <div style="margin-top:12px;display:flex;gap:8px">
-        ${r.step<5?`<button class="btn btn-primary btn-sm" onclick="advanceReturn('${r.no}')">Advance to: ${r.steps[r.step+1]||'Close'}</button>`:'<span class="badge badge-green">Closed</span>'}
-        <button class="btn btn-ghost btn-sm" onclick="openReturnDetailModal('${r.no}')">View Details</button>
-      </div>
-    </div>`).join('');
-}
-
-function openReturnsFlow(){openRaiseReturnModal()}
-
-function advanceReturn(no){
-  const r=RETURNS.find(x=>x.no===no);
-  if(r&&r.step<5){r.step++;renderReturns();showToast(`${no} advanced to: ${r.steps[r.step]}`,'success')}
-}
-
-// ─── STAFF ───────────────────────────────────────────────────────────────────
-
-function renderStaff(){
-  document.getElementById('staff-tbody').innerHTML=STAFF.map(s=>`
-    <tr>
-      <td><strong>${s.name}</strong></td>
-      <td>${s.role}</td>
-      <td>${s.dept}</td>
-      <td class="mono" style="font-size:12px">${s.email}</td>
-      <td class="mono" style="font-size:12px">${s.phone}</td>
-      <td><span class="badge badge-green">${s.status}</span></td>
-    </tr>`).join('');
-}
-
-// ─── ASSETS ──────────────────────────────────────────────────────────────────
-
-function renderAssets(){
-  document.getElementById('assets-tbody').innerHTML=ASSETS.map(a=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${a.tag}</td>
-      <td><strong>${a.desc}</strong></td>
-      <td>${a.cat}</td>
-      <td>${a.loc}</td>
-      <td class="mono">₦${fmt(a.value)}</td>
-      <td><span class="badge ${a.cond==='Good'?'badge-green':'badge-orange'}">${a.cond}</span></td>
-      <td class="mono" style="font-size:12px">${a.audit}</td>
-    </tr>`).join('');
-}
-
-// ─── SERVICE ─────────────────────────────────────────────────────────────────
-
-function renderService(){
-  document.getElementById('service-tbody').innerHTML=SERVICE_TICKETS.map(t=>`
-    <tr>
-      <td class="mono" style="font-size:12px">${t.no}</td>
-      <td>${t.asset}</td>
-      <td>${t.issue}</td>
-      <td><span class="badge ${t.priority==='High'?'badge-red':t.priority==='Medium'?'badge-orange':'badge-gray'}">${t.priority}</span></td>
-      <td>${t.assigned}</td>
-      <td><span class="badge ${t.status==='Closed'?'badge-green':t.status==='Open'?'badge-red':'badge-orange'}">${t.status}</span></td>
-      <td class="mono" style="font-size:12px">${t.raised}</td>
-    </tr>`).join('');
-}
-
-// ─── RIDER VIEW ──────────────────────────────────────────────────────────────
-
-function renderRiderView(){
-  document.getElementById('rider-name-display').textContent=
-    (Object.values(USERS).find(u=>u.role==='rider')||{name:'Emeka Okafor'}).name;
-  document.getElementById('rider-cards').innerHTML=DISPATCH_JOBS.filter(d=>!d.custDone).map(d=>`
-    <div class="delivery-card">
-      <div class="delivery-card-header">
-        <div>
-          <div class="delivery-id">${d.no} · ${d.order}</div>
-          <div class="delivery-customer">${d.customer}</div>
-          <div class="delivery-address">📍 ${d.address}</div>
-        </div>
-        <span class="badge ${d.riderDone?'badge-blue':'badge-orange'}">${d.riderDone?'En Route':'Awaiting Pickup'}</span>
-      </div>
-      <div class="delivery-meta">
-        <div class="delivery-meta-item"><label>Product / Qty</label><span>${d.product}</span></div>
-        <div class="delivery-meta-item"><label>Vehicle Plate</label><span class="mono">${d.vehicle}</span></div>
-        <div class="delivery-meta-item"><label>Inv Release</label><span class="${d.invDone?'':'mono'}" style="color:${d.invDone?'#2d7a4f':'var(--red)'}">${d.invDone?'✓ Signed':'Pending'}</span></div>
-        <div class="delivery-meta-item"><label>Pickup Status</label><span style="color:${d.riderDone?'#2d7a4f':'var(--muted)'}">${d.riderDone?'✓ Confirmed':'Not yet'}</span></div>
-      </div>
-      ${d.invDone&&!d.riderDone?`<button class="btn btn-primary" style="width:100%;margin-top:8px;font-size:18px;padding:14px" onclick="riderSignOff('${d.no}')">Sign Off — Pickup Confirmed</button>`:''}
-      ${d.riderDone?`<div style="background:#dcf5e6;border-radius:8px;padding:14px;text-align:center;color:#1a6b3c;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;margin-top:8px">✓ Pickup Confirmed — En Route to Customer</div>`:''}
-    </div>`).join('')||'<div class="card" style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:48px;margin-bottom:12px">✓</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px">All deliveries complete!</div></div>';
-}
-
-function riderSignOff(no){
-  const d=DISPATCH_JOBS.find(x=>x.no===no);
-  if(d&&d.invDone){d.riderDone=true;renderRiderView();showToast(`Pickup confirmed — ${no}`,'success')}
-  else{showToast('Inventory must release first','error')}
-}
-
-// ─── MODAL: NEW ENQUIRY ──────────────────────────────────────────────────────
-
-function openNewEnquiryModal(prefill=''){
-  openModal('Capture Enquiry',`
-    <div class="form-grid">
-      <div class="form-group" style="grid-column:span 2">
-        <label>Customer Name</label>
-        <input type="text" id="me-customer" placeholder="e.g. Dangote Cement Plc" value="${prefill}">
-      </div>
-      <div class="form-group">
-        <label>Channel</label>
-        <select id="me-channel">
-          <option>WhatsApp</option>
-          <option>Phone</option>
-          <option>Walk-in</option>
-          <option>Email</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Assigned To</label>
-        <select id="me-assigned">
-          ${STAFF.filter(s=>['Sales Officer','Superior Officer'].includes(s.role)).map(s=>`<option>${s.name}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group" style="grid-column:span 2">
-        <label>Product Interest</label>
-        <select id="me-product">
-          <option>Portland Cement 50kg</option><option>Steel Rod 12mm</option>
-          <option>PVC Pipe 3inch</option><option>Transformer Oil 200L</option>
-          <option>Generator 45KVA</option><option>Safety Helmet</option>
-          <option>Lubricant Oil 5L</option><option>Industrial Cable 100m</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Quantity</label>
-        <input type="number" id="me-qty" placeholder="e.g. 500" min="1">
-      </div>
-      <div class="form-group">
-        <label>Priority</label>
-        <select id="me-priority"><option>Normal</option><option>High</option><option>Urgent</option></select>
-      </div>
-    </div>`,
-    [{label:'Submit Enquiry',cls:'btn-primary',fn:'submitEnquiryModal()'}]
-  );
-}
-
-function submitEnquiryModal(){
-  const c=document.getElementById('me-customer').value.trim();
-  const q=document.getElementById('me-qty').value;
-  if(!c){showToast('Customer name is required','error');return}
-  if(!q){showToast('Quantity is required','error');return}
-  const ref='ENQ-00'+Math.floor(Math.random()*99+45);
-  ENQUIRIES.unshift({ref,customer:c,product:document.getElementById('me-product').value,qty:parseInt(q)||0,status:'New',date:'2026-04-08'});
-  renderEnquiries();
-  closeModalDirect();
-  showToast(`${ref} captured successfully`,'success');
-}
-
-// ─── MODAL: NEW CUSTOMER ─────────────────────────────────────────────────────
-
-function openNewCustomerModal(){
-  openModal('New Customer',`
-    <div class="form-grid">
-      <div class="form-group" style="grid-column:span 2">
-        <label>Company Name</label>
-        <input type="text" id="nc-name" placeholder="e.g. BUA Cement Plc">
-      </div>
-      <div class="form-group">
-        <label>Type</label>
-        <select id="nc-type"><option>Enterprise</option><option>SME</option><option>Government</option><option>NGO</option></select>
-      </div>
-      <div class="form-group">
-        <label>Industry</label>
-        <select id="nc-industry"><option>Manufacturing</option><option>FMCG</option><option>Telecom</option><option>Construction</option><option>Banking</option><option>Energy</option><option>Beverages</option><option>Other</option></select>
-      </div>
-      <div class="form-group">
-        <label>City</label>
-        <select id="nc-city"><option>Lagos</option><option>Abuja</option><option>Kano</option><option>Port Harcourt</option><option>Ibadan</option><option>Enugu</option></select>
-      </div>
-      <div class="form-group">
-        <label>Credit Limit (₦)</label>
-        <input type="number" id="nc-limit" placeholder="e.g. 50000000">
-      </div>
-      <div class="form-group">
-        <label>Contact Name</label>
-        <input type="text" id="nc-contact" placeholder="Primary contact">
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="text" id="nc-phone" placeholder="+234 800 000 0000">
-      </div>
-      <div class="form-group" style="grid-column:span 2">
-        <label>Email</label>
-        <input type="email" id="nc-email" placeholder="contact@company.ng">
-      </div>
-    </div>`,
-    [{label:'Save Customer',cls:'btn-primary',fn:'saveNewCustomer()'}]
-  );
-}
-
-function saveNewCustomer(){
-  const name=document.getElementById('nc-name').value.trim();
-  if(!name){showToast('Company name is required','error');return}
-  const id='C0'+String(CUSTOMERS.length+1).padStart(2,'0');
-  CUSTOMERS.push({id,name,type:document.getElementById('nc-type').value,industry:document.getElementById('nc-industry').value,city:document.getElementById('nc-city').value,limit:parseInt(document.getElementById('nc-limit').value)||0,outstanding:0,status:'Active'});
-  renderCustomers();
-  closeModalDirect();
-  showToast(`${name} added successfully`,'success');
-}
-
-// ─── MODAL: RAISE RETURN ─────────────────────────────────────────────────────
-
-function openRaiseReturnModal(){
-  openModal('Raise Return',`
-    <div class="form-grid">
-      <div class="form-group" style="grid-column:span 2">
-        <label>Order Reference</label>
-        <select id="rr-order">
-          ${ORDERS.map(o=>`<option value="${o.no}">${o.no} — ${o.customer}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group" style="grid-column:span 2">
-        <label>Product & Quantity</label>
-        <input type="text" id="rr-product" placeholder="e.g. Safety Helmet × 50">
-      </div>
-      <div class="form-group">
-        <label>Return Reason</label>
-        <select id="rr-reason">
-          <option>Defective batch</option><option>Wrong spec delivered</option>
-          <option>Damaged in transit</option><option>Excess quantity</option>
-          <option>Customer changed order</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Requested By</label>
-        <select id="rr-by">
-          ${STAFF.filter(s=>['Sales Officer','Superior Officer'].includes(s.role)).map(s=>`<option>${s.name}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group" style="grid-column:span 2">
-        <label>Notes</label>
-        <textarea id="rr-notes" rows="3" placeholder="Additional details…"></textarea>
-      </div>
-    </div>`,
-    [{label:'Submit Return',cls:'btn-primary',fn:'submitRaiseReturn()'}]
-  );
-}
-
-function submitRaiseReturn(){
-  const orderNo=document.getElementById('rr-order').value;
-  const product=document.getElementById('rr-product').value.trim();
-  if(!product){showToast('Product & quantity is required','error');return}
-  const order=ORDERS.find(o=>o.no===orderNo);
-  const no='RET-0'+String(RETURNS.length+91).padStart(3,'0');
-  RETURNS.unshift({no,order:orderNo,customer:order?order.customer:'—',product,reason:document.getElementById('rr-reason').value,step:0,steps:['Raised','Approved','Stock Inspected','QC Passed','Credit Issued','Closed']});
-  renderReturns();
-  closeModalDirect();
-  navigate('returns');
-  showToast(`${no} raised successfully`,'success');
-}
-
-// ─── MODAL: DISPATCH DETAIL ──────────────────────────────────────────────────
-
-function openDispatchDetailModal(no){
-  const d=DISPATCH_JOBS.find(x=>x.no===no);if(!d)return;
-  const step=d.invDone&&d.riderDone&&d.custDone?3:d.invDone&&d.riderDone?2:d.invDone?1:0;
-  const steps=[{label:'Inventory Release',done:d.invDone},{label:'Rider Pickup',done:d.riderDone},{label:'Customer Delivery',done:d.custDone}];
-  const btns=[];
-  if(!d.invDone&&['inventory','superior'].includes(currentRole))
-    btns.push({label:'Sign Off — Inventory Release',cls:'btn-primary',fn:`signOffDispatch('${no}','inv');closeModalDirect()`});
-  if(d.invDone&&!d.riderDone&&['rider','superior'].includes(currentRole))
-    btns.push({label:'Sign Off — Pickup Confirmed',cls:'btn-primary',fn:`signOffDispatch('${no}','rider');closeModalDirect()`});
-  if(d.riderDone&&!d.custDone&&['superior','sales'].includes(currentRole))
-    btns.push({label:'Confirm Delivery',cls:'btn-accent',fn:`signOffDispatch('${no}','cust');closeModalDirect()`});
-  openModal(`${d.no} — Dispatch Detail`,`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <div><div class="kpi-label">Customer</div><div style="font-weight:600">${d.customer}</div></div>
-      <div><div class="kpi-label">Order</div><div class="mono" style="font-size:13px">${d.order}</div></div>
-      <div><div class="kpi-label">Product / Qty</div><div>${d.product}</div></div>
-      <div><div class="kpi-label">Vehicle</div><div class="mono">${d.vehicle}</div></div>
-      <div style="grid-column:span 2"><div class="kpi-label">Delivery Address</div><div>${d.address}</div></div>
-    </div>
-    <div class="kpi-label" style="margin-bottom:12px">Sign-Off Status</div>
-    <div class="step-track">
-      ${steps.map((s,i)=>`<div class="step ${s.done?'done':i===step?'active':''}"><div class="step-dot">${s.done?'✓':i+1}</div><div class="step-label">${s.label}</div></div>`).join('')}
-    </div>`,
-    btns
-  );
-}
-
-// ─── MODAL: RETURN DETAIL ────────────────────────────────────────────────────
-
-function openReturnDetailModal(no){
-  const r=RETURNS.find(x=>x.no===no);if(!r)return;
-  openModal(`${r.no} — Return Detail`,`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <div><div class="kpi-label">Customer</div><div style="font-weight:600">${r.customer}</div></div>
-      <div><div class="kpi-label">Source Order</div><div class="mono" style="font-size:13px">${r.order}</div></div>
-      <div><div class="kpi-label">Product</div><div>${r.product}</div></div>
-      <div><div class="kpi-label">Reason</div><div>${r.reason}</div></div>
-    </div>
-    <div class="kpi-label" style="margin-bottom:12px">Progress — Step ${r.step+1} of 6</div>
-    <div class="step-track">
-      ${r.steps.map((s,i)=>`<div class="step ${i<r.step?'done':i===r.step?'active':''}"><div class="step-dot">${i<r.step?'✓':i+1}</div><div class="step-label" style="font-size:10px">${s}</div></div>`).join('')}
-    </div>
-    <div style="margin-top:20px;background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
-      <div class="kpi-label" style="margin-bottom:6px">Notes</div>
-      <div style="font-size:13px;color:var(--muted)">Return initiated by Sales team. Awaiting QC inspection at WH Lagos. Contact: warehouse@biup.ng</div>
-    </div>`,
-    r.step<5?[{label:`Advance to: ${r.steps[r.step+1]}`,cls:'btn-primary',fn:`advanceReturn('${no}');renderReturns();closeModalDirect()`}]:[]
-  );
-}
-
-// ─── MODAL ───────────────────────────────────────────────────────────────────
-
-function openModal(title,body,buttons=[]){
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-body').innerHTML=body;
-  document.getElementById('modal-footer').innerHTML=
-    buttons.map(b=>`<button class="btn ${b.cls}" onclick="${b.fn}">${b.label}</button>`).join('')+
-    `<button class="btn btn-ghost" onclick="closeModalDirect()">Close</button>`;
-  document.getElementById('modal-overlay').classList.add('active');
-}
-
-function showModal(title,body,buttons){openModal(title,body,buttons)}
-
-function closeModal(e){
-  if(e.target===document.getElementById('modal-overlay'))closeModalDirect();
-}
-function closeModalDirect(){
-  document.getElementById('modal-overlay').classList.remove('active');
-}
-
-// ─── TOAST ───────────────────────────────────────────────────────────────────
-
-function showToast(msg,type='success'){
-  const t=document.createElement('div');
-  t.className=`toast ${type}`;
-  t.innerHTML=`<span>${type==='success'?'✓':type==='error'?'✗':'ℹ'}</span><span>${msg}</span>`;
-  document.getElementById('toast-container').appendChild(t);
-  setTimeout(()=>t.remove(),3500);
-}
-
-// ─── TABS ────────────────────────────────────────────────────────────────────
-
-function switchTab(el,targetId){
-  const parent=el.closest('.page')||el.closest('#page-approvals')||el.parentElement.parentElement;
-  el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  // hide siblings based on parent
-  const siblings=el.closest('.page')||document.getElementById('page-approvals')||document.getElementById('page-inventory');
-  const ids=['approval-credit','approval-transfer','approval-creditnote','inv-all','inv-my','inv-lag','inv-abj'];
-  ids.forEach(id=>{
-    const e2=document.getElementById(id);
-    if(e2)e2.style.display=id===targetId?'':'none';
+  `).join('');
+  document.querySelectorAll('.product-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});
   });
 }
+renderProducts();
 
-// ─── UTILS ───────────────────────────────────────────────────────────────────
-
-function fmt(n){
-  if(n>=1e9)return (n/1e9).toFixed(1)+'B';
-  if(n>=1e6)return (n/1e6).toFixed(1)+'M';
-  if(n>=1e3)return (n/1e3).toFixed(0)+'K';
-  return n.toLocaleString();
+function filterProducts(type,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderProducts(type);
 }
 
-// boot with demo login
-fillLogin('ibrahim.musa@biup.ng','biup2024');
+// CART
+let cartItems=[],cartTotal=0;
+function openProductOrder(name,size,price){
+  document.getElementById('po-modal-title').textContent='Order '+name;
+  document.getElementById('po-product-name').textContent=name;
+  document.getElementById('po-product-size').textContent=size;
+  document.getElementById('po-product-price').textContent='₦'+price.toLocaleString();
+  document.getElementById('po-qty').value=4;
+  document.getElementById('po-qty').dataset.price=price;
+  updateTotal();openModal('modal-product-order');
+}
+function updateTotal(){
+  const qty=parseInt(document.getElementById('po-qty').value)||1;
+  const price=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  document.getElementById('po-total').textContent='₦'+(qty*price).toLocaleString();
+}
+function submitProductOrder(){
+  const name=document.getElementById('po-name').value;
+  const phone=document.getElementById('po-phone').value;
+  if(!name||!phone){showToast('Please fill in your name and phone number.');return;}
+  const product=document.getElementById('po-product-name').textContent;
+  const qty=parseInt(document.getElementById('po-qty').value)||1;
+  const price=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  cartItems.push({product,qty,price});cartTotal+=qty*price;
+  closeModal('modal-product-order');updateCartBar();
+  showToast(`✅ ${product} × ${qty} added to your order!`);
+}
+function updateCartBar(){
+  const bar=document.getElementById('cartBar');
+  document.getElementById('cartInfo').textContent=cartItems.length+' item'+(cartItems.length!==1?'s':'')+' in cart';
+  document.getElementById('cartTotal').textContent='₦'+cartTotal.toLocaleString();
+  bar.classList.toggle('visible',cartItems.length>0);
+}
+function clearCart(){cartItems=[];cartTotal=0;updateCartBar();showToast('Cart cleared.');}
+
+// FORMS
+function submitQuickOrder(){
+  const name=document.getElementById('qo-name').value;
+  const phone=document.getElementById('qo-phone').value;
+  const product=document.getElementById('qo-product').value;
+  if(!name||!phone||!product){showToast('Please fill in all required fields.');return;}
+  closeModal('modal-quick-order');
+  showToast(`✅ Order received! Our team will call ${phone} within 30 minutes to confirm.`);
+}
+function submitWholesale(){
+  const company=document.getElementById('ws-company').value;
+  const name=document.getElementById('ws-name').value;
+  const phone=document.getElementById('ws-phone').value;
+  if(!company||!name||!phone){showToast('Please fill in all required fields.');return;}
+  showToast(`✅ Enquiry received for ${company}. A senior account manager will contact you within 2 business hours.`);
+  ['ws-company','ws-name','ws-phone','ws-email','ws-notes'].forEach(id=>document.getElementById(id).value='');
+}
+
+// TESTIMONIALS
+let testiIndex=0;
+function slideTesti(dir){
+  const cards=document.querySelectorAll('.testi-card');
+  const perView=window.innerWidth>800?2:1;
+  const max=Math.ceil(cards.length/perView)-1;
+  testiIndex=Math.max(0,Math.min(testiIndex+dir,max));
+  const w=document.querySelector('.testi-card').offsetWidth+20;
+  document.getElementById('testiTrack').style.transform=`translateX(-${testiIndex*(perView===2?w*2+20:w)}px)`;
+  updateDots();
+}
+function goTesti(i){testiIndex=i;slideTesti(0);}
+function updateDots(){
+  document.querySelectorAll('#testiDots>div').forEach((d,i)=>{d.style.width=i===testiIndex?'28px':'10px';d.style.background=i===testiIndex?'var(--primary)':'var(--border2)';});
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+
+// TOAST
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),4200);
+}
+
+// REVEAL
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>
