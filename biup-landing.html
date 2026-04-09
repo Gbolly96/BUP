@@ -145,7 +145,7 @@ html.dark nav.scrolled { background: rgba(14,20,16,0.97); }
   background:var(--bg);
 }
 
-/* Hero photo — right side image overlay */
+/* Hero photo — Unsplash background (light mode) */
 .hero-photo {
   position:absolute; top:0; right:0;
   width:65%; height:100%;
@@ -157,7 +157,42 @@ html.dark nav.scrolled { background: rgba(14,20,16,0.97); }
   opacity: 0.22;
   pointer-events: none;
 }
-html.dark .hero-photo { opacity: 0.38; }
+html.dark .hero-photo { opacity: 0; }
+
+/* Dark Axle — dark mode hero image */
+.hero-dark-axle {
+  position:absolute;
+  right: -2%;
+  bottom: -4%;
+  width: clamp(420px, 52vw, 720px);
+  height: auto;
+  pointer-events: none;
+  display: none;
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.3) 12%,
+    rgba(0,0,0,0.75) 28%,
+    black 48%
+  );
+  mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.3) 12%,
+    rgba(0,0,0,0.75) 28%,
+    black 48%
+  );
+  opacity: 0;
+  animation: none;
+  filter: brightness(0.88) contrast(1.08);
+}
+html.dark .hero-dark-axle {
+  display: block;
+  opacity: 0;
+  animation: axleFadeIn 1.1s ease forwards 0.6s;
+}
+@keyframes axleFadeIn {
+  from { opacity:0; transform: translateX(24px); }
+  to   { opacity:1; transform: translateX(0); }
+}
 
 /* Grid texture — green-tinted */
 .hero-grid{
@@ -737,6 +772,7 @@ html.dark .modal-overlay { background: rgba(5,10,6,0.75); }
     <div class="hero-ring4"></div>
   </div>
   <div class="hero-photo"></div>
+  <img class="hero-dark-axle" src="/Dark%20Axle.png" alt="" aria-hidden="true">
   <div class="hero-deco-num">16</div>
 
   <div class="hero-eyebrow">Nigeria's Premier Tyre Distributor — Est. 2008</div>
