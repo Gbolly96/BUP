@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwikfit — Nigeria's Premier Tyre Distributor</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800;1,900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:     #1a8fff;
+  --blue-dk:  #0e7ae8;
+  --green:    #7bc843;
+  --green-dk: #5fa832;
+  --bg:       #eef0e8;
+  --bg2:      #f5f5f0;
+  --bg-dark:  #060808;
+  --ink:      #1a1a1a;
+  --gray:     #5a5a5a;
+  --gray2:    #999;
+  --border:   #d8dcd0;
+  --red:      #e84c1e;
+  --card-bg:  #ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:'Barlow',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{width:10px;height:10px;background:var(--blue);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{width:34px;height:34px;border:1.5px solid rgba(26,143,255,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out,opacity 0.3s;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 52px;height:72px;display:flex;align-items:center;justify-content:space-between;transition:all 0.3s;}
+nav.scrolled{background:rgba(6,8,8,0.96);backdrop-filter:blur(16px);border-bottom:1px solid rgba(123,200,67,0.15);}
+.nav-links{display:flex;gap:36px;align-items:center;}
+.nav-links a{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.75);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:#fff;}
+.nav-cta{background:var(--blue);color:#fff!important;padding:10px 22px;border-radius:4px;transition:background 0.2s!important;}
+.nav-cta:hover{background:var(--blue-dk)!important;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 52px 88px;position:relative;overflow:hidden;background:var(--bg-dark);}
+.hero-photo{position:absolute;inset:0;background:url('/hero Image.png') center/cover no-repeat;opacity:0.6;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(6,8,8,0.9) 38%,rgba(6,8,8,0.3) 70%,transparent),linear-gradient(to top,rgba(6,8,8,0.9) 0%,transparent 55%);}
+.hero-ring{position:absolute;border-radius:50%;border:1px solid rgba(123,200,67,0.1);}
+.hero-ring-1{width:62vw;height:62vw;top:-12%;right:-8%;}
+.hero-ring-2{width:46vw;height:46vw;top:2%;right:6%;}
+.hero-ring-3{width:30vw;height:30vw;top:14%;right:18%;}
+.hero-deco-num{position:absolute;right:52px;top:90px;font-family:'Barlow Condensed',sans-serif;font-size:clamp(140px,18vw,260px);font-weight:900;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.06);letter-spacing:-8px;user-select:none;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.3em;color:var(--green);text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px;opacity:0;animation:fadeUp 0.8s ease forwards 0.3s;}
+.hero-eyebrow .dot{width:7px;height:7px;background:var(--green);border-radius:50%;flex-shrink:0;}
+.hero-eyebrow .line{display:inline-block;width:32px;height:1.5px;background:var(--green);flex-shrink:0;}
+.hero-heading{font-family:'Barlow Condensed',sans-serif;font-size:clamp(68px,10.5vw,152px);font-weight:900;line-height:0.88;letter-spacing:-2px;text-transform:uppercase;margin-bottom:28px;}
+.hero-heading .l1,.hero-heading .l3{color:#fff;display:block;opacity:0;}
+.hero-heading .l2{color:var(--blue);font-style:italic;display:block;opacity:0;}
+.hero-heading .l1{animation:fadeUp 0.8s ease forwards 0.5s;}
+.hero-heading .l2{animation:fadeUp 0.8s ease forwards 0.7s;}
+.hero-heading .l3{animation:fadeUp 0.8s ease forwards 0.9s;}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:480px;line-height:1.75;margin-bottom:40px;opacity:0;animation:fadeUp 0.8s ease forwards 1.1s;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s ease forwards 1.3s;}
+.btn-primary{background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;border:none;border-radius:4px;cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{background:var(--blue-dk);transform:translateY(-2px);}
+.btn-outline-white{background:transparent;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:15px 36px;border:1.5px solid rgba(255,255,255,0.35);border-radius:4px;cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,0.08);}
+.hero-stats{position:absolute;right:52px;bottom:88px;display:flex;flex-direction:column;gap:24px;opacity:0;animation:fadeIn 1s ease forwards 1.6s;}
+.stat-item{text-align:right;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1px;}
+.stat-num sup{font-size:20px;color:var(--green);}
+.stat-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.22em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-top:3px;}
+.stat-divider{width:32px;height:2px;background:var(--green);margin-left:auto;margin-top:8px;}
+.scroll-ind{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeIn 1s ease forwards 2s;}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--green),transparent);animation:scrollAnim 2s ease-in-out infinite;}
+.scroll-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase;writing-mode:vertical-rl;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scrollAnim{0%,100%{transform:scaleY(1);opacity:1;}50%{transform:scaleY(0.4);opacity:0.3;}}
+
+/* BRAND TICKER */
+.brand-ticker{background:var(--bg-dark);border-top:1px solid rgba(123,200,67,0.12);border-bottom:1px solid rgba(123,200,67,0.12);padding:14px 0;overflow:hidden;}
+.ticker-track{display:flex;width:max-content;animation:ticker 32s linear infinite;}
+.ticker-item{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:12px;}
+.ticker-dot{color:var(--green);font-size:8px;}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* AD CAROUSEL */
+.ad-section{background:var(--bg-dark);padding:48px 0;overflow:hidden;}
+.ad-track{display:flex;width:max-content;animation:ticker 26s linear infinite;gap:0;}
+.ad-card{width:320px;flex-shrink:0;border:1px solid rgba(255,255,255,0.07);overflow:hidden;}
+.ad-card img{width:100%;height:260px;object-fit:cover;display:block;}
+.ad-card-body{background:#fff;padding:16px 18px 0;}
+.ad-card-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.ad-discount{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--ink);line-height:1;}
+.ad-discount em{font-size:15px;color:var(--red);font-style:italic;font-weight:700;}
+.ad-products-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.15em;color:#bbb;text-transform:uppercase;}
+.ad-brand-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-0.3px;margin-top:2px;}
+.ad-card-body{padding:14px 18px 0;}
+.ad-btn{width:100%;padding:13px 18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:none;transition:all 0.2s;display:flex;align-items:center;justify-content:space-between;margin-top:14px;}
+.ad-btn.blue{background:var(--blue);color:#fff;}
+.ad-btn:hover{opacity:0.85;transform:none;}
+
+/* COMMON SECTION */
+section{position:relative;}
+.sec-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.28em;color:var(--green);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-label .dot{width:7px;height:7px;background:var(--green);border-radius:50%;flex-shrink:0;}
+.sec-label .ln{display:inline-block;width:28px;height:1.5px;background:var(--green);}
+.sec-heading{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,62px);font-weight:900;text-transform:uppercase;line-height:0.95;letter-spacing:-1px;color:var(--ink);}
+.sec-heading em{color:var(--blue);font-style:italic;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s,transform 0.7s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* CATALOGUE */
+.cat-section{padding:100px 52px;background:var(--bg);}
+.cat-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:20px;}
+.cat-sub{font-size:15px;color:var(--gray);max-width:360px;line-height:1.75;margin-top:12px;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.f-btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:9px 20px;border-radius:4px;border:1.5px solid var(--border);background:transparent;color:var(--gray);cursor:none;transition:all 0.2s;}
+.f-btn.active,.f-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff;}
+.f-sep{width:1px;height:22px;background:var(--border);flex-shrink:0;}
+.f-brand-sel{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:9px 14px;border-radius:4px;border:1.5px solid var(--border);background:#fff;color:var(--gray);cursor:pointer;outline:none;transition:border-color 0.2s;}
+.f-brand-sel:focus{border-color:var(--blue);}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
+/* PRODUCT CARD */
+.prod-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:none;transition:all 0.3s;display:flex;flex-direction:column;}
+.prod-card:hover{box-shadow:0 10px 36px rgba(26,143,255,0.13);border-color:var(--blue);transform:translateY(-3px);}
+.prod-card:hover .prod-img{transform:scale(1.06);}
+.prod-card-top{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.prod-brand-lbl{font-family:'Arial Black',sans-serif;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:-0.2px;}
+.prod-cat-chip{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:var(--bg);color:var(--gray);border:1px solid var(--border);}
+.prod-img-wrap{padding:12px 20px 8px;display:flex;align-items:center;justify-content:center;background:#f7f8f5;min-height:155px;}
+.prod-img{width:100%;max-width:175px;height:135px;object-fit:contain;transition:transform 0.4s ease;}
+.prod-info{padding:12px 16px 0;flex:1;}
+.prod-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;color:var(--ink);line-height:1;margin-bottom:4px;}
+.prod-size{font-size:11px;color:var(--gray2);letter-spacing:0.04em;}
+.prod-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.prod-price-wrap{}
+.prod-price{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--ink);line-height:1;}
+.prod-price span{font-size:11px;color:var(--gray2);font-weight:400;}
+.prod-stock{font-size:11px;color:#22c55e;margin-top:3px;}
+.prod-stock.low{color:#f59e0b;}
+.prod-order-btn{background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:9px 16px;border:none;border-radius:4px;cursor:none;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.prod-order-btn:hover{background:var(--blue-dk);}
+.cat-footer{text-align:center;margin-top:44px;}
+.btn-dark-outline{background:transparent;color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:14px 38px;border:1.5px solid var(--ink);border-radius:4px;cursor:none;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.btn-dark-outline:hover{background:var(--ink);color:#fff;}
+
+/* WHOLESALE */
+.ws-section{padding:100px 52px;background:var(--bg);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+@media(max-width:900px){.ws-section{grid-template-columns:1fr;gap:48px;}}
+.ws-feats{margin-top:36px;display:flex;flex-direction:column;gap:22px;}
+.ws-feat{display:flex;gap:14px;align-items:flex-start;}
+.ws-icon{width:40px;height:40px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;color:var(--blue);font-size:16px;}
+.ws-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);margin-bottom:3px;}
+.ws-desc{font-size:13px;color:var(--gray);line-height:1.65;}
+.ws-form{background:#fff;border:1px solid var(--border);border-radius:8px;padding:36px;position:relative;}
+.ws-form::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);border-radius:8px 8px 0 0;}
+.ws-form-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:6px;}
+.ws-form-sub{font-size:13px;color:var(--gray);margin-bottom:24px;}
+.fg{margin-bottom:14px;}
+.fl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);font-weight:700;display:block;margin-bottom:6px;}
+.fi{width:100%;padding:11px 14px;background:#fff;border:1px solid #d0d0d0;border-radius:4px;color:var(--ink);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,143,255,0.1);}
+.fi::placeholder{color:#bbb;}
+.btn-submit{width:100%;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;padding:15px;border:none;border-radius:4px;cursor:none;transition:all 0.2s;margin-top:8px;}
+.btn-submit:hover{background:var(--blue-dk);transform:translateY(-1px);}
+
+/* TRUSTED BY */
+.trust-section{padding:80px 52px;background:#fff;border-top:1px solid var(--border);}
+.trust-logos{display:flex;justify-content:center;align-items:center;gap:64px;flex-wrap:wrap;margin-top:56px;}
+.trust-logo-item{opacity:0.65;transition:opacity 0.2s;display:flex;align-items:center;}
+.trust-logo-item:hover{opacity:1;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:60px;}
+.stat-box{padding:28px;text-align:center;border:1px solid var(--border);background:var(--bg);}
+.stat-box-num{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:var(--blue);}
+.stat-box-lbl{font-size:10px;letter-spacing:0.2em;color:var(--gray);text-transform:uppercase;margin-top:6px;}
+
+/* TESTIMONIALS */
+.testi-section{padding:100px 52px;background:var(--bg);overflow:hidden;}
+.testi-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:16px;}
+.testi-nav{display:flex;gap:10px;}
+.testi-btn{width:46px;height:46px;border:1.5px solid var(--border);background:transparent;border-radius:4px;color:var(--ink);font-size:17px;cursor:none;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.testi-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff;}
+.testi-wrap{overflow:hidden;}
+.testi-track{display:flex;gap:16px;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);}
+.testi-card{flex:0 0 calc(25% - 12px);background:#fff;border:1px solid var(--border);padding:30px;border-radius:6px;}
+@media(max-width:1000px){.testi-card{flex:0 0 calc(50% - 8px);}}
+@media(max-width:600px){.testi-card{flex:0 0 100%;}}
+.testi-q{display:block;margin-bottom:16px;}
+.testi-text{font-size:13.5px;line-height:1.8;color:var(--gray);margin-bottom:24px;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-avatar{width:40px;height:40px;border-radius:4px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.testi-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;color:var(--ink);}
+.testi-role{font-size:10px;color:var(--gray2);margin-top:2px;}
+
+/* CTA STRIP */
+.cta-strip{display:grid;grid-template-columns:1fr 1fr;min-height:340px;}
+@media(max-width:700px){.cta-strip{grid-template-columns:1fr;}}
+.cta-left{background:var(--bg-dark);padding:64px 52px;display:flex;flex-direction:column;justify-content:center;}
+.cta-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(34px,4vw,56px);font-weight:900;text-transform:uppercase;line-height:0.95;color:#fff;margin-bottom:30px;}
+.cta-title em{color:var(--blue);font-style:italic;}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-wa{background:transparent;color:rgba(255,255,255,0.85);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:13px 24px;border:1.5px solid rgba(123,200,67,0.45);border-radius:4px;cursor:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-wa:hover{border-color:var(--green);color:#fff;background:rgba(123,200,67,0.1);}
+.cta-right{background:url('/Banner image.png') center/cover no-repeat;}
+
+/* FOOTER */
+.footer{padding:72px 52px 0;background:var(--bg);border-top:1px solid var(--border);}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1.5fr;gap:60px;}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr;gap:36px;}}
+.footer-desc{font-size:13px;color:var(--gray);line-height:1.8;margin-top:16px;max-width:250px;}
+.foot-col-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink);margin-bottom:18px;}
+.foot-link{display:block;font-size:13px;color:var(--gray);text-decoration:none;margin-bottom:12px;transition:color 0.2s;}
+.foot-link:hover{color:var(--ink);}
+.contact-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px;color:var(--gray);}
+.ci{color:var(--green);flex-shrink:0;margin-top:1px;}
+.footer-bottom{border-top:1px solid var(--border);margin-top:48px;padding:20px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.foot-logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--ink);}
+.foot-logo span{color:var(--green);}
+.foot-copy{font-size:11px;color:var(--gray2);letter-spacing:0.1em;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:8px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);border-radius:8px 8px 0 0;}
+.modal-head{padding:24px 28px 16px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;justify-content:space-between;}
+.modal-head-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;}
+.modal-close{background:none;border:none;color:#aaa;font-size:20px;cursor:none;padding:4px;transition:color 0.2s;}
+.modal-close:hover{color:var(--ink);}
+.modal-body{padding:24px 28px 28px;}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* TOAST + WA */
+.toast-msg{position:fixed;bottom:88px;right:28px;background:var(--ink);border-left:3px solid var(--green);color:#fff;padding:14px 20px;border-radius:4px;font-size:13px;z-index:5000;opacity:0;transform:translateX(12px);transition:all 0.25s;max-width:320px;}
+.toast-msg.show{opacity:1;transform:translateX(0);}
+.wa-float{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px;z-index:400;box-shadow:0 4px 20px rgba(37,211,102,0.4);cursor:none;transition:transform 0.2s;}
+.wa-float:hover{transform:scale(1.1);}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <svg width="150" height="50" viewBox="0 0 160 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="28" cy="9" r="4.5" fill="#7bc843"/>
+    <line x1="28" y1="13" x2="26" y2="24" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="26" y1="16" x2="18" y2="21" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+    <line x1="26" y1="16" x2="35" y2="13" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+    <line x1="26" y1="24" x2="19" y2="34" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="19" y1="34" x2="13" y2="38" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="26" y1="24" x2="33" y2="30" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="33" y1="30" x2="39" y2="32" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="7" y1="18" x2="15" y2="18" stroke="#7bc843" stroke-width="1.5" stroke-linecap="round" opacity="0.55"/>
+    <line x1="4" y1="23" x2="13" y2="23" stroke="#7bc843" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+    <text x="43" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#1a3d8f">KWIK</text>
+    <text x="92" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#7bc843">FIT</text>
+    <line x1="43" y1="37" x2="118" y2="37" stroke="#7bc843" stroke-width="0.8" opacity="0.4"/>
+    <text x="43" y="47" font-family="Arial,sans-serif" font-size="8" letter-spacing="2" fill="#7bc843" opacity="0.75">TYRES &amp; BATTERIES</text>
+  </svg>
+  <div class="nav-links">
+    <a href="/kwikfit-shop.html">Shop</a>
+    <a href="#wholesale">Wholesale</a>
+    <a href="#clients">Clients</a>
+    <a href="#contact">Contact</a>
+    <a href="#wholesale" class="nav-cta">Make an Order</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-photo"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-ring hero-ring-1"></div>
+  <div class="hero-ring hero-ring-2"></div>
+  <div class="hero-ring hero-ring-3"></div>
+  <div class="hero-deco-num">16</div>
+  <div class="hero-eyebrow"><span class="dot"></span><span class="line"></span>Nigeria's Premier Tyre Distributor<span class="line"></span>Est 2008</div>
+  <h1 class="hero-heading">
+    <span class="l1">Built For</span>
+    <span class="l2">The Road.</span>
+    <span class="l3">Built To Last.</span>
+  </h1>
+  <p class="hero-sub">From single retail tyre to fleet-scale wholesale, Kwikfit delivers premium tyres to Nigeria's biggest industries, on time, every time.</p>
+  <div class="hero-ctas">
+    <a href="/kwikfit-shop.html" class="btn-primary">Shop Now →</a>
+    <a href="#wholesale" class="btn-outline-white">Make Bulk Order</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">1200<sup>+</sup></div><div class="stat-label">SKUs in Stock</div><div class="stat-divider"></div></div>
+    <div class="stat-item"><div class="stat-num">48<sup>hr</sup></div><div class="stat-label">Nationwide Delivery</div><div class="stat-divider"></div></div>
+    <div class="stat-item"><div class="stat-num">200<sup>+</sup></div><div class="stat-label">Corporate Clients</div></div>
+  </div>
+  <div class="scroll-ind"><div class="scroll-line"></div><div class="scroll-lbl">Scroll</div></div>
+</section>
+
+<!-- BRAND TICKER -->
+<div class="brand-ticker">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="ticker-dot">●</span>Bridgestone</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Michelin</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Goodyear</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Dunlop</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Pirelli</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Continental</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Hankook</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Yokohama</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Toyo</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>BF Goodrich</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Firestone</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Bridgestone</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Michelin</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Goodyear</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Dunlop</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Pirelli</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Continental</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Hankook</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Yokohama</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Toyo</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>BF Goodrich</div>
+    <div class="ticker-item"><span class="ticker-dot">●</span>Firestone</div>
+  </div>
+</div>
+
+<!-- AD CAROUSEL -->
+<div class="ad-section">
+  <div class="ad-track">
+    <div class="ad-card">
+      <img src="/ad image 1.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;color:#e84c1e;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/ad image2.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/ad image 3.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/Banner image.png" alt="Pirelli offer" style="height:260px;object-fit:cover;">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount" style="color:#d4ac0d;">25%<br><em style="color:#1a1a1a;">off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div style="background:#e30613;color:#fff;padding:3px 10px;display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;font-style:italic;">PIRELLI</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <!-- duplicate for seamless loop -->
+    <div class="ad-card">
+      <img src="/ad image 1.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;color:#e84c1e;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/ad image2.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/ad image 3.png" alt="Bridgestone offer">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount">25%<br><em>off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div class="ad-brand-name" style="font-style:italic;">BRIDGESTONE</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+    <div class="ad-card">
+      <img src="/Banner image.png" alt="Pirelli offer" style="height:260px;object-fit:cover;">
+      <div class="ad-card-body">
+        <div class="ad-card-top"><div class="ad-discount" style="color:#d4ac0d;">25%<br><em style="color:#1a1a1a;">off on all</em></div><div class="ad-products-lbl">PRODUCTS</div></div>
+        <div style="background:#e30613;color:#fff;padding:3px 10px;display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;font-style:italic;">PIRELLI</div>
+      </div>
+      <button class="ad-btn blue" onclick="openModal('modal-quick-order')">Order Now <span>→</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CATALOGUE -->
+<section class="cat-section" id="shop">
+  <div class="cat-header reveal">
+    <div>
+      <div class="sec-label"><span class="dot"></span><span class="ln"></span>Quick Order</div>
+      <h2 class="sec-heading">Shop <em>Our</em><br>Catalogue</h2>
+      <p class="cat-sub">Retail-ready. Order online, pick up or get delivered. All major brands in stock.</p>
+    </div>
+    <div class="filters">
+      <button class="f-btn active" onclick="filterProds('all',this)">All</button>
+      <button class="f-btn" onclick="filterProds('truck',this)">Truck</button>
+      <button class="f-btn" onclick="filterProds('suv',this)">SUV / 4×4</button>
+      <button class="f-btn" onclick="filterProds('passenger',this)">Passenger</button>
+      <button class="f-btn" onclick="filterProds('industrial',this)">Industrial</button>
+      <div class="f-sep"></div>
+      <select class="f-brand-sel" id="brandSel" onchange="filterProds(currentCat, document.querySelector('.f-btn.active'))">
+        <option value="">All Brands</option>
+        <option value="Bridgestone">Bridgestone</option>
+        <option value="Michelin">Michelin</option>
+        <option value="Goodyear">Goodyear</option>
+        <option value="Dunlop">Dunlop</option>
+        <option value="Pirelli">Pirelli</option>
+        <option value="Continental">Continental</option>
+        <option value="Hankook">Hankook</option>
+        <option value="Firestone">Firestone</option>
+      </select>
+    </div>
+  </div>
+  <div class="products-grid reveal" id="productsGrid"></div>
+  <div class="cat-footer reveal">
+    <a href="/kwikfit-shop.html" class="btn-dark-outline">View Full Catalogue →</a>
+  </div>
+</section>
+
+<!-- WHOLESALE -->
+<section class="ws-section" id="wholesale">
+  <div class="reveal">
+    <div class="sec-label"><span class="dot"></span><span class="ln"></span>For Wholesalers &amp; Fleet</div>
+    <h2 class="sec-heading">Need Bulk?<br><em>Let's Talk</em><br>Volume.</h2>
+    <p style="font-size:15px;color:var(--gray);line-height:1.8;margin-top:16px;max-width:400px;">We supply corporate fleets, logistics companies, construction firms, and government agencies. Dedicated account managers, credit facilities, and serial-level tracking from our warehouse to your yard.</p>
+    <div class="ws-feats">
+      <div class="ws-feat"><div class="ws-icon">↑</div><div><div class="ws-title">Credit Facilities Available</div><div class="ws-desc">Up to 90-day credit terms for approved clients. Dedicated finance team manages your account.</div></div></div>
+      <div class="ws-feat"><div class="ws-icon">↑</div><div><div class="ws-title">Serial Level Tracking</div><div class="ws-desc">Every tyre tracked from our main yard to your delivery point. Full chain of custody.</div></div></div>
+      <div class="ws-feat"><div class="ws-icon">↑</div><div><div class="ws-title">Engineer Site Visits</div><div class="ws-desc">Our engineers visit your fleet for tyre inspections, condition reporting and replacement planning.</div></div></div>
+      <div class="ws-feat"><div class="ws-icon">↑</div><div><div class="ws-title">Nationwide Delivery</div><div class="ws-desc">Multi-drop delivery across all 36 states with electronic proof of delivery.</div></div></div>
+    </div>
+  </div>
+  <div class="ws-form reveal">
+    <div class="ws-form-title">Book a Wholesale Enquiry</div>
+    <p class="ws-form-sub">An account manager will respond to you in few minutes.</p>
+    <div class="fg"><label class="fl">Company Name *</label><input class="fi" placeholder="e.g Dangote Cement" id="ws-co"></div>
+    <div class="fg"><label class="fl">Contact Name *</label><input class="fi" placeholder="Full Name" id="ws-nm"></div>
+    <div class="fg"><label class="fl">Phone Number *</label><input class="fi" placeholder="080 0000 000 0000" id="ws-ph"></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" placeholder="procurement@company.com" type="email" id="ws-em"></div>
+    <div class="fg"><label class="fl">Add Notes</label><textarea class="fi" rows="3" placeholder="e.g order quantity, service enquiry" id="ws-no" style="resize:vertical;"></textarea></div>
+    <button class="btn-submit" onclick="submitWholesale()">Submit Enquiry →</button>
+  </div>
+</section>
+
+<!-- TRUSTED BY -->
+<section class="trust-section" id="clients">
+  <div class="reveal" style="text-align:center;">
+    <div class="sec-label" style="justify-content:center;"><span class="dot"></span><span class="ln"></span>Trusted By Industry Leaders</div>
+    <h2 class="sec-heading">Nigeria's <em>Biggest</em><br>Names Trust Us</h2>
+  </div>
+  <div class="trust-logos reveal">
+    <!-- DANGOTE -->
+    <div class="trust-logo-item">
+      <svg width="130" height="60" viewBox="0 0 130 60">
+        <text x="65" y="28" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#1a2e6b" letter-spacing="1.5">DANGOTE</text>
+        <path d="M18 36 Q65 50 112 36" stroke="#e30613" stroke-width="3" fill="none"/>
+        <text x="65" y="52" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" fill="#888" letter-spacing="1">GROUP</text>
+      </svg>
+    </div>
+    <!-- LAFARGE -->
+    <div class="trust-logo-item">
+      <svg width="130" height="60" viewBox="0 0 130 60">
+        <polygon points="12,10 30,10 12,35" fill="#00963f"/>
+        <rect x="12" y="10" width="18" height="42" fill="#00963f"/>
+        <rect x="12" y="38" width="32" height="14" fill="#00963f"/>
+        <text x="48" y="34" font-family="Arial Black,sans-serif" font-size="15" font-weight="900" fill="#00963f">LAFARGE</text>
+        <text x="48" y="47" font-family="Arial,sans-serif" font-size="7" fill="#888" letter-spacing="1">AFRICA PLC</text>
+      </svg>
+    </div>
+    <!-- HONEYWELL -->
+    <div class="trust-logo-item">
+      <svg width="150" height="60" viewBox="0 0 150 60">
+        <text x="75" y="34" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="#e30613">Honeywell</text>
+        <text x="75" y="48" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" fill="#888" letter-spacing="1">GROUP</text>
+      </svg>
+    </div>
+    <!-- NNPC -->
+    <div class="trust-logo-item">
+      <svg width="100" height="70" viewBox="0 0 100 70">
+        <polygon points="50,4 70,20 63,42 37,42 30,20" fill="#2d6a4f"/>
+        <polygon points="50,4 70,20 50,20" fill="#d4ac0d"/>
+        <polygon points="50,4 30,20 50,20" fill="#1a5c38"/>
+        <polygon points="37,42 63,42 50,56" fill="#e30613"/>
+        <text x="50" y="66" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="10" font-weight="900" fill="#1a1a1a" letter-spacing="1">NNPC</text>
+      </svg>
+    </div>
+  </div>
+  <div class="stats-grid reveal">
+    <div class="stat-box"><div class="stat-box-num">200+</div><div class="stat-box-lbl">Corporate Accounts</div></div>
+    <div class="stat-box"><div class="stat-box-num">₦2B+</div><div class="stat-box-lbl">Annual Volume</div></div>
+    <div class="stat-box"><div class="stat-box-num">36</div><div class="stat-box-lbl">States Served</div></div>
+    <div class="stat-box"><div class="stat-box-num">99%</div><div class="stat-box-lbl">On-time Delivery</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section" id="testimonials">
+  <div class="testi-header reveal">
+    <div>
+      <div class="sec-label"><span class="dot"></span><span class="ln"></span>What Our Clients Say</div>
+      <h2 class="sec-heading">Built On<br><em>Trust</em></h2>
+    </div>
+    <div class="testi-nav">
+      <button class="testi-btn" onclick="slideTesti(-1)">←</button>
+      <button class="testi-btn" onclick="slideTesti(1)">→</button>
+    </div>
+  </div>
+  <div class="testi-wrap">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card">
+        <span class="testi-q"><svg width="32" height="22" viewBox="0 0 32 22"><rect x="0" y="0" width="12" height="12" rx="2" fill="#7bc843"/><rect x="16" y="0" width="12" height="12" rx="2" fill="#7bc843"/></svg></span>
+        <p class="testi-text">KWIKFIT has been supplying our entire cement fleet for over 4 years. The serial tracking is what sets them apart — we know exactly which tyre is on which vehicle at all times. Their engineering team saved us from two major blowout incidents through early inspection alerts.</p>
+        <div class="testi-author"><div class="testi-avatar">CE</div><div><div class="testi-name">Chukwuemeka Eze</div><div class="testi-role">Fleet Manager, Dangote PLC</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-q"><svg width="32" height="22" viewBox="0 0 32 22"><rect x="0" y="0" width="12" height="12" rx="2" fill="#7bc843"/><rect x="16" y="0" width="12" height="12" rx="2" fill="#7bc843"/></svg></span>
+        <p class="testi-text">The credit facility KWIKFIT extended to us transformed how we manage procurement. The invoice terms are clear, the account team is responsive, and we've never had a delivery dispute that wasn't resolved within 24 hours.</p>
+        <div class="testi-author"><div class="testi-avatar">AO</div><div><div class="testi-name">Amaka Okonkwo</div><div class="testi-role">Procurement Director, Lafarge Africa</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-q"><svg width="32" height="22" viewBox="0 0 32 22"><rect x="0" y="0" width="12" height="12" rx="2" fill="#7bc843"/><rect x="16" y="0" width="12" height="12" rx="2" fill="#7bc843"/></svg></span>
+        <p class="testi-text">We operate 400+ vehicles across Nigeria. KWIKFIT is the only supplier that consistently delivers to multiple locations simultaneously with full documentation. The digital delivery confirmation is critical for our compliance audits.</p>
+        <div class="testi-author"><div class="testi-avatar">BA</div><div><div class="testi-name">Biodun Adeleke</div><div class="testi-role">Head of Logistics, Julius Berger</div></div></div>
+      </div>
+      <div class="testi-card">
+        <span class="testi-q"><svg width="32" height="22" viewBox="0 0 32 22"><rect x="0" y="0" width="12" height="12" rx="2" fill="#7bc843"/><rect x="16" y="0" width="12" height="12" rx="2" fill="#7bc843"/></svg></span>
+        <p class="testi-text">As a mid-size logistics company, we needed a supplier who could grow with us. KWIKFIT started us on cash terms and moved us onto credit after 6 months. The pricing is competitive and stock availability is second to none in Lagos.</p>
+        <div class="testi-author"><div class="testi-avatar">NA</div><div><div class="testi-name">Ngozi Adebayo</div><div class="testi-role">CEO, ABC Transport Co.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <div class="cta-left">
+    <div class="cta-title">Ready To Move?<br><em>Let's Order!</em></div>
+    <div class="cta-btns">
+      <button class="btn-primary" onclick="openModal('modal-quick-order')">Order Now →</button>
+      <button class="btn-wa" onclick="showToast('WhatsApp: +234 709 980 9990')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#7bc843"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp Us
+      </button>
+    </div>
+  </div>
+  <div class="cta-right"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" id="contact">
+  <div class="footer-grid">
+    <div>
+      <svg width="140" height="48" viewBox="0 0 160 52" fill="none">
+        <circle cx="28" cy="9" r="4.5" fill="#7bc843"/>
+        <line x1="28" y1="13" x2="26" y2="24" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="16" x2="18" y2="21" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="16" x2="35" y2="13" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="24" x2="19" y2="34" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="34" x2="13" y2="38" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="24" x2="33" y2="30" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="33" y1="30" x2="39" y2="32" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="43" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#1a3d8f">KWIK</text>
+        <text x="92" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#7bc843">FIT</text>
+        <text x="43" y="47" font-family="Arial,sans-serif" font-size="8" letter-spacing="2" fill="#1a3d8f" opacity="0.7">TYRES &amp; BATTERIES</text>
+      </svg>
+      <p class="footer-desc">Nigeria's premier tyre distributor. Premium brands, serial-level tracking, credit facilities for corporate clients.</p>
+    </div>
+    <div>
+      <div class="foot-col-title">Quick Links</div>
+      <a href="/kwikfit-shop.html" class="foot-link">Shop Tyres</a>
+      <a href="#wholesale" class="foot-link">Wholesale Enquiry</a>
+      <a href="#clients" class="foot-link">Our Clients</a>
+    </div>
+    <div>
+      <div class="foot-col-title">Contact Us</div>
+      <div class="contact-row"><span class="ci"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></span><span>14, Oba Akran Avenue, Ikeja Industrial Estate, Lagos</span></div>
+      <div class="contact-row"><span class="ci"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11 19.79 19.79 0 01.05 2.38a2 2 0 012-2.18h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.27 6.27l.87-.87a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span><span>0709 980 9990</span></div>
+      <div class="contact-row"><span class="ci"><svg width="15" height="15" viewBox="0 0 24 24" fill="#7bc843"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span><span>0709 980 9990</span></div>
+      <div class="contact-row"><span class="ci"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><span>kwikfit@gmail.com</span></div>
+      <div class="contact-row"><span class="ci"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></span><span>Mon-Sat: 7:30am - 6:00pm</span></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="foot-logo">KWIKFIT<span>.</span></span>
+    <span class="foot-copy">© 2025 Kwikfit Nigeria Ltd · All Rights Reserved · Certified Distributor</span>
+  </div>
+</footer>
+
+<!-- WA FLOAT -->
+<div class="wa-float" onclick="showToast('WhatsApp: +234 709 980 9990')">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</div>
+
+<!-- QUICK ORDER MODAL -->
+<div class="modal-overlay" id="modal-quick-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title">Quick Order</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">Retail orders — fast processing &amp; delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-quick-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Your Name *</label><input class="fi" placeholder="Full name" id="qo-name"></div>
+      <div class="modal-row">
+        <div class="fg"><label class="fl">Phone *</label><input class="fi" placeholder="+234 800 000 0000" id="qo-phone"></div>
+        <div class="fg"><label class="fl">Delivery State</label><select class="fi"><option>Lagos</option><option>Abuja</option><option>Port Harcourt</option><option>Kano</option><option>Other</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">Tyre Size / Product *</label><input class="fi" placeholder="e.g. Bridgestone 265/70 R17" id="qo-product"></div>
+      <div class="modal-row">
+        <div class="fg"><label class="fl">Quantity *</label><input class="fi" type="number" placeholder="4" min="1" id="qo-qty"></div>
+        <div class="fg"><label class="fl">Fulfilment</label><select class="fi"><option>Delivery</option><option>Pickup — Ikeja</option></select></div>
+      </div>
+      <button class="btn-submit" onclick="submitQuickOrder()">Place Order →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT ORDER MODAL -->
+<div class="modal-overlay" id="modal-product-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title" id="po-title">Order Tyres</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">Select quantity and delivery</div></div>
+      <button class="modal-close" onclick="closeModal('modal-product-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#f8f8f6;border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;color:var(--red);" id="po-name">Product</div>
+          <div style="font-size:11px;color:var(--gray2);margin-top:3px;" id="po-size">Size</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);" id="po-price">₦0</div>
+      </div>
+      <div class="fg"><label class="fl">Your Name *</label><input class="fi" placeholder="Full name" id="po-name-in"></div>
+      <div class="modal-row">
+        <div class="fg"><label class="fl">Phone *</label><input class="fi" placeholder="+234 800 000 0000" id="po-phone"></div>
+        <div class="fg"><label class="fl">Quantity *</label><input class="fi" type="number" placeholder="4" min="1" value="4" id="po-qty" oninput="updateTotal()"></div>
+      </div>
+      <div style="background:#f8f8f6;border-radius:4px;border:1px solid var(--border);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;">Estimated Total</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--blue);" id="po-total">₦0</span>
+      </div>
+      <div class="fg"><label class="fl">Fulfilment</label><select class="fi"><option>Delivery — Lagos</option><option>Delivery — Other State</option><option>Pickup — Ikeja Yard</option></select></div>
+      <button class="btn-submit" onclick="submitProductOrder()">Place Order →</button>
+      <p style="font-size:11px;color:var(--gray2);text-align:center;margin-top:10px;">Final price confirmed by our team. Indicative only.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function anim(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+function addHover(sel){document.querySelectorAll(sel).forEach(el=>{el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});});}
+addHover('a,button,.prod-card,.ad-card,.testi-btn');
+
+// NAV
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60));
+
+// PRODUCTS
+const brandColors={Bridgestone:'#e30613',Michelin:'#003399',Goodyear:'#003087',Hankook:'#c8001e',Continental:'#e87722',Dunlop:'#e30613',Pirelli:'#1a1a1a',Firestone:'#c8001e',Yokohama:'#003087','BF Goodrich':'#003087',Toyo:'#c8001e'};
+const catLabel={all:'All',suv:'SUV / 4×4',truck:'Truck',passenger:'Passenger',industrial:'Industrial'};
+
+const products=[
+  {brand:'Bridgestone',name:'Dueler A/T',size:'265/75 R16',type:'suv',price:52000,stock:'In Stock',low:false},
+  {brand:'Michelin',name:'X Multi Z',size:'275/80 R22.5',type:'truck',price:95000,stock:'In Stock',low:false},
+  {brand:'Goodyear',name:'WT Cargo',size:'315/80 R22.5',type:'truck',price:110000,stock:'In Stock',low:false},
+  {brand:'Hankook',name:'Kinergy EX',size:'225/70 R15',type:'passenger',price:38000,stock:'In Stock',low:false},
+  {brand:'Continental',name:'AllSeasonContact',size:'245/75 R16',type:'suv',price:55000,stock:'Low Stock',low:true},
+  {brand:'Dunlop',name:'SP Touring R1',size:'195/65 R15',type:'passenger',price:28000,stock:'In Stock',low:false},
+  {brand:'Pirelli',name:'Scorpion ATR',size:'235/55 R18',type:'suv',price:72000,stock:'In Stock',low:false},
+  {brand:'Firestone',name:'FS818',size:'215/75 R17.5',type:'industrial',price:68000,stock:'In Stock',low:false},
+  {brand:'Michelin',name:'Energy XM2+',size:'205/60 R16',type:'passenger',price:52000,stock:'In Stock',low:false},
+  {brand:'Bridgestone',name:'R-Steer 001',size:'295/80 R22.5',type:'truck',price:98000,stock:'In Stock',low:false},
+  {brand:'Goodyear',name:'Wrangler HP',size:'255/70 R16',type:'suv',price:61000,stock:'In Stock',low:false},
+  {brand:'Goodyear',name:'Cargo Ultra Grip',size:'195/75 R16C',type:'industrial',price:45000,stock:'In Stock',low:false},
+];
+
+let currentCat='all';
+
+function renderProds(filter,btn){
+  if(filter!==undefined) currentCat=filter;
+  const brand=(document.getElementById('brandSel')||{value:''}).value;
+  const grid=document.getElementById('productsGrid');
+  let list=currentCat==='all'?[...products]:products.filter(p=>p.type===currentCat);
+  if(brand) list=list.filter(p=>p.brand===brand);
+  grid.innerHTML=list.map(p=>{
+    const color=brandColors[p.brand]||'#1a1a1a';
+    const chip=catLabel[p.type]||p.type;
+    return `<div class="prod-card">
+      <div class="prod-card-top">
+        <div class="prod-brand-lbl" style="color:${color}">${p.brand}</div>
+        <div class="prod-cat-chip">${chip}</div>
+      </div>
+      <div class="prod-img-wrap"><img class="prod-img" src="/product image.png" alt="${p.brand} ${p.name}"></div>
+      <div class="prod-info">
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-size">${p.size}</div>
+      </div>
+      <div class="prod-footer">
+        <div class="prod-price-wrap">
+          <div class="prod-price">₦${p.price.toLocaleString()}<span>/unit</span></div>
+          <div class="prod-stock${p.low?' low':''}">● ${p.stock}</div>
+        </div>
+        <button class="prod-order-btn" onclick="openProductOrder('${p.brand} ${p.name}','${p.size}',${p.price})">Order →</button>
+      </div>
+    </div>`;
+  }).join('');
+  addHover('.prod-card');
+}
+renderProds('all');
+
+function filterProds(type,btn){
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderProds(type,btn);
+}
+
+// ORDER
+function openProductOrder(name,size,price){
+  document.getElementById('po-title').textContent='Order '+name;
+  document.getElementById('po-name').textContent=name;
+  document.getElementById('po-size').textContent=size;
+  document.getElementById('po-price').textContent='₦'+price.toLocaleString();
+  document.getElementById('po-qty').value=4;
+  document.getElementById('po-qty').dataset.price=price;
+  updateTotal();openModal('modal-product-order');
+}
+function updateTotal(){
+  const q=parseInt(document.getElementById('po-qty').value)||1;
+  const p=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  document.getElementById('po-total').textContent='₦'+(q*p).toLocaleString();
+}
+function submitProductOrder(){
+  const n=document.getElementById('po-name-in').value,ph=document.getElementById('po-phone').value;
+  if(!n||!ph){showToast('Please fill in your name and phone number.');return;}
+  const prod=document.getElementById('po-name').textContent,q=parseInt(document.getElementById('po-qty').value)||1;
+  closeModal('modal-product-order');showToast(`✅ ${prod} ×${q} — our team will call to confirm!`);
+}
+function submitQuickOrder(){
+  const n=document.getElementById('qo-name').value,ph=document.getElementById('qo-phone').value,pr=document.getElementById('qo-product').value;
+  if(!n||!ph||!pr){showToast('Please fill in all required fields.');return;}
+  closeModal('modal-quick-order');showToast(`✅ Order received! Team will call ${ph} within 30 minutes.`);
+}
+function submitWholesale(){
+  const co=document.getElementById('ws-co').value,nm=document.getElementById('ws-nm').value,ph=document.getElementById('ws-ph').value;
+  if(!co||!nm||!ph){showToast('Please fill in all required fields.');return;}
+  showToast(`✅ Enquiry received for ${co}. Account manager will contact you shortly.`);
+  ['ws-co','ws-nm','ws-ph','ws-em','ws-no'].forEach(id=>document.getElementById(id).value='');
+}
+
+// TESTIMONIALS
+let ti=0;
+function slideTesti(dir){
+  const cards=document.querySelectorAll('.testi-card');
+  const pv=window.innerWidth>1000?4:window.innerWidth>600?2:1;
+  const max=Math.ceil(cards.length/pv)-1;
+  ti=Math.max(0,Math.min(ti+dir,max));
+  const w=cards[0].offsetWidth+16;
+  document.getElementById('testiTrack').style.transform=`translateX(-${ti*w*pv}px)`;
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+// TOAST
+let tt;
+function showToast(msg){const t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),4200);}
+
+// REVEAL
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

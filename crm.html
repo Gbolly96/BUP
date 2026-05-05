@@ -209,6 +209,20 @@ tr:hover td{background:#fafafa}
 .dunning-stage:hover{border-color:var(--primary);background:#f0f7ff}
 .dunning-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 
+/* SIDESHEET */
+#sidesheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9991;display:flex;justify-content:flex-end;pointer-events:none;transition:background .25s ease}
+#sidesheet-overlay.active{background:rgba(0,0,0,.25);pointer-events:all}
+.sidesheet{width:520px;max-width:96vw;height:100%;background:#fff;display:flex;flex-direction:column;box-shadow:-4px 0 32px rgba(0,0,0,.1);transform:translateX(100%);transition:transform .26s cubic-bezier(.32,.72,0,1)}
+#sidesheet-overlay.active .sidesheet{transform:translateX(0)}
+.sidesheet-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sidesheet-title{font-size:17px;font-weight:700;color:var(--text)}
+.sidesheet-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);line-height:1;padding:6px;border-radius:5px}
+.sidesheet-close:hover{background:#f3f4f6;color:var(--text)}
+.sidesheet-body{flex:1;overflow-y:auto;padding:24px}
+.sidesheet-body .tabs{position:sticky;top:-24px;background:#fff;z-index:2;margin:-4px -24px 0;padding:0 24px;border-bottom:1px solid var(--border)}
+.sidesheet-body .tab.active{border-bottom-color:var(--brand-accent);color:var(--text)}
+.sidesheet-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;background:#fafafa}
+
 /* RESPONSIVE TWEAKS */
 @media(max-width:768px){
   .kpi-grid{grid-template-columns:1fr 1fr}
@@ -349,7 +363,7 @@ tr:hover td{background:#fafafa}
       <div class="card-header"><div class="card-title">Enquiry Log</div></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Ref</th><th>Customer</th><th>Product</th><th>Qty</th><th>Status</th><th>Date</th></tr></thead>
+          <thead><tr><th>Ref</th><th>Customer</th><th>Product</th><th>Qty</th><th>Status</th><th>Date</th><th></th></tr></thead>
           <tbody id="enquiries-tbody"></tbody>
         </table>
       </div>
@@ -418,12 +432,15 @@ tr:hover td{background:#fafafa}
   </div>
   <div id="approval-credit">
     <div id="credit-requests-list"></div>
+    <div id="credit-timeline"></div>
   </div>
   <div id="approval-transfer" style="display:none">
     <div id="transfer-sla-list"></div>
+    <div id="transfer-timeline"></div>
   </div>
   <div id="approval-creditnote" style="display:none">
     <div id="credit-note-list"></div>
+    <div id="creditnote-timeline"></div>
   </div>
 </div>
 
@@ -622,6 +639,18 @@ tr:hover td{background:#fafafa}
   </div>
 </div>
 
+<!-- SIDESHEET -->
+<div id="sidesheet-overlay" onclick="closeSidesheetOnBackdrop(event)">
+  <div class="sidesheet">
+    <div class="sidesheet-header">
+      <div class="sidesheet-title" id="ss-title">Detail</div>
+      <button class="sidesheet-close" onclick="closeSidesheet()">✕</button>
+    </div>
+    <div class="sidesheet-body" id="ss-body"></div>
+    <div class="sidesheet-footer" id="ss-footer"></div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast-container"></div>
 
@@ -784,6 +813,14 @@ const ACTIVITIES = [
   {text:'DSP-0412 pickup confirmed by rider — LKJ-882-BK',time:'06:40'},
   {text:'ENQ-0043 received from Lafarge Africa',time:'06:15'},
   {text:'QT-2026-0186 accepted — Flour Mills of Nigeria',time:'Yesterday'},
+];
+
+// Approval history log — {type:'credit'|'transfer'|'creditnote', label, outcome:'approved'|'rejected', time, by}
+const APPROVAL_LOG = [];
+
+// Credit note queue
+const CREDIT_NOTES = [
+  {id:'CN-0031',ret:'RET-0089',customer:'Nestle Nigeria',product:'Safety Helmet × 50',amount:175000},
 ];
 
 // ─── AUTH ────────────────────────────────────────────────────────────────────
@@ -978,7 +1015,7 @@ function renderCustomers(filter=''){
       <td class="mono">₦${fmt(c.limit)}</td>
       <td class="mono" style="color:${c.outstanding>c.limit*0.7?'var(--red)':'inherit'}">₦${fmt(c.outstanding)}</td>
       <td><span class="badge ${c.status==='Active'?'badge-green':'badge-orange'}">${c.status}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openCustomerModal('${c.id}')">View</button></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openCustomerSidesheet('${c.id}')">View</button></td>
     </tr>`).join('');
 }
 
@@ -1012,17 +1049,18 @@ function openCustomerModal(id){
 
 function renderEnquiries(){
   document.getElementById('enquiries-tbody').innerHTML=ENQUIRIES.map(e=>`
-    <tr>
+    <tr id="enq-row-${e.ref}">
       <td class="mono" style="font-size:12px">${e.ref}</td>
       <td>${e.customer}</td>
       <td>${e.product}</td>
       <td>${e.qty.toLocaleString()}</td>
-      <td><span class="badge ${enqBadge(e.status)}">${e.status}</span></td>
+      <td id="enq-status-${e.ref}"><span class="badge ${enqBadge(e.status)}">${e.status}</span></td>
       <td class="mono" style="font-size:12px">${e.date}</td>
+      <td>${['New','Quoted'].includes(e.status)?`<button class="btn btn-primary btn-sm" onclick="openNewQuoteModal('${e.customer}','${e.product.replace(/'/g,"\\'")}','${e.ref}')">Create Quote</button>`:'—'}</td>
     </tr>`).join('');
 }
 
-function enqBadge(s){return{New:'badge-blue',Quoted:'badge-orange',Converted:'badge-green',Closed:'badge-gray'}[s]||'badge-gray'}
+function enqBadge(s){return{'New':'badge-blue','Quoted':'badge-orange','Converted':'badge-green','Closed':'badge-gray','Quote Sent':'badge-blue'}[s]||'badge-gray'}
 
 function submitEnquiry(){
   const c=document.getElementById('enq-customer').value;
@@ -1042,20 +1080,87 @@ function openEnquiryForm(){navigate('enquiries');document.getElementById('enq-qt
 // ─── QUOTES ──────────────────────────────────────────────────────────────────
 
 function renderQuotes(){
-  document.getElementById('quotes-tbody').innerHTML=QUOTES.map(q=>`
-    <tr>
+  document.getElementById('quotes-tbody').innerHTML=QUOTES.map(q=>{
+    const converted=q.status==='Converted';
+    const rowStyle=converted?'opacity:.45;':'';
+    return `<tr id="qt-row-${q.no.replace(/\W/g,'')}" style="${rowStyle}">
       <td class="mono" style="font-size:12px">${q.no}</td>
       <td>${q.customer}</td>
       <td>${q.product}</td>
       <td class="mono">₦${fmt(q.amount)}</td>
       <td><span class="badge badge-blue">${q.version}</span></td>
       <td class="mono" style="font-size:12px">${q.validity}</td>
-      <td><span class="badge ${quoteBadge(q.status)}">${q.status}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openQuoteModal('${q.no}')">History</button></td>
-    </tr>`).join('');
+      <td id="qt-status-${q.no.replace(/\W/g,'')}"><span class="badge ${quoteBadge(q.status)}">${q.status}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="openQuoteSidesheet('${q.no}')">History</button>
+        ${q.status==='Accepted'?`<button class="btn btn-primary btn-sm" style="margin-left:4px" onclick="openConvertPOModal('${q.no}')">Convert PO</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
 }
 
-function quoteBadge(s){return{Accepted:'badge-green','Pending':'badge-orange','Under Review':'badge-blue',Expired:'badge-gray'}[s]||'badge-gray'}
+function quoteBadge(s){return{Accepted:'badge-green',Pending:'badge-orange','Under Review':'badge-blue',Expired:'badge-gray',Converted:'badge-gray',Draft:'badge-gray'}[s]||'badge-gray'}
+
+function openConvertPOModal(no){
+  const q=QUOTES.find(x=>x.no===no);if(!q)return;
+  const maxPO=ORDERS.reduce((m,o)=>Math.max(m,parseInt(o.no.split('-')[2])||0),0);
+  const poRef=`PO-2026-${String(maxPO+1).padStart(4,'0')}`;
+  // Store ref on window so confirmCreatePO can read it without DOM round-trip
+  window._pendingPO={ref:poRef,quoteNo:no};
+  document.getElementById('modal-title').textContent=`Convert to Purchase Order`;
+  document.getElementById('modal-body').innerHTML=`
+<div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div><div class="kpi-label">PO Reference</div><div class="mono" style="font-size:13px;font-weight:700">${poRef}</div></div>
+  <div><div class="kpi-label">Quote</div><div class="mono" style="font-size:13px">${q.no}</div></div>
+  <div><div class="kpi-label">Customer</div><div style="font-weight:600">${q.customer}</div></div>
+  <div><div class="kpi-label">Order Value</div><div style="font-weight:700;font-size:15px">₦${fmt(q.amount)}</div></div>
+  <div><div class="kpi-label">Product</div><div>${q.product}</div></div>
+</div>
+<div style="display:grid;gap:12px">
+  <div>
+    <label class="kpi-label" style="display:block;margin-bottom:4px">Payment Type</label>
+    <select id="po-paytype" onchange="document.getElementById('po-terms-wrap').style.display=this.value==='Credit'?'block':'none'"
+      style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+      <option value="Cash">Cash</option>
+      <option value="Credit">Credit</option>
+    </select>
+  </div>
+  <div id="po-terms-wrap" style="display:none">
+    <label class="kpi-label" style="display:block;margin-bottom:4px">Credit Terms</label>
+    <select id="po-terms" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+      <option>Net 30</option><option>Net 60</option><option>Net 90</option>
+    </select>
+  </div>
+</div>`;
+  document.getElementById('modal-footer').innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModalDirect()">Cancel</button>
+    <button class="btn btn-primary" onclick="confirmCreatePO()">Confirm & Create PO</button>`;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function confirmCreatePO(){
+  const {ref, quoteNo}=window._pendingPO||{};
+  if(!ref)return;
+  const q=QUOTES.find(x=>x.no===quoteNo);
+  const payType=document.getElementById('po-paytype').value;
+  const terms=payType==='Credit'?document.getElementById('po-terms').value:'—';
+  // Update quote status
+  if(q){
+    q.status='Converted';
+    const safeNo=quoteNo.replace(/\W/g,'');
+    const statusCell=document.getElementById(`qt-status-${safeNo}`);
+    if(statusCell)statusCell.innerHTML=`<span class="badge badge-gray">Converted</span>`;
+    const row=document.getElementById(`qt-row-${safeNo}`);
+    if(row){
+      row.style.opacity='0.45';
+      const convertBtn=row.querySelector('.btn-primary');
+      if(convertBtn)convertBtn.remove();
+    }
+  }
+  closeModalDirect();
+  showToast(`${ref} created. Rider and vehicle pre-assigned.`,'success');
+  window._pendingPO=null;
+}
 
 function openQuoteModal(no){
   const q=QUOTES.find(x=>x.no===no);if(!q)return;
@@ -1083,7 +1188,7 @@ function renderOrders(){
       <td class="mono" style="font-size:12px">${o.date}</td>
       <td><span class="badge ${dispatchBadge(o.dispatch)}">${o.dispatch}</span></td>
       <td><span class="badge ${payBadge(o.payment)}">${o.payment}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openOrderModal('${o.no}')">View</button></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openOrderSidesheet('${o.no}')">View</button></td>
     </tr>`).join('');
 }
 
@@ -1118,10 +1223,52 @@ function openOrderModal(no){
 
 // ─── APPROVALS ───────────────────────────────────────────────────────────────
 
+function nowStamp(){
+  const d=new Date();
+  return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderTimeline(containerId, type){
+  const entries=APPROVAL_LOG.filter(e=>e.type===type);
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  if(entries.length===0){el.innerHTML='';return;}
+  el.innerHTML=`
+<div style="margin-top:24px">
+  <div class="kpi-label" style="margin-bottom:12px">Recently Actioned</div>
+  <div style="position:relative;padding-left:20px">
+    <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)"></div>
+    ${entries.slice().reverse().map(e=>`
+    <div style="position:relative;margin-bottom:14px">
+      <div style="position:absolute;left:-20px;top:3px;width:14px;height:14px;border-radius:50%;
+        background:${e.outcome==='approved'?'#16a34a':'var(--red)'};
+        display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700">
+        ${e.outcome==='approved'?'✓':'✕'}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:2px">${e.time} · ${e.by}</div>
+      <div style="font-size:13px;font-weight:500;color:${e.outcome==='approved'?'#15803d':'var(--red)'}">
+        ${e.outcome==='approved'?'Approved':'Rejected'} — ${e.label}
+      </div>
+    </div>`).join('')}
+  </div>
+</div>`;
+}
+
+function emptyState(label){
+  return `<div style="padding:32px;text-align:center;color:var(--muted)">
+    <div style="font-size:28px;margin-bottom:8px">✓</div>
+    <div style="font-weight:600;margin-bottom:4px">All clear — no pending approvals.</div>
+    <div style="font-size:13px">${label} queue is empty.</div>
+  </div>`;
+}
+
 function renderApprovals(){
-  // Credit requests
-  document.getElementById('credit-requests-list').innerHTML=CREDIT_REQUESTS.map(r=>`
-    <div class="card" style="margin-bottom:12px">
+  // ── Credit requests ──
+  const pendingCredit=CREDIT_REQUESTS.filter(r=>r.status!=='Approved'&&r.status!=='Rejected');
+  document.getElementById('credit-requests-list').innerHTML=pendingCredit.length===0
+    ? emptyState('Credit requests')
+    : pendingCredit.map(r=>`
+    <div class="card" style="margin-bottom:12px" id="cr-card-${r.id}">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700">${r.customer}</div>
@@ -1136,15 +1283,19 @@ function renderApprovals(){
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         ${!r.recommended&&['finance','superior'].includes(currentRole)?`<button class="btn btn-outline btn-sm" onclick="recommendCredit('${r.id}')">Recommend Credit</button>`:''}
-        ${r.recommended&&currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="approveCredit('${r.id}')">Final Approve Credit</button>`:''}
-        ${currentRole==='superior'&&r.recommended?`<button class="btn btn-danger btn-sm" onclick="showToast('Credit request declined','error')">Decline</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="showToast('Notes viewed','success')">View Notes</button>
+        ${r.recommended&&currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="approveCredit('${r.id}')">Approve Credit</button>`:''}
+        ${currentRole==='superior'?`<button class="btn btn-danger btn-sm" onclick="rejectCredit('${r.id}')">Reject</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Notes viewed')">View Notes</button>
       </div>
     </div>`).join('');
+  renderTimeline('credit-timeline','credit');
 
-  // Transfer SLA
-  document.getElementById('transfer-sla-list').innerHTML=TRANSFERS.filter(t=>t.status!=='Completed').map(t=>`
-    <div class="card" style="margin-bottom:12px">
+  // ── Transfer SLA ──
+  const pendingTransfers=TRANSFERS.filter(t=>t.status==='In Progress');
+  document.getElementById('transfer-sla-list').innerHTML=pendingTransfers.length===0
+    ? emptyState('Transfer')
+    : pendingTransfers.map(t=>`
+    <div class="card" style="margin-bottom:12px" id="trf-card-${t.no}">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700">${t.no}</div>
@@ -1152,27 +1303,86 @@ function renderApprovals(){
         </div>
         <div style="display:flex;gap:10px;align-items:center">
           <span class="sla-timer ${t.breach?'breach':''}">${t.breach?'⚠ BREACH: ':''} ${t.sla} remaining</span>
-          <button class="btn btn-primary btn-sm" onclick="showToast('Transfer ${t.no} approved','success')">Approve</button>
+          <button class="btn btn-primary btn-sm" onclick="approveTransfer('${t.no}')">Approve</button>
         </div>
       </div>
     </div>`).join('');
+  renderTimeline('transfer-timeline','transfer');
 
-  // Credit notes
-  document.getElementById('credit-note-list').innerHTML=`
-    <div class="card"><div style="padding:10px;color:var(--muted)">RET-0089 — Nestle Nigeria · 50 × Safety Helmet · ₦175,000 credit note pending approval</div>
-    <div style="padding:0 10px 14px;display:flex;gap:8px">
-      ${currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="showToast('Credit note approved','success')">Approve Credit Note</button>`:''}
-      <button class="btn btn-ghost btn-sm">View Return</button>
-    </div></div>`;
+  // ── Credit notes ──
+  const pendingNotes=CREDIT_NOTES.filter(n=>!n.actioned);
+  document.getElementById('credit-note-list').innerHTML=pendingNotes.length===0
+    ? emptyState('Credit note')
+    : pendingNotes.map(n=>`
+    <div class="card" id="cn-card-${n.id}" style="margin-bottom:12px">
+      <div style="padding:14px 14px 8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px">${n.id} — ${n.customer}</div>
+        <div style="font-size:13px;color:var(--muted)">${n.ret} · ${n.product} · ₦${fmt(n.amount)} credit note pending</div>
+      </div>
+      <div style="padding:0 14px 14px;display:flex;gap:8px">
+        ${currentRole==='superior'?`<button class="btn btn-primary btn-sm" onclick="approveCreditNote('${n.id}')">Approve Credit Note</button>`:''}
+        ${currentRole==='superior'?`<button class="btn btn-danger btn-sm" onclick="rejectCreditNote('${n.id}')">Reject</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="navigate('returns')">View Return</button>
+      </div>
+    </div>`).join('');
+  renderTimeline('creditnote-timeline','creditnote');
 }
 
 function recommendCredit(id){
   const r=CREDIT_REQUESTS.find(x=>x.id===id);
-  if(r){r.recommended=true;r.status='Pending Final Approval';renderApprovals();showToast(`${id} recommended for approval`,'success')}
+  if(r){r.recommended=true;r.status='Pending Final Approval';renderApprovals();showToast(`${id} recommended for final approval`,'success')}
 }
+
 function approveCredit(id){
   const r=CREDIT_REQUESTS.find(x=>x.id===id);
-  if(r){r.status='Approved';CREDIT_REQUESTS.splice(CREDIT_REQUESTS.indexOf(r),1);renderApprovals();renderCreditAccounts();showToast(`${id} credit approved`,'success')}
+  if(!r)return;
+  r.status='Approved';
+  // Apply credit limit increase
+  const acc=CREDIT_ACCOUNTS.find(a=>a.customer===r.customer);
+  if(acc)acc.limit+=r.requested;
+  APPROVAL_LOG.push({type:'credit',label:`${r.id} · ${r.customer} · +₦${fmt(r.requested)}`,outcome:'approved',time:nowStamp(),by:currentUser.name});
+  CREDIT_REQUESTS.splice(CREDIT_REQUESTS.indexOf(r),1);
+  renderApprovals();
+  renderCreditAccounts();
+  showToast(`Credit approved for ${r.customer}`,'success');
+}
+
+function rejectCredit(id){
+  const r=CREDIT_REQUESTS.find(x=>x.id===id);
+  if(!r)return;
+  r.status='Rejected';
+  APPROVAL_LOG.push({type:'credit',label:`${r.id} · ${r.customer}`,outcome:'rejected',time:nowStamp(),by:currentUser.name});
+  CREDIT_REQUESTS.splice(CREDIT_REQUESTS.indexOf(r),1);
+  renderApprovals();
+  showToast(`Credit rejected — ${r.customer}`,'error');
+}
+
+function approveTransfer(no){
+  const t=TRANSFERS.find(x=>x.no===no);
+  if(!t)return;
+  t.status='Completed';t.sla='Done';
+  APPROVAL_LOG.push({type:'transfer',label:`${t.no} · ${t.product} · ${t.from}→${t.to}`,outcome:'approved',time:nowStamp(),by:currentUser.name});
+  renderApprovals();
+  renderTransfers();
+  showToast(`Transfer ${no} approved`,'success');
+}
+
+function approveCreditNote(id){
+  const n=CREDIT_NOTES.find(x=>x.id===id);
+  if(!n)return;
+  n.actioned=true;
+  APPROVAL_LOG.push({type:'creditnote',label:`${n.id} · ${n.customer} · ₦${fmt(n.amount)}`,outcome:'approved',time:nowStamp(),by:currentUser.name});
+  renderApprovals();
+  showToast(`Credit note approved — ${n.customer}`,'success');
+}
+
+function rejectCreditNote(id){
+  const n=CREDIT_NOTES.find(x=>x.id===id);
+  if(!n)return;
+  n.actioned=true;
+  APPROVAL_LOG.push({type:'creditnote',label:`${n.id} · ${n.customer} · ₦${fmt(n.amount)}`,outcome:'rejected',time:nowStamp(),by:currentUser.name});
+  renderApprovals();
+  showToast(`Credit note rejected`,'error');
 }
 
 // ─── INVOICES ────────────────────────────────────────────────────────────────
@@ -1287,7 +1497,7 @@ function renderDispatch(){
         ${!d.invDone&&['inventory','superior'].includes(currentRole)?`<button class="btn btn-primary btn-sm" onclick="signOffDispatch('${d.no}','inv')">Sign Off — Inventory Release</button>`:''}
         ${d.invDone&&!d.riderDone&&['rider','superior'].includes(currentRole)?`<button class="btn btn-primary btn-sm" onclick="signOffDispatch('${d.no}','rider')">Sign Off — Pickup Confirmed</button>`:''}
         ${d.riderDone&&!d.custDone&&['superior','sales'].includes(currentRole)?`<button class="btn btn-accent btn-sm" onclick="signOffDispatch('${d.no}','cust')">Confirm Delivery</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="openDispatchDetailModal('${d.no}')">View Details</button>
+        <button class="btn btn-ghost btn-sm" onclick="openDispatchSidesheet('${d.no}')">View Details</button>
       </div>
     </div>`;
   }).join('');
@@ -1339,7 +1549,7 @@ function renderReturns(){
       </div>
       <div style="margin-top:12px;display:flex;gap:8px">
         ${r.step<5?`<button class="btn btn-primary btn-sm" onclick="advanceReturn('${r.no}')">Advance to: ${r.steps[r.step+1]||'Close'}</button>`:'<span class="badge badge-green">Closed</span>'}
-        <button class="btn btn-ghost btn-sm" onclick="openReturnDetailModal('${r.no}')">View Details</button>
+        <button class="btn btn-ghost btn-sm" onclick="openReturnSidesheet('${r.no}')">View Details</button>
       </div>
     </div>`).join('');
 }
@@ -1638,6 +1848,454 @@ function openReturnDetailModal(no){
     </div>`,
     r.step<5?[{label:`Advance to: ${r.steps[r.step+1]}`,cls:'btn-primary',fn:`advanceReturn('${no}');renderReturns();closeModalDirect()`}]:[]
   );
+}
+
+// ─── SIDESHEET ───────────────────────────────────────────────────────────────
+
+function openSidesheet(title, body, footerHTML=''){
+  document.getElementById('ss-title').textContent=title;
+  document.getElementById('ss-body').innerHTML=body;
+  document.getElementById('ss-footer').innerHTML=footerHTML;
+  document.getElementById('sidesheet-overlay').classList.add('active');
+}
+function closeSidesheet(){
+  document.getElementById('sidesheet-overlay').classList.remove('active');
+}
+function closeSidesheetOnBackdrop(e){
+  if(e.target===document.getElementById('sidesheet-overlay'))closeSidesheet();
+}
+function ssTab(el,targetId){
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  el.closest('.sidesheet-body').querySelectorAll('.ss-panel').forEach(p=>{
+    p.style.display=p.id===targetId?'':'none';
+  });
+}
+
+function openCustomerSidesheet(id){
+  const c=CUSTOMERS.find(x=>x.id===id);
+  if(!c)return;
+  const used=c.outstanding, limit=c.limit, avail=limit-used;
+  const pct=Math.round(used/limit*100);
+  const custOrders=ORDERS.filter(o=>o.customer===c.name);
+  const custInvoices=INVOICES.filter(i=>i.customer===c.name);
+  const contacts={
+    'C001':{contact:'Aliko Dangote (CFO)',phone:'+234 801 000 0001',email:'finance@dangote.com'},
+    'C002':{contact:'Dayo Adewale (Procurement)',phone:'+234 802 000 0002',email:'procurement@mtn.ng'},
+    'C003':{contact:'Sola Bello (Supply Chain)',phone:'+234 803 000 0003',email:'supply@lafarge.ng'},
+    'C004':{contact:'Tunde Bakare (GM Ops)',phone:'+234 804 000 0004',email:'ops@flourmills.ng'},
+    'C005':{contact:'Ngozi Eze (Purchasing)',phone:'+234 805 000 0005',email:'buying@buafoods.ng'},
+    'C006':{contact:'Emeka Obi (Finance)',phone:'+234 806 000 0006',email:'finance@nb.ng'},
+    'C007':{contact:'Hauwa Musa (Admin)',phone:'+234 807 000 0007',email:'admin@nestle.ng'},
+    'C008':{contact:'Lola Fashola (Ops)',phone:'+234 808 000 0008',email:'ops@unilever.ng'},
+    'C009':{contact:'Biodun Ojo (Treasury)',phone:'+234 809 000 0009',email:'treasury@accessbank.ng'},
+    'C010':{contact:'Funmi Adeyemi (Accts)',phone:'+234 810 000 0010',email:'accounts@zenithbank.ng'},
+    'C011':{contact:'Gbenga Lawal (Projects)',phone:'+234 811 000 0011',email:'projects@juliusberger.ng'},
+    'C012':{contact:'Rotimi Ade (Supply)',phone:'+234 812 000 0012',email:'supply@totalenergies.ng'},
+  };
+  const ct=contacts[id]||{contact:'—',phone:'—',email:'—'};
+  const dispBadge=s=>`<span class="badge ${s==='Delivered'?'green':s==='In Transit'?'orange':s==='Dispatched'?'blue':'grey'}">${s}</span>`;
+  const payBadge=s=>`<span class="badge ${s==='Paid'?'green':s==='Part-Paid'?'orange':s==='Invoiced'?'blue':'grey'}">${s}</span>`;
+
+  const body=`
+<div class="tabs">
+  <button class="tab active" onclick="ssTab(this,'ss-overview')">Overview</button>
+  <button class="tab" onclick="ssTab(this,'ss-orders')">Orders</button>
+  <button class="tab" onclick="ssTab(this,'ss-credit')">Credit</button>
+</div>
+
+<div id="ss-overview" class="ss-panel" style="padding-top:24px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+    <div><div class="kpi-label">Customer ID</div><div class="mono" style="font-size:13px">${c.id}</div></div>
+    <div><div class="kpi-label">Status</div><span class="badge ${c.status==='Active'?'green':'orange'}">${c.status}</span></div>
+    <div><div class="kpi-label">Type</div><div>${c.type}</div></div>
+    <div><div class="kpi-label">Industry</div><div>${c.industry}</div></div>
+    <div><div class="kpi-label">City</div><div>${c.city}</div></div>
+    <div><div class="kpi-label">Primary Contact</div><div>${ct.contact}</div></div>
+    <div><div class="kpi-label">Phone</div><div>${ct.phone}</div></div>
+    <div><div class="kpi-label">Email</div><div style="font-size:12px">${ct.email}</div></div>
+  </div>
+  <div style="border-top:1px solid var(--border);padding-top:16px">
+    <div class="kpi-label" style="margin-bottom:12px">Account Summary</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div class="kpi-label">Credit Limit</div>
+        <div style="font-size:15px;font-weight:700">₦${fmt(limit)}</div>
+      </div>
+      <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div class="kpi-label">Outstanding</div>
+        <div style="font-size:15px;font-weight:700;color:${pct>70?'var(--red)':'var(--text)'}">₦${fmt(used)}</div>
+      </div>
+      <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div class="kpi-label">Available</div>
+        <div style="font-size:15px;font-weight:700;color:var(--brand-accent)">₦${fmt(avail)}</div>
+      </div>
+    </div>
+    <div style="height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:${pct>80?'var(--red)':pct>60?'#f59e0b':'var(--brand-accent)'};border-radius:3px;transition:width .4s"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">${pct}% utilised</div>
+  </div>
+</div>
+
+<div id="ss-orders" class="ss-panel" style="padding-top:24px;display:none">
+  ${custOrders.length===0?'<div style="color:var(--muted);font-size:13px">No orders for this customer.</div>':`
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr style="border-bottom:2px solid var(--border)">
+      <th class="kpi-label" style="text-align:left;padding:6px 0">Order #</th>
+      <th class="kpi-label" style="text-align:left;padding:6px 0">Products</th>
+      <th class="kpi-label" style="text-align:right;padding:6px 0">Value</th>
+      <th class="kpi-label" style="text-align:center;padding:6px 0">Dispatch</th>
+      <th class="kpi-label" style="text-align:center;padding:6px 0">Payment</th>
+    </tr></thead>
+    <tbody>${custOrders.map(o=>`<tr style="border-bottom:1px solid var(--border)">
+      <td class="mono" style="padding:8px 0;font-size:12px">${o.no}</td>
+      <td style="padding:8px 4px;max-width:140px;font-size:12px">${o.products}</td>
+      <td style="padding:8px 0;text-align:right;font-weight:600">₦${fmt(o.value)}</td>
+      <td style="padding:8px 0;text-align:center">${dispBadge(o.dispatch)}</td>
+      <td style="padding:8px 0;text-align:center">${payBadge(o.payment)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`}
+</div>
+
+<div id="ss-credit" class="ss-panel" style="padding-top:24px;display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+    <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div class="kpi-label">Credit Limit</div>
+      <div style="font-size:17px;font-weight:700">₦${fmt(limit)}</div>
+    </div>
+    <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div class="kpi-label">Outstanding</div>
+      <div style="font-size:17px;font-weight:700;color:${pct>70?'var(--red)':'var(--text)'}">₦${fmt(used)}</div>
+    </div>
+    <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div class="kpi-label">Available</div>
+      <div style="font-size:17px;font-weight:700;color:var(--brand-accent)">₦${fmt(avail)}</div>
+    </div>
+    <div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div class="kpi-label">Utilisation</div>
+      <div style="font-size:17px;font-weight:700;color:${pct>80?'var(--red)':pct>60?'#f59e0b':'var(--text)'}">${pct}%</div>
+    </div>
+  </div>
+  <div style="height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin-bottom:20px">
+    <div style="height:100%;width:${pct}%;background:${pct>80?'var(--red)':pct>60?'#f59e0b':'var(--brand-accent)'};border-radius:4px"></div>
+  </div>
+  <div class="kpi-label" style="margin-bottom:10px">Outstanding Invoices</div>
+  ${custInvoices.length===0?'<div style="color:var(--muted);font-size:13px">No outstanding invoices.</div>':`
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <thead><tr style="border-bottom:2px solid var(--border)">
+      <th class="kpi-label" style="text-align:left;padding:6px 0">Invoice</th>
+      <th class="kpi-label" style="text-align:right;padding:6px 0">Amount</th>
+      <th class="kpi-label" style="text-align:center;padding:6px 0">Due</th>
+      <th class="kpi-label" style="text-align:center;padding:6px 0">Overdue</th>
+    </tr></thead>
+    <tbody>${custInvoices.map(i=>`<tr style="border-bottom:1px solid var(--border)">
+      <td class="mono" style="padding:8px 0;font-size:12px">${i.no}</td>
+      <td style="padding:8px 0;text-align:right;font-weight:600">₦${fmt(i.amount)}</td>
+      <td style="padding:8px 0;text-align:center;font-size:12px">${i.due}</td>
+      <td style="padding:8px 0;text-align:center"><span class="badge ${i.overdue>14?'red':i.overdue>0?'orange':'green'}">${i.overdue>0?`${i.overdue}d overdue`:'Current'}</span></td>
+    </tr>`).join('')}</tbody>
+  </table>`}
+</div>`;
+
+  const footer=`
+    <button class="btn btn-ghost" onclick="openNewEnquiryModal('${c.name}')">+ New Enquiry</button>
+    <button class="btn btn-primary" onclick="openNewQuoteModal('${c.name}')">+ New Quote</button>`;
+  openSidesheet(c.name, body, footer);
+}
+
+function openQuoteSidesheet(no){
+  const q=QUOTES.find(x=>x.no===no);
+  if(!q)return;
+  const versions=[
+    {v:'v3',date:'2026-04-05',amount:q.amount,by:'Kemi Adeyemi',note:'Revised price after negotiation'},
+    {v:'v2',date:'2026-04-03',amount:Math.round(q.amount*1.06),by:'Kemi Adeyemi',note:'Updated quantity terms'},
+    {v:'v1',date:'2026-04-01',amount:Math.round(q.amount*1.12),by:'Ibrahim Musa',note:'Initial quote'},
+  ].slice(0,parseInt(q.version.replace('v',''))||1);
+
+  const body=`
+<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div><div class="kpi-label">Customer</div><div style="font-weight:600">${q.customer}</div></div>
+    <div><div class="kpi-label">Product</div><div>${q.product}</div></div>
+    <div><div class="kpi-label">Current Amount</div><div style="font-weight:700;font-size:15px">₦${fmt(q.amount)}</div></div>
+    <div><div class="kpi-label">Status</div><span class="badge ${q.status==='Accepted'?'green':q.status==='Expired'?'red':q.status==='Pending'?'orange':'blue'}">${q.status}</span></div>
+    <div><div class="kpi-label">Valid Until</div><div>${q.validity}</div></div>
+    <div><div class="kpi-label">Version</div><div class="mono">${q.version}</div></div>
+  </div>
+</div>
+<div class="kpi-label" style="margin-bottom:12px">Version History</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+  ${versions.map((v,i)=>`
+  <div style="background:${i===0?'#eff6ff':'#f9fafb'};border:1px solid ${i===0?'#bfdbfe':'var(--border)'};border-radius:8px;padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="font-weight:700;font-size:13px">${v.v}${i===0?' <span style="background:#2563eb;color:#fff;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:4px">Current</span>':''}</span>
+      <span style="font-size:11px;color:var(--muted)">${v.date}</span>
+    </div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px">₦${fmt(v.amount)}</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:2px">${v.note}</div>
+    <div style="font-size:11px;color:var(--muted)">by ${v.by}</div>
+  </div>`).join('')}
+</div>`;
+  openSidesheet(`Quote ${no}`, body,
+    `<button class="btn btn-ghost" onclick="closeSidesheet()">Close</button>`);
+}
+
+function openOrderSidesheet(no){
+  const o=ORDERS.find(x=>x.no===no);
+  if(!o)return;
+  const dsp=DISPATCH_JOBS.find(d=>d.order===no);
+  const fleet=dsp?FLEET.find(f=>f.plate===dsp.vehicle):null;
+
+  // Mock serial numbers based on product type
+  const serials=o.products.includes('Cement')?['SN-BC-19823','SN-BC-19824','SN-BC-19825']:
+                o.products.includes('Generator')?['GEN-45KVA-0091','GEN-45KVA-0092']:
+                o.products.includes('Helmet')?['HLM-BATCH-2604A']:['SERIAL-N/A'];
+
+  // ── Tab: Order Details ────────────────────────────────────────────────────
+  const detailsPanel=`
+<div id="ss-ord-details" class="ss-panel" style="padding-top:24px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+    <div><div class="kpi-label">Customer</div><div style="font-weight:600">${o.customer}</div></div>
+    <div><div class="kpi-label">Order Date</div><div>${o.date}</div></div>
+    <div><div class="kpi-label">Products</div><div>${o.products}</div></div>
+    <div><div class="kpi-label">Order Value</div><div style="font-weight:700;font-size:15px">₦${fmt(o.value)}</div></div>
+    <div><div class="kpi-label">Dispatch Status</div><span class="badge ${o.dispatch==='Delivered'?'green':o.dispatch==='In Transit'?'orange':o.dispatch==='Dispatched'?'blue':'grey'}">${o.dispatch}</span></div>
+    <div><div class="kpi-label">Payment Status</div><span class="badge ${o.payment==='Paid'?'green':o.payment==='Part-Paid'?'orange':o.payment==='Invoiced'?'blue':'grey'}">${o.payment}</span></div>
+    ${dsp?`<div><div class="kpi-label">Rider</div><div>${fleet?fleet.driver:'—'}</div></div>
+    <div><div class="kpi-label">Vehicle</div><div>${dsp.vehicle}</div></div>
+    <div style="grid-column:span 2"><div class="kpi-label">Delivery Address</div><div>${dsp.address}</div></div>`:''}
+  </div>
+  <div style="border-top:1px solid var(--border);padding-top:16px">
+    <div class="kpi-label" style="margin-bottom:10px">Serial / Batch Numbers</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${serials.map(s=>`<div style="background:#f9fafb;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text)">${s}</div>`).join('')}
+    </div>
+  </div>
+</div>`;
+
+  // ── Tab: Dispatch & Sign-off ──────────────────────────────────────────────
+  const mkStep=(id,label,subtitle,done,locked,isCust)=>`
+<div id="dsp-step-${id}-${no.replace(/\W/g,'')}" style="border:1.5px solid ${done?'#16a34a':locked?'var(--border)':'var(--brand-accent)'};border-radius:10px;padding:16px;transition:border .3s;${locked?'opacity:.5':''}">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+    <div>
+      <div style="font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px">
+        <span style="width:22px;height:22px;border-radius:50%;background:${done?'#16a34a':locked?'#e5e7eb':'var(--brand-accent)'};color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">${done?'✓':id}</span>
+        ${label}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;margin-left:30px">${subtitle}</div>
+    </div>
+    <div style="flex-shrink:0" id="dsp-step-${id}-action-${no.replace(/\W/g,'')}">
+      ${done?`<span class="badge green">Signed off</span>`:locked?`<span class="badge grey">Locked</span>`:isCust?`<button class="btn btn-primary btn-sm" onclick="orderOtp('${no}','${o.customer}')">Send OTP</button>`:`<button class="btn btn-primary btn-sm" onclick="orderSignOff('${no}','${id}')">Sign Off</button>`}
+    </div>
+  </div>
+</div>`;
+
+  const invLocked=false;
+  const riderLocked=!(dsp&&dsp.invDone);
+  const custLocked=!(dsp&&dsp.riderDone);
+
+  const signoffPanel=`
+<div id="ss-ord-signoff" class="ss-panel" style="padding-top:24px;display:none">
+  ${!dsp?`<div style="color:var(--muted);font-size:13px;padding:20px 0">No dispatch job linked to this order yet.</div>`:`
+  <div style="display:flex;flex-direction:column;gap:12px">
+    ${mkStep(1,'Inventory Release','Warehouse confirms stock picked and loaded',dsp.invDone,invLocked,false)}
+    ${mkStep(2,'Rider Pickup','Rider confirms goods collected',dsp.riderDone,riderLocked,false)}
+    ${mkStep(3,'Customer Receipt','Customer confirms delivery via OTP',dsp.custDone,custLocked,true)}
+  </div>`}
+</div>`;
+
+  // ── Tab: Audit Trail ──────────────────────────────────────────────────────
+  const auditEvents=[
+    {time:'2026-04-06 08:00',actor:'Kemi Adeyemi',event:'Enquiry converted → Order created',icon:'📋'},
+    {time:'2026-04-06 08:05',actor:'System',event:'Invoice generated — INV-2026-1102',icon:'🧾'},
+    {time:'2026-04-06 09:12',actor:'Adaeze Obi',event:'Payment status set to Invoiced',icon:'💳'},
+    {time:'2026-04-06 11:30',actor:'Bola James',event:'Inventory reserved — '+o.products,icon:'📦'},
+    ...(dsp?[
+      {time:'2026-04-07 07:00',actor:'Bola James',event:`Dispatch job ${dsp.no} created`,icon:'🚚'},
+      ...(dsp.invDone?[{time:'2026-04-07 08:15',actor:'Bola James',event:'Inventory release signed off',icon:'✅'}]:[]),
+      ...(dsp.riderDone?[{time:'2026-04-07 09:40',actor:fleet?fleet.driver:'Rider',event:`Pickup confirmed — ${dsp.vehicle}`,icon:'🚛'}]:[]),
+      ...(dsp.custDone?[{time:'2026-04-08 14:22',actor:o.customer,event:'Delivery confirmed via OTP',icon:'🏁'}]:[]),
+    ]:[]),
+  ];
+
+  const auditPanel=`
+<div id="ss-ord-audit" class="ss-panel" style="padding-top:24px;display:none">
+  <div style="position:relative;padding-left:20px">
+    <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)"></div>
+    ${auditEvents.map((e,i)=>`
+    <div style="position:relative;margin-bottom:18px">
+      <div style="position:absolute;left:-20px;top:2px;width:14px;height:14px;border-radius:50%;background:${i===auditEvents.length-1?'var(--brand-accent)':'#e5e7eb'};border:2px solid ${i===auditEvents.length-1?'var(--brand-accent)':'#9ca3af'};display:flex;align-items:center;justify-content:center;font-size:8px"></div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:2px">${e.time} · ${e.actor}</div>
+      <div style="font-size:13px;font-weight:500">${e.icon} ${e.event}</div>
+    </div>`).join('')}
+  </div>
+</div>`;
+
+  const body=`
+<div class="tabs">
+  <button class="tab active" onclick="ssTab(this,'ss-ord-details')">Order Details</button>
+  <button class="tab" onclick="ssTab(this,'ss-ord-signoff')">Dispatch & Sign-off</button>
+  <button class="tab" onclick="ssTab(this,'ss-ord-audit')">Audit Trail</button>
+</div>
+${detailsPanel}${signoffPanel}${auditPanel}`;
+
+  openSidesheet(`Order ${no}`, body,
+    `<button class="btn btn-ghost" onclick="closeSidesheet()">Close</button>`);
+}
+
+function orderSignOff(no,stepId){
+  const d=DISPATCH_JOBS.find(x=>x.order===no);
+  if(!d)return;
+  if(stepId===1)d.invDone=true;
+  else if(stepId===2)d.riderDone=true;
+  else if(stepId===3)d.custDone=true;
+  renderDispatch();
+  const labels={1:'Inventory release signed',2:'Rider pickup confirmed',3:'Delivery confirmed'};
+  showToast(labels[stepId]);
+  openOrderSidesheet(no); // refresh sidesheet
+}
+
+function orderOtp(no,customer){
+  showToast(`OTP sent to ${customer}`,'success');
+  const safeNo=no.replace(/\W/g,'');
+  const stepEl=document.getElementById(`dsp-step-3-${safeNo}`);
+  const actionEl=document.getElementById(`dsp-step-3-action-${safeNo}`);
+  if(stepEl)stepEl.style.borderColor='#16a34a';
+  if(actionEl)actionEl.innerHTML=`<button class="btn btn-primary btn-sm" onclick="orderSignOff('${no}',3)">Confirm Receipt</button>`;
+}
+
+function openDispatchSidesheet(no){
+  const d=DISPATCH_JOBS.find(x=>x.no===no);
+  if(!d)return;
+  const sig=(label,done,fn)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-weight:600;font-size:13px">${label}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${done?'Signed off':'Awaiting sign-off'}</div>
+      </div>
+      ${done
+        ?'<span class="badge green">✓ Done</span>'
+        :`<button class="btn btn-primary btn-sm" onclick="${fn}">Sign Off</button>`}
+    </div>`;
+
+  const body=`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+  <div><div class="kpi-label">Customer</div><div style="font-weight:600">${d.customer}</div></div>
+  <div><div class="kpi-label">Source Order</div><div class="mono" style="font-size:13px">${d.order}</div></div>
+  <div><div class="kpi-label">Product</div><div>${d.product}</div></div>
+  <div><div class="kpi-label">Vehicle</div><div>${d.vehicle}</div></div>
+  <div style="grid-column:span 2"><div class="kpi-label">Delivery Address</div><div>${d.address}</div></div>
+</div>
+<div class="kpi-label" style="margin-bottom:8px">Sign-Off Checklist</div>
+<div>
+  ${sig('Inventory Sign-Off',d.invDone,`signOffDispatch('${no}','inv');renderDispatch()`)}
+  ${sig('Rider Confirmation',d.riderDone,`signOffDispatch('${no}','rider');renderDispatch()`)}
+  ${sig('Customer Delivery Confirmation',d.custDone,`signOffDispatch('${no}','cust');renderDispatch()`)}
+</div>`;
+
+  openSidesheet(`Dispatch ${no}`, body,
+    `<button class="btn btn-ghost" onclick="closeSidesheet()">Close</button>`);
+}
+
+function openReturnSidesheet(no){
+  const r=RETURNS.find(x=>x.no===no);
+  if(!r)return;
+  const body=`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+  <div><div class="kpi-label">Customer</div><div style="font-weight:600">${r.customer}</div></div>
+  <div><div class="kpi-label">Source Order</div><div class="mono" style="font-size:13px">${r.order}</div></div>
+  <div><div class="kpi-label">Product</div><div>${r.product}</div></div>
+  <div><div class="kpi-label">Reason</div><div>${r.reason}</div></div>
+</div>
+<div class="kpi-label" style="margin-bottom:12px">Progress — Step ${r.step+1} of ${r.steps.length}</div>
+<div class="step-track" style="margin-bottom:20px">
+  ${r.steps.map((s,i)=>`<div class="step ${i<r.step?'done':i===r.step?'active':''}"><div class="step-dot">${i<r.step?'✓':i+1}</div><div class="step-label" style="font-size:10px">${s}</div></div>`).join('')}
+</div>
+<div style="background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:14px">
+  <div class="kpi-label" style="margin-bottom:6px">Notes</div>
+  <div style="font-size:13px;color:var(--muted)">Return initiated by Sales team. Awaiting QC inspection at WH Lagos. Contact: warehouse@biup.ng</div>
+</div>`;
+
+  const footer=r.step<r.steps.length-1
+    ?`<button class="btn btn-ghost" onclick="closeSidesheet()">Close</button>
+       <button class="btn btn-primary" onclick="advanceReturn('${no}');renderReturns();openReturnSidesheet('${no}')">Advance to: ${r.steps[r.step+1]}</button>`
+    :`<button class="btn btn-ghost" onclick="closeSidesheet()">Close</button>`;
+  openSidesheet(`Return ${no}`, body, footer);
+}
+
+function openNewQuoteModal(prefill='', productPrefill='', enqRef=''){
+  const cOptions=CUSTOMERS.map(c=>`<option value="${c.name}" ${c.name===prefill?'selected':''}>${c.name}</option>`).join('');
+  const prodOptions=INVENTORY.map(i=>`<option ${i.product===productPrefill?'selected':''}>${i.product}</option>`).join('');
+  const titleHTML=prefill
+    ?`New Quote — ${prefill} <span style="background:#2563eb;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;vertical-align:middle;font-weight:600">v1</span>`
+    :`New Quote <span style="background:#2563eb;color:#fff;font-size:10px;padding:2px 7px;border-radius:4px;vertical-align:middle;font-weight:600">v1</span>`;
+
+  // Build modal manually so we can use HTML in title and custom footer
+  document.getElementById('modal-title').innerHTML=titleHTML;
+  document.getElementById('modal-body').innerHTML=`
+<div style="display:grid;gap:14px">
+  <input type="hidden" id="nq-enqref" value="${enqRef}">
+  <div><label class="kpi-label" style="display:block;margin-bottom:4px">Customer</label>
+    <select id="nq-cust" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+      <option value="">— Select Customer —</option>${cOptions}
+    </select></div>
+  <div><label class="kpi-label" style="display:block;margin-bottom:4px">Product</label>
+    <select id="nq-prod" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+      <option value="">— Select Product —</option>${prodOptions}
+    </select></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div><label class="kpi-label" style="display:block;margin-bottom:4px">Unit Price (₦)</label>
+      <input id="nq-price" type="number" placeholder="0" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    <div><label class="kpi-label" style="display:block;margin-bottom:4px">Quantity</label>
+      <input id="nq-qty" type="number" placeholder="1" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div><label class="kpi-label" style="display:block;margin-bottom:4px">Valid Until</label>
+      <input id="nq-valid" type="date" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px"></div>
+    <div><label class="kpi-label" style="display:block;margin-bottom:4px">Payment Terms</label>
+      <select id="nq-terms" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+        <option>Net 30</option><option>Net 45</option><option>Net 60</option><option>50% Upfront</option><option>100% Upfront</option>
+      </select></div>
+  </div>
+</div>`;
+  document.getElementById('modal-footer').innerHTML=`
+    <button class="btn btn-ghost" onclick="closeModalDirect()">Cancel</button>
+    <button class="btn btn-ghost" onclick="saveNewQuote('draft')">Save Draft</button>
+    <button class="btn btn-primary" onclick="saveNewQuote('send')">Send to Customer</button>`;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function saveNewQuote(mode='draft'){
+  const cust=document.getElementById('nq-cust').value;
+  const prod=document.getElementById('nq-prod').value;
+  const price=parseFloat(document.getElementById('nq-price').value)||0;
+  const qty=parseInt(document.getElementById('nq-qty').value)||1;
+  const valid=document.getElementById('nq-valid').value;
+  const terms=document.getElementById('nq-terms').value;
+  const enqRef=document.getElementById('nq-enqref').value;
+  if(!cust||!prod||!price||!valid){showToast('Please fill all required fields','error');return;}
+  const maxNo=QUOTES.reduce((m,q)=>Math.max(m,parseInt(q.no.split('-')[2])||0),0);
+  const newNo=`QT-2026-${String(maxNo+1).padStart(4,'0')}`;
+  QUOTES.unshift({no:newNo,customer:cust,product:prod,amount:price*qty,version:'v1',validity:valid,status:mode==='send'?'Pending':'Draft'});
+  closeModalDirect();
+  if(mode==='send'){
+    showToast(`Quote ${newNo} sent to ${cust}. Soft hold activated.`,'success');
+    // Update linked enquiry status
+    if(enqRef){
+      const enq=ENQUIRIES.find(e=>e.ref===enqRef);
+      if(enq){
+        enq.status='Quote Sent';
+        const cell=document.getElementById(`enq-status-${enqRef}`);
+        if(cell)cell.innerHTML=`<span class="badge badge-blue">Quote Sent</span>`;
+        const row=document.getElementById(`enq-row-${enqRef}`);
+        if(row){const btn=row.querySelector('button');if(btn)btn.remove();}
+      }
+    }
+  } else {
+    showToast(`Quote ${newNo} saved as draft`,'success');
+  }
+  if(document.getElementById('page-quotes').style.display!=='none')renderQuotes();
 }
 
 // ─── MODAL ───────────────────────────────────────────────────────────────────

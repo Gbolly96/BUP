@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Tyres — Kwikfit Nigeria</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1a8fff;--blue-dk:#0e7ae8;--green:#7bc843;--green-dk:#5fa832;
+  --bg:#eef0e8;--bg2:#f5f5f0;--bg-dark:#060808;--ink:#1a1a1a;
+  --gray:#5a5a5a;--gray2:#999;--border:#d8dcd0;--red:#e84c1e;--card-bg:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:'Barlow',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{width:10px;height:10px;background:var(--blue);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{width:34px;height:34px;border:1.5px solid rgba(26,143,255,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out,opacity 0.3s;}
+
+/* NAV */
+nav{position:sticky;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,8,8,0.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(123,200,67,0.15);}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.7);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-cta{background:var(--blue);color:#fff!important;padding:9px 22px;border-radius:4px;transition:background 0.2s!important;}
+.nav-cta:hover{background:var(--blue-dk)!important;}
+.nav-back{color:rgba(255,255,255,0.5)!important;font-size:12px!important;display:flex;align-items:center;gap:6px;}
+.nav-back:hover{color:#fff!important;}
+
+/* PAGE HEADER */
+.shop-hero{background:var(--bg-dark);padding:52px 48px 48px;border-bottom:1px solid rgba(123,200,67,0.1);}
+.shop-hero-inner{max-width:1400px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.shop-hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.3em;color:var(--green);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.shop-hero-eyebrow span{display:inline-block;width:24px;height:1px;background:var(--green);}
+.shop-hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,60px);font-weight:900;text-transform:uppercase;line-height:0.95;color:#fff;letter-spacing:-1px;}
+.shop-hero-title em{color:var(--blue);font-style:italic;}
+.shop-hero-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.shs{text-align:right;}
+.shs-num{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:#fff;line-height:1;}
+.shs-num sup{font-size:14px;color:var(--green);}
+.shs-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-top:2px;}
+
+/* BREADCRUMB */
+.breadcrumb{background:#fff;border-bottom:1px solid var(--border);padding:12px 48px;}
+.breadcrumb-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray2);}
+.breadcrumb a{color:var(--gray);text-decoration:none;transition:color 0.2s;}
+.breadcrumb a:hover{color:var(--blue);}
+.breadcrumb-sep{font-size:10px;opacity:0.4;}
+.breadcrumb-cur{color:var(--ink);font-weight:500;}
+
+/* SHOP LAYOUT */
+.shop-body{max-width:1400px;margin:0 auto;padding:40px 48px 80px;display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start;}
+@media(max-width:900px){.shop-body{grid-template-columns:1fr;padding:24px 24px 60px;}}
+
+/* SIDEBAR */
+.sidebar{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;position:sticky;top:88px;}
+.sb-section{padding:20px 22px;border-bottom:1px solid var(--border);}
+.sb-section:last-child{border-bottom:none;}
+.sb-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.sb-title .sb-count{font-size:10px;background:var(--blue);color:#fff;padding:2px 7px;border-radius:10px;font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:0;}
+.sb-row{margin-bottom:10px;}
+.sb-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray2);font-weight:700;display:block;margin-bottom:5px;}
+.sb-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:4px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink);background:#fff;outline:none;cursor:pointer;transition:border-color 0.2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.sb-select:focus{border-color:var(--blue);}
+.sb-size-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.sb-divider{border:none;border-top:1px solid var(--border);margin:0 -22px 14px;}
+.sb-checks{display:flex;flex-direction:column;gap:8px;}
+.sb-check-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--gray);cursor:pointer;}
+.sb-check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;}
+.sb-check-item:hover{color:var(--ink);}
+.sb-brand-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-reset{width:100%;padding:10px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1.5px solid var(--border);background:transparent;color:var(--gray);border-radius:4px;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.sb-reset:hover{border-color:var(--red);color:var(--red);}
+
+/* MAIN SHOP */
+.shop-main{}
+.shop-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.toolbar-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.shop-count{font-size:13px;color:var(--gray);}
+.shop-count strong{color:var(--ink);font-weight:600;}
+.cat-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.cat-tab{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;padding:7px 16px;border-radius:4px;border:1.5px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;transition:all 0.2s;}
+.cat-tab.active,.cat-tab:hover{background:var(--blue);border-color:var(--blue);color:#fff;}
+.toolbar-right{display:flex;align-items:center;gap:10px;}
+.sort-sel{font-family:'Barlow',sans-serif;font-size:13px;padding:7px 12px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--ink);outline:none;cursor:pointer;}
+.search-box{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:4px;background:#fff;overflow:hidden;}
+.search-box input{border:none;outline:none;padding:8px 12px;font-size:13px;font-family:'Barlow',sans-serif;color:var(--ink);width:180px;background:transparent;}
+.search-box input::placeholder{color:#bbb;}
+.search-box button{background:transparent;border:none;padding:8px 12px;color:var(--gray);cursor:pointer;border-left:1px solid var(--border);transition:color 0.2s;}
+.search-box button:hover{color:var(--blue);}
+
+/* PRODUCT GRID */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+.prod-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:none;transition:all 0.28s;display:flex;flex-direction:column;}
+.prod-card:hover{box-shadow:0 10px 36px rgba(26,143,255,0.13);border-color:var(--blue);transform:translateY(-3px);}
+.prod-card:hover .prod-img{transform:scale(1.06);}
+.prod-card-top{padding:13px 15px 0;display:flex;justify-content:space-between;align-items:center;}
+.prod-brand-lbl{font-family:'Arial Black',sans-serif;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:-0.2px;}
+.prod-cat-chip{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--gray);border:1px solid var(--border);}
+.prod-badge{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:3px;background:var(--red);color:#fff;}
+.prod-img-wrap{padding:14px 20px 10px;display:flex;align-items:center;justify-content:center;background:#f7f8f5;min-height:150px;}
+.prod-img{width:100%;max-width:165px;height:130px;object-fit:contain;transition:transform 0.4s ease;}
+.prod-info{padding:12px 15px 0;flex:1;}
+.prod-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;color:var(--ink);line-height:1;margin-bottom:4px;}
+.prod-size{font-size:11px;color:var(--gray2);letter-spacing:0.04em;}
+.prod-footer{padding:11px 15px 13px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;}
+.prod-price{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--ink);line-height:1;}
+.prod-price span{font-size:10px;color:var(--gray2);font-weight:400;}
+.prod-stock{font-size:10px;color:#22c55e;margin-top:3px;}
+.prod-stock.low{color:#f59e0b;}
+.prod-order-btn{background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:9px 13px;border:none;border-radius:4px;cursor:none;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.prod-order-btn:hover{background:var(--blue-dk);}
+
+/* EMPTY */
+.empty-state{grid-column:1/-1;text-align:center;padding:80px 24px;}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.3;}
+.empty-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;text-transform:uppercase;color:var(--ink);margin-bottom:8px;}
+.empty-sub{font-size:14px;color:var(--gray);}
+
+/* PAGINATION */
+.pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:40px;}
+.pg-btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;padding:8px 14px;border:1.5px solid var(--border);border-radius:4px;background:#fff;color:var(--gray);cursor:pointer;transition:all 0.2s;}
+.pg-btn.active,.pg-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff;}
+.pg-btn:disabled{opacity:0.4;pointer-events:none;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:8px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);border-radius:8px 8px 0 0;}
+.modal-head{padding:24px 28px 16px;border-bottom:1px solid #eee;display:flex;align-items:flex-start;justify-content:space-between;}
+.modal-head-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;}
+.modal-close{background:none;border:none;color:#aaa;font-size:20px;cursor:none;padding:4px;transition:color 0.2s;}
+.modal-close:hover{color:var(--ink);}
+.modal-body{padding:24px 28px 28px;}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg{margin-bottom:14px;}
+.fl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);font-weight:700;display:block;margin-bottom:6px;}
+.fi{width:100%;padding:11px 14px;background:#fff;border:1px solid #d0d0d0;border-radius:4px;color:var(--ink);font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,143,255,0.1);}
+.fi::placeholder{color:#bbb;}
+.btn-submit{width:100%;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;padding:15px;border:none;border-radius:4px;cursor:none;transition:all 0.2s;margin-top:8px;}
+.btn-submit:hover{background:var(--blue-dk);}
+
+/* TOAST */
+.toast-msg{position:fixed;bottom:28px;right:28px;background:var(--ink);border-left:3px solid var(--green);color:#fff;padding:14px 20px;border-radius:4px;font-size:13px;z-index:5000;opacity:0;transform:translateX(12px);transition:all 0.25s;max-width:320px;}
+.toast-msg.show{opacity:1;transform:translateX(0);}
+
+/* WA FLOAT */
+.wa-float{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px;z-index:400;box-shadow:0 4px 20px rgba(37,211,102,0.4);cursor:none;transition:transform 0.2s;}
+.wa-float:hover{transform:scale(1.1);}
+
+/* FOOTER */
+.footer{padding:52px 48px 0;background:#fff;border-top:1px solid var(--border);}
+.footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1.5fr;gap:60px;}
+@media(max-width:800px){.footer-inner{grid-template-columns:1fr;gap:32px;}}
+.footer-desc{font-size:13px;color:var(--gray);line-height:1.8;margin-top:14px;max-width:230px;}
+.foot-col-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink);margin-bottom:16px;}
+.foot-link{display:block;font-size:13px;color:var(--gray);text-decoration:none;margin-bottom:11px;transition:color 0.2s;}
+.foot-link:hover{color:var(--ink);}
+.contact-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:11px;font-size:13px;color:var(--gray);}
+.ci{color:var(--green);flex-shrink:0;margin-top:1px;}
+.footer-bottom{max-width:1400px;margin:0 auto;border-top:1px solid var(--border);margin-top:40px;padding:18px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.foot-copy{font-size:11px;color:var(--gray2);letter-spacing:0.1em;}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <a href="/kwikfit-landing.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </a>
+    <svg width="140" height="44" viewBox="0 0 160 52" fill="none">
+      <circle cx="28" cy="9" r="4.5" fill="#7bc843"/>
+      <line x1="28" y1="13" x2="26" y2="24" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="26" y1="16" x2="18" y2="21" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+      <line x1="26" y1="16" x2="35" y2="13" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+      <line x1="26" y1="24" x2="19" y2="34" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="19" y1="34" x2="13" y2="38" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="26" y1="24" x2="33" y2="30" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="33" y1="30" x2="39" y2="32" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="43" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#1a3d8f">KWIK</text>
+      <text x="92" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#7bc843">FIT</text>
+      <line x1="43" y1="37" x2="118" y2="37" stroke="#7bc843" stroke-width="0.8" opacity="0.4"/>
+      <text x="43" y="47" font-family="Arial,sans-serif" font-size="8" letter-spacing="2" fill="#7bc843" opacity="0.75">TYRES &amp; BATTERIES</text>
+    </svg>
+  </div>
+  <div class="nav-links">
+    <a href="/kwikfit-shop.html" class="active">Shop</a>
+    <a href="/kwikfit-landing.html#wholesale">Wholesale</a>
+    <a href="/kwikfit-landing.html#clients">Clients</a>
+    <a href="/kwikfit-landing.html#contact">Contact</a>
+    <a href="/kwikfit-landing.html#wholesale" class="nav-cta">Make an Order</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="shop-hero">
+  <div class="shop-hero-inner">
+    <div>
+      <div class="shop-hero-eyebrow"><span></span>Kwikfit Marketplace</div>
+      <h1 class="shop-hero-title">Shop <em>Our</em><br>Full Catalogue</h1>
+    </div>
+    <div class="shop-hero-stats">
+      <div class="shs"><div class="shs-num">1200<sup>+</sup></div><div class="shs-lbl">SKUs in Stock</div></div>
+      <div class="shs"><div class="shs-num">12<sup>+</sup></div><div class="shs-lbl">Top Brands</div></div>
+      <div class="shs"><div class="shs-num">48<sup>hr</sup></div><div class="shs-lbl">Delivery</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/kwikfit-landing.html">Home</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-cur">Shop Tyres</span>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="shop-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sb-section">
+      <div class="sb-title">Tyre Size <span class="sb-count" id="activeFiltersCount">0</span></div>
+      <div class="sb-size-row">
+        <div>
+          <span class="sb-label">Width</span>
+          <select class="sb-select" id="f-width" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option>175</option><option>185</option><option>195</option><option>205</option>
+            <option>215</option><option>225</option><option>235</option><option>245</option>
+            <option>255</option><option>265</option><option>275</option><option>285</option>
+            <option>295</option><option>305</option><option>315</option><option>385</option>
+          </select>
+        </div>
+        <div>
+          <span class="sb-label">Profile</span>
+          <select class="sb-select" id="f-profile" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option>45</option><option>50</option><option>55</option><option>60</option>
+            <option>65</option><option>70</option><option>75</option><option>80</option>
+          </select>
+        </div>
+        <div>
+          <span class="sb-label">Rim (in)</span>
+          <select class="sb-select" id="f-rim" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option>14</option><option>15</option><option>16</option><option>17</option>
+            <option>17.5</option><option>18</option><option>19</option><option>20</option>
+            <option>22.5</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">Vehicle</div>
+      <div class="sb-row">
+        <span class="sb-label">Vehicle Type</span>
+        <select class="sb-select" id="f-vehicle" onchange="applyFilters()">
+          <option value="">All Types</option>
+          <option value="passenger">Passenger Car</option>
+          <option value="suv">SUV / 4×4</option>
+          <option value="truck">Truck / Commercial</option>
+          <option value="industrial">Industrial / Van</option>
+        </select>
+      </div>
+      <div class="sb-row">
+        <span class="sb-label">Usage</span>
+        <select class="sb-select" id="f-usage" onchange="applyFilters()">
+          <option value="">All Usage</option>
+          <option value="highway">Highway</option>
+          <option value="all-terrain">All-Terrain</option>
+          <option value="all-season">All-Season</option>
+          <option value="industrial">Industrial</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-title">Brand</div>
+      <div class="sb-checks" id="brandChecks"></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-row">
+        <span class="sb-label">Stock</span>
+        <select class="sb-select" id="f-stock" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="instock">In Stock Only</option>
+        </select>
+      </div>
+      <div class="sb-row">
+        <span class="sb-label">Price Range</span>
+        <select class="sb-select" id="f-price" onchange="applyFilters()">
+          <option value="">All Prices</option>
+          <option value="0-50000">Under ₦50,000</option>
+          <option value="50000-100000">₦50,000 – ₦100,000</option>
+          <option value="100000-999999">Above ₦100,000</option>
+        </select>
+      </div>
+      <button class="sb-reset" onclick="resetFilters()">✕ Clear All Filters</button>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="shop-main">
+
+    <div class="shop-toolbar">
+      <div class="toolbar-left">
+        <div class="cat-tabs" id="catTabs">
+          <button class="cat-tab active" data-cat="all" onclick="setCat('all',this)">All</button>
+          <button class="cat-tab" data-cat="passenger" onclick="setCat('passenger',this)">Passenger</button>
+          <button class="cat-tab" data-cat="suv" onclick="setCat('suv',this)">SUV / 4×4</button>
+          <button class="cat-tab" data-cat="truck" onclick="setCat('truck',this)">Truck</button>
+          <button class="cat-tab" data-cat="industrial" onclick="setCat('industrial',this)">Industrial</button>
+        </div>
+        <span class="shop-count" id="shopCount"><strong>0</strong> products</span>
+      </div>
+      <div class="toolbar-right">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search brand, size…" oninput="applyFilters()">
+          <button onclick="applyFilters()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </button>
+        </div>
+        <select class="sort-sel" id="sortSel" onchange="applyFilters()">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid"></div>
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <svg width="130" height="44" viewBox="0 0 160 52" fill="none">
+        <circle cx="28" cy="9" r="4.5" fill="#7bc843"/>
+        <line x1="28" y1="13" x2="26" y2="24" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="16" x2="18" y2="21" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="16" x2="35" y2="13" stroke="#7bc843" stroke-width="2" stroke-linecap="round"/>
+        <line x1="26" y1="24" x2="19" y2="34" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="34" x2="13" y2="38" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="24" x2="33" y2="30" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="33" y1="30" x2="39" y2="32" stroke="#7bc843" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="43" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#1a3d8f">KWIK</text>
+        <text x="92" y="33" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" font-style="italic" fill="#7bc843">FIT</text>
+        <text x="43" y="47" font-family="Arial,sans-serif" font-size="8" letter-spacing="2" fill="#1a3d8f" opacity="0.7">TYRES &amp; BATTERIES</text>
+      </svg>
+      <p class="footer-desc">Nigeria's premier tyre distributor. Premium brands, serial-level tracking, credit facilities for corporate clients.</p>
+    </div>
+    <div>
+      <div class="foot-col-title">Quick Links</div>
+      <a href="/kwikfit-shop.html" class="foot-link">Shop Tyres</a>
+      <a href="/kwikfit-landing.html#wholesale" class="foot-link">Wholesale Enquiry</a>
+      <a href="/kwikfit-landing.html#clients" class="foot-link">Our Clients</a>
+    </div>
+    <div>
+      <div class="foot-col-title">Contact Us</div>
+      <div class="contact-row"><span class="ci"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></span><span>14, Oba Akran Avenue, Ikeja Industrial Estate, Lagos</span></div>
+      <div class="contact-row"><span class="ci"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11 19.79 19.79 0 01.05 2.38a2 2 0 012-2.18h3a2 2 0 012 1.72c.339.906.573 1.85.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.27 6.27l.87-.87a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span><span>0709 980 9990</span></div>
+      <div class="contact-row"><span class="ci"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><span>kwikfit@gmail.com</span></div>
+      <div class="contact-row"><span class="ci"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7bc843" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></span><span>Mon–Sat: 7:30am – 6:00pm</span></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--ink);">KWIKFIT<span style="color:var(--green);">.</span></span>
+    <span class="foot-copy">© 2025 Kwikfit Nigeria Ltd · All Rights Reserved · Certified Distributor</span>
+  </div>
+</footer>
+
+<!-- WA FLOAT -->
+<div class="wa-float" onclick="showToast('WhatsApp: +234 709 980 9990')">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="modal-product-order">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="modal-head-title" id="po-title">Order Tyres</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">Select quantity and delivery method</div></div>
+      <button class="modal-close" onclick="closeModal('modal-product-order')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#f8f8f6;border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;" id="po-name">Product</div>
+          <div style="font-size:11px;color:var(--gray2);margin-top:3px;" id="po-size">Size</div>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--blue);" id="po-price">₦0</div>
+      </div>
+      <div class="fg"><label class="fl">Your Name *</label><input class="fi" placeholder="Full name" id="po-name-in"></div>
+      <div class="modal-row">
+        <div class="fg"><label class="fl">Phone *</label><input class="fi" placeholder="+234 800 000 0000" id="po-phone"></div>
+        <div class="fg"><label class="fl">Quantity *</label><input class="fi" type="number" placeholder="4" min="1" value="4" id="po-qty" oninput="updateTotal()"></div>
+      </div>
+      <div style="background:#f8f8f6;border-radius:4px;border:1px solid var(--border);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:11px;letter-spacing:0.15em;color:var(--gray);text-transform:uppercase;">Estimated Total</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--blue);" id="po-total">₦0</span>
+      </div>
+      <div class="fg"><label class="fl">Fulfilment</label>
+        <select class="fi"><option>Delivery — Lagos</option><option>Delivery — Other State</option><option>Pickup — Ikeja Yard</option></select>
+      </div>
+      <button class="btn-submit" onclick="submitOrder()">Place Order →</button>
+      <p style="font-size:11px;color:var(--gray2);text-align:center;margin-top:10px;">Final price confirmed by our team. Indicative only.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function anim(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+function addHover(sel){document.querySelectorAll(sel).forEach(el=>{el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0';});el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='1';});});}
+addHover('a,button,.prod-card,.cat-tab,.sb-select,.pg-btn');
+
+// BRAND CONFIG
+const brandColors={
+  Bridgestone:'#e30613',Michelin:'#003399',Goodyear:'#003087',Hankook:'#c8001e',
+  Continental:'#e87722',Dunlop:'#e30613',Pirelli:'#1a1a1a',Firestone:'#c8001e',
+  Yokohama:'#003087',Toyo:'#c8001e','BF Goodrich':'#003087'
+};
+const catLabel={all:'All',suv:'SUV / 4×4',truck:'Truck',passenger:'Passenger',industrial:'Industrial'};
+
+// PRODUCT DATA
+const allProducts=[
+  // Passenger
+  {id:1,brand:'Dunlop',name:'SP Touring R1',size:'195/65 R15',width:195,profile:65,rim:15,type:'passenger',usage:'highway',price:28000,stock:'In Stock',low:false,hot:false},
+  {id:2,brand:'Hankook',name:'Kinergy EX H308',size:'225/70 R15',width:225,profile:70,rim:15,type:'passenger',usage:'highway',price:38000,stock:'In Stock',low:false,hot:false},
+  {id:3,brand:'Michelin',name:'Energy XM2+',size:'205/60 R16',width:205,profile:60,rim:16,type:'passenger',usage:'highway',price:52000,stock:'In Stock',low:false,hot:true},
+  {id:4,brand:'Continental',name:'ContiEcoContact 6',size:'215/55 R17',width:215,profile:55,rim:17,type:'passenger',usage:'highway',price:61000,stock:'Low Stock',low:true,hot:false},
+  {id:5,brand:'Dunlop',name:'SP Sport LM705',size:'185/65 R15',width:185,profile:65,rim:15,type:'passenger',usage:'highway',price:26000,stock:'In Stock',low:false,hot:false},
+  {id:6,brand:'Pirelli',name:'Cinturato P7',size:'225/50 R17',width:225,profile:50,rim:17,type:'passenger',usage:'highway',price:68000,stock:'In Stock',low:false,hot:false},
+  // SUV
+  {id:7,brand:'Bridgestone',name:'Dueler A/T',size:'265/75 R16',width:265,profile:75,rim:16,type:'suv',usage:'all-terrain',price:52000,stock:'In Stock',low:false,hot:true},
+  {id:8,brand:'Continental',name:'AllSeasonContact',size:'245/75 R16',width:245,profile:75,rim:16,type:'suv',usage:'all-season',price:55000,stock:'Low Stock',low:true,hot:false},
+  {id:9,brand:'Pirelli',name:'Scorpion ATR',size:'235/55 R18',width:235,profile:55,rim:18,type:'suv',usage:'all-terrain',price:72000,stock:'In Stock',low:false,hot:false},
+  {id:10,brand:'Goodyear',name:'Wrangler HP',size:'255/70 R16',width:255,profile:70,rim:16,type:'suv',usage:'highway',price:61000,stock:'In Stock',low:false,hot:false},
+  {id:11,brand:'Michelin',name:'Latitude Tour HP',size:'275/60 R20',width:275,profile:60,rim:20,type:'suv',usage:'highway',price:88000,stock:'In Stock',low:false,hot:false},
+  {id:12,brand:'Bridgestone',name:'Alenza 001',size:'255/55 R19',width:255,profile:55,rim:19,type:'suv',usage:'highway',price:82000,stock:'In Stock',low:false,hot:false},
+  // Truck
+  {id:13,brand:'Michelin',name:'X Multi Z',size:'275/80 R22.5',width:275,profile:80,rim:22.5,type:'truck',usage:'highway',price:95000,stock:'In Stock',low:false,hot:true},
+  {id:14,brand:'Goodyear',name:'WT Cargo',size:'315/80 R22.5',width:315,profile:80,rim:22.5,type:'truck',usage:'highway',price:110000,stock:'In Stock',low:false,hot:false},
+  {id:15,brand:'Bridgestone',name:'R-Steer 001',size:'295/80 R22.5',width:295,profile:80,rim:22.5,type:'truck',usage:'highway',price:98000,stock:'In Stock',low:false,hot:false},
+  {id:16,brand:'Dunlop',name:'SP082',size:'11R22.5',width:285,profile:75,rim:22.5,type:'truck',usage:'highway',price:85000,stock:'In Stock',low:false,hot:false},
+  {id:17,brand:'Continental',name:'HDR2+',size:'385/65 R22.5',width:385,profile:65,rim:22.5,type:'truck',usage:'highway',price:128000,stock:'Low Stock',low:true,hot:false},
+  {id:18,brand:'Hankook',name:'AL20W+',size:'315/70 R22.5',width:315,profile:70,rim:22.5,type:'truck',usage:'highway',price:92000,stock:'In Stock',low:false,hot:false},
+  // Industrial
+  {id:19,brand:'Firestone',name:'FS818',size:'215/75 R17.5',width:215,profile:75,rim:17.5,type:'industrial',usage:'industrial',price:68000,stock:'In Stock',low:false,hot:false},
+  {id:20,brand:'Goodyear',name:'Cargo Ultra Grip',size:'195/75 R16C',width:195,profile:75,rim:16,type:'industrial',usage:'industrial',price:45000,stock:'In Stock',low:false,hot:false},
+  {id:21,brand:'Bridgestone',name:'W800 EVO',size:'225/75 R17.5',width:225,profile:75,rim:17.5,type:'industrial',usage:'industrial',price:78000,stock:'In Stock',low:false,hot:false},
+  {id:22,brand:'Michelin',name:'Agilis 3',size:'205/75 R16',width:205,profile:75,rim:16,type:'industrial',usage:'industrial',price:54000,stock:'In Stock',low:false,hot:false},
+  {id:23,brand:'Continental',name:'Vanco 4Season',size:'215/75 R16C',width:215,profile:75,rim:16,type:'industrial',usage:'all-season',price:59000,stock:'In Stock',low:false,hot:false},
+  {id:24,brand:'Dunlop',name:'Econodrive',size:'195/70 R15C',width:195,profile:70,rim:15,type:'industrial',usage:'highway',price:35000,stock:'In Stock',low:false,hot:false},
+];
+
+// Populate brand checkboxes
+const brands=[...new Set(allProducts.map(p=>p.brand))].sort();
+const brandChecksEl=document.getElementById('brandChecks');
+brandChecksEl.innerHTML=brands.map(b=>`
+  <label class="sb-check-item">
+    <input type="checkbox" value="${b}" class="brand-check" onchange="applyFilters()">
+    <span class="sb-brand-dot" style="background:${brandColors[b]||'#999'}"></span>
+    ${b}
+  </label>`).join('');
+
+// STATE
+let currentCat='all';
+const PER_PAGE=12;
+let currentPage=1;
+
+function setCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  // Also update sidebar vehicle select
+  const vSel=document.getElementById('f-vehicle');
+  if(cat!=='all') vSel.value=cat; else vSel.value='';
+  currentPage=1;
+  applyFilters();
+}
+
+function applyFilters(){
+  const width=document.getElementById('f-width').value;
+  const profile=document.getElementById('f-profile').value;
+  const rim=document.getElementById('f-rim').value;
+  const vehicle=document.getElementById('f-vehicle').value;
+  const usage=document.getElementById('f-usage').value;
+  const stock=document.getElementById('f-stock').value;
+  const price=document.getElementById('f-price').value;
+  const search=document.getElementById('searchInput').value.toLowerCase().trim();
+  const checkedBrands=[...document.querySelectorAll('.brand-check:checked')].map(c=>c.value);
+
+  let list=[...allProducts];
+
+  // Category tab
+  if(currentCat!=='all') list=list.filter(p=>p.type===currentCat);
+  // Sidebar vehicle (may override or supplement)
+  if(vehicle && vehicle!==currentCat) list=list.filter(p=>p.type===vehicle);
+  if(usage) list=list.filter(p=>p.usage===usage);
+  if(width) list=list.filter(p=>p.width==+width);
+  if(profile) list=list.filter(p=>p.profile==+profile);
+  if(rim) list=list.filter(p=>p.rim==+rim);
+  if(stock==='instock') list=list.filter(p=>!p.low);
+  if(price){const[mn,mx]=price.split('-').map(Number);list=list.filter(p=>p.price>=mn&&p.price<=mx);}
+  if(checkedBrands.length) list=list.filter(p=>checkedBrands.includes(p.brand));
+  if(search) list=list.filter(p=>(p.brand+' '+p.name+' '+p.size).toLowerCase().includes(search));
+
+  // Sort
+  const sort=document.getElementById('sortSel').value;
+  if(sort==='price-asc') list.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc') list.sort((a,b)=>b.price-a.price);
+  else if(sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name));
+
+  // Count active filters
+  let fc=0;
+  [width,profile,rim,usage,stock,price].forEach(v=>{if(v)fc++;});
+  if(checkedBrands.length) fc+=checkedBrands.length;
+  if(vehicle&&vehicle!==currentCat&&vehicle) fc++;
+  document.getElementById('activeFiltersCount').textContent=fc;
+  document.getElementById('activeFiltersCount').style.display=fc?'':'none';
+
+  renderPage(list,currentPage);
+}
+
+function renderPage(list,page){
+  const total=list.length;
+  const totalPages=Math.ceil(total/PER_PAGE);
+  page=Math.max(1,Math.min(page,totalPages||1));
+  currentPage=page;
+  const slice=list.slice((page-1)*PER_PAGE,page*PER_PAGE);
+
+  document.getElementById('shopCount').innerHTML=`<strong>${total}</strong> product${total!==1?'s':''}`;
+  const grid=document.getElementById('productsGrid');
+
+  if(!slice.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No products found</div><div class="empty-sub">Try adjusting or clearing your filters</div></div>`;
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+
+  grid.innerHTML=slice.map(p=>{
+    const color=brandColors[p.brand]||'#1a1a1a';
+    const chip=catLabel[p.type]||p.type;
+    const badge=p.hot?`<div class="prod-badge">HOT</div>`:`<div class="prod-cat-chip">${chip}</div>`;
+    return `<div class="prod-card">
+      <div class="prod-card-top">
+        <div class="prod-brand-lbl" style="color:${color}">${p.brand}</div>
+        ${badge}
+      </div>
+      <div class="prod-img-wrap"><img class="prod-img" src="/product image.png" alt="${p.brand} ${p.name}" loading="lazy"></div>
+      <div class="prod-info">
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-size">${p.size}</div>
+      </div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">₦${p.price.toLocaleString()}<span>/unit</span></div>
+          <div class="prod-stock${p.low?' low':''}">● ${p.stock}</div>
+        </div>
+        <button class="prod-order-btn" onclick="openOrder('${p.brand} ${p.name}','${p.size}',${p.price})">Order →</button>
+      </div>
+    </div>`;
+  }).join('');
+  addHover('.prod-card,.prod-order-btn');
+
+  // Pagination
+  const pg=document.getElementById('pagination');
+  if(totalPages<=1){pg.innerHTML='';return;}
+  let html=`<button class="pg-btn" onclick="goPage(${page-1})" ${page<=1?'disabled':''}>←</button>`;
+  for(let i=1;i<=totalPages;i++){
+    if(i===1||i===totalPages||Math.abs(i-page)<=1)
+      html+=`<button class="pg-btn${i===page?' active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if(Math.abs(i-page)===2)
+      html+=`<span style="padding:0 6px;color:var(--gray2);">…</span>`;
+  }
+  html+=`<button class="pg-btn" onclick="goPage(${page+1})" ${page>=totalPages?'disabled':''}>→</button>`;
+  pg.innerHTML=html;
+}
+
+function goPage(p){currentPage=p;applyFilters();}
+
+function resetFilters(){
+  ['f-width','f-profile','f-rim','f-vehicle','f-usage','f-stock','f-price'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('.brand-check').forEach(c=>c.checked=false);
+  document.getElementById('searchInput').value='';
+  document.getElementById('sortSel').value='default';
+  currentCat='all';
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.cat-tab[data-cat="all"]').classList.add('active');
+  currentPage=1;
+  applyFilters();
+}
+
+// ORDER MODAL
+function openOrder(name,size,price){
+  document.getElementById('po-title').textContent='Order '+name;
+  document.getElementById('po-name').textContent=name;
+  document.getElementById('po-size').textContent=size;
+  document.getElementById('po-price').textContent='₦'+price.toLocaleString();
+  document.getElementById('po-qty').value=4;
+  document.getElementById('po-qty').dataset.price=price;
+  updateTotal();
+  document.getElementById('modal-product-order').classList.add('open');
+}
+function updateTotal(){
+  const q=parseInt(document.getElementById('po-qty').value)||1;
+  const p=parseInt(document.getElementById('po-qty').dataset.price)||0;
+  document.getElementById('po-total').textContent='₦'+(q*p).toLocaleString();
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+function submitOrder(){
+  const n=document.getElementById('po-name-in').value,ph=document.getElementById('po-phone').value;
+  if(!n||!ph){showToast('Please fill in your name and phone number.');return;}
+  const prod=document.getElementById('po-name').textContent,q=parseInt(document.getElementById('po-qty').value)||1;
+  closeModal('modal-product-order');showToast(`✅ ${prod} ×${q} — our team will call to confirm!`);
+}
+
+// TOAST
+let tt;
+function showToast(msg){const t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),4200);}
+
+// INIT
+applyFilters();
+</script>
+</body>
+</html>
